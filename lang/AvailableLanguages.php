@@ -28,6 +28,7 @@ class AvailableLanguages
     public static function GetAvailableLanguages()
     {
         return array(
+                    'ru_ru' => new AvailableLanguage('ru_ru', 'ru_ru.php', 'Русский'),
 					'bg_bg' => new AvailableLanguage('bg_bg', 'bg_bg.php', 'Bulgarian'),
         			'ca' => new AvailableLanguage('ca', 'ca.php', 'Catalan'),
         			'cz' => new AvailableLanguage('cz', 'cz.php', 'Czech'),
