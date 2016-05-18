@@ -26,14 +26,14 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
  * Application configuration
  */
 $conf['settings']['app.title'] = 'Booked Scheduler';            // application title
-$conf['settings']['default.timezone'] = 'America/Chicago';      // look up here http://php.net/manual/en/timezones.php
+$conf['settings']['default.timezone'] = 'Europe/Belgrade';      // look up here http://php.net/manual/en/timezones.php
 $conf['settings']['allow.self.registration'] = 'true';          // if users can register themselves
-$conf['settings']['admin.email'] = 'admin@example.com';         // email address of admin user
+$conf['settings']['admin.email'] = 'tuarisa@gmail.com';         // email address of admin user
 $conf['settings']['admin.email.name'] = 'Booked Administrator'; // name to be used in From: field when sending automatic emails
 $conf['settings']['default.page.size'] = '50';                  // number of records per page
 $conf['settings']['enable.email'] = 'true';                     // global configuration to enable if any emails will be sent
-$conf['settings']['default.language'] = 'en_us';                // find your language in the lang directory
-$conf['settings']['script.url'] = 'http://localhost/Web';       // public URL to the Web directory of this instance. this is the URL that appears when you are logging in. leave http: or https: off to auto-detect
+$conf['settings']['default.language'] = 'ru_ru';                // find your language in the lang directory
+$conf['settings']['script.url'] = 'http://booked-app.herokuapp.com/Web';       // public URL to the Web directory of this instance. this is the URL that appears when you are logging in. leave http: or https: off to auto-detect
 $conf['settings']['image.upload.directory'] = 'Web/uploads/images'; // full or relative path to where images will be stored
 $conf['settings']['image.upload.url'] = 'uploads/images';       // full or relative path to show uploaded images from
 $conf['settings']['cache.templates'] = 'true';                  // true recommended, caching template files helps web pages render faster
