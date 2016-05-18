@@ -109,7 +109,7 @@ $conf['settings']['database']['type'] = 'mysql';
 $conf['settings']['database']['user'] = $url["user"];      // database user with permission to the booked database
 $conf['settings']['database']['password'] = $url["pass"];
 $conf['settings']['database']['hostspec'] = $url["host"];;        // ip, dns or named pipe
-$conf['settings']['database']['name'] = ubstr($url["path"], 1);
+$conf['settings']['database']['name'] = substr($url["path"], 1);
 /**
  * Mail server configuration
  */
