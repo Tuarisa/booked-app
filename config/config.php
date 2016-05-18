@@ -26,7 +26,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
  * Application configuration
  */
 $conf['settings']['app.title'] = 'Booked Scheduler';            // application title
-$conf['settings']['default.timezone'] = 'Europe/Belgrade';      // look up here http://php.net/manual/en/timezones.php
+$conf['settings']['default.timezone'] = 'Europe/Podgorica';      // look up here http://php.net/manual/en/timezones.php
 $conf['settings']['allow.self.registration'] = 'true';          // if users can register themselves
 $conf['settings']['admin.email'] = 'tuarisa@gmail.com';         // email address of admin user
 $conf['settings']['admin.email.name'] = 'Booked Administrator'; // name to be used in From: field when sending automatic emails
@@ -38,7 +38,7 @@ $conf['settings']['image.upload.directory'] = 'Web/uploads/images'; // full or r
 $conf['settings']['image.upload.url'] = 'uploads/images';       // full or relative path to show uploaded images from
 $conf['settings']['cache.templates'] = 'true';                  // true recommended, caching template files helps web pages render faster
 $conf['settings']['use.local.jquery'] = 'false';                // false recommended, delivers jQuery from Google CDN, uses less bandwidth
-$conf['settings']['registration.captcha.enabled'] = 'true';     // recommended. unless using recaptcha this requires php_gd2 enabled in php.ini
+$conf['settings']['registration.captcha.enabled'] = 'false';     // recommended. unless using recaptcha this requires php_gd2 enabled in php.ini
 $conf['settings']['registration.require.email.activation'] = 'false';       // requires enable.email = true
 $conf['settings']['registration.auto.subscribe.email'] = 'false';           // requires enable.email = true
 $conf['settings']['registration.notify.admin'] = 'false';       // whether the registration of a new user sends an email to the admin (ala phpScheduleIt 1.2)
