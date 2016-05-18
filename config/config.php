@@ -134,7 +134,7 @@ $conf['settings']['plugins']['PostReservation'] = '';
 /**
  * Installation settings
  */
-$conf['settings']['install.password'] = '';
+$conf['settings']['install.password'] = getenv("INSTALL_PASSWORD");
 /**
  * Pages
  */
