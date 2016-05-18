@@ -48,9 +48,9 @@ function ReminderManagement(opts) {
             $(this).closest('.dialog').dialog("close");
         });
 
-        ConfigureAsyncForm(elements.addForm, getSubmitCallback(options.actions.add));
-        ConfigureAsyncForm(elements.deleteForm, getSubmitCallback(options.actions.deleteReminder));
-        ConfigureAsyncForm(elements.profileForm, getSubmitCallback(options.actions.edit));
+        ConfigureAdminForm(elements.addForm, getSubmitCallback(options.actions.add));
+        ConfigureAdminForm(elements.deleteForm, getSubmitCallback(options.actions.deleteReminder));
+        ConfigureAdminForm(elements.profileForm, getSubmitCallback(options.actions.edit));
     };
 
     var getSubmitCallback = function(action) {

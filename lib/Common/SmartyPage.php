@@ -1,17 +1,17 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -168,16 +168,8 @@ class SmartyPage extends Smarty
 		$this->registerPlugin('function', 'flush', array($this, 'Flush'));
 		$this->registerPlugin('function', 'jsfile', array($this, 'IncludeJavascriptFile'));
 		$this->registerPlugin('function', 'cssfile', array($this, 'IncludeCssFile'));
-		$this->registerPlugin('function', 'indicator', array($this, 'DisplayIndicator'));
 		$this->registerPlugin('function', 'read_only_attribute', array($this, 'ReadOnlyAttribute'));
 		$this->registerPlugin('function', 'csrf_token', array($this, 'CSRFToken'));
-		$this->registerPlugin('function', 'cancel_button', array($this, 'CancelButton'));
-		$this->registerPlugin('function', 'update_button', array($this, 'UpdateButton'));
-		$this->registerPlugin('function', 'add_button', array($this, 'AddButton'));
-		$this->registerPlugin('function', 'delete_button', array($this, 'DeleteButton'));
-		$this->registerPlugin('function', 'reset_button', array($this, 'ResetButton'));
-		$this->registerPlugin('function', 'filter_button', array($this, 'FilterButton'));
-		$this->registerPlugin('function', 'showhide_icon', array($this, 'ShowHideIcon'));
 
 		/**
 		 * PageValidators
@@ -192,7 +184,8 @@ class SmartyPage extends Smarty
 			$this->Validate();
 			$this->IsValid = $this->Validators->AreAllValid();
 			return $this->IsValid;
-		} catch (Exception $ex)
+		}
+		catch (Exception $ex)
 		{
 			Log::Error('Error during page validation', $ex);
 			return false;
@@ -353,14 +346,17 @@ class SmartyPage extends Smarty
 		if (!$repeat)
 		{
 			$actualContent = trim($content);
-
 			return empty($actualContent) ? '' :
-					"<div class=\"$class\">
-					<div class=\"pull-left\"><i class=\"fa fa-warning fa-2x\"></i></div>
-					<div class=\"error-list\"><ul class=\"list-unstyled\">$actualContent</ul></div>
+					"<div class=\"$class\" style=\"background-image:none;\">
+					<table>
+						<tr>
+							<td><img src=\"img/alert.png\" alt=\"Alert\" width=\"60\" height=\"60\" /></td>
+							<td><ul>$actualContent</ul></td>
+						</tr>
+					</table>
 				</div>";
 		}
-		return '';
+		return;
 	}
 
 	public function Validator($params, &$smarty)
@@ -409,11 +405,7 @@ class SmartyPage extends Smarty
 
 		if (isset($params['class']))
 		{
-			$params['class'] = $params['class'] . ' form-control';
-		}
-		else
-		{
-			$params['class'] = 'form-control';
+			$class = $params['class'];
 		}
 
 		if (isset($params['value']))
@@ -435,10 +427,6 @@ class SmartyPage extends Smarty
 		{
 			$type = strtolower($params['type']);
 		}
-		else
-		{
-			$type = 'text';
-		}
 
 		$id = null;
 		if (isset($params['id']))
@@ -446,21 +434,16 @@ class SmartyPage extends Smarty
 			$id = $params['id'];
 		}
 
-		if (isset($params['placeholderkey']))
-		{
-			$params['placeholder'] = $this->Resources->GetString($params['placeholderkey']);
-		}
-
-		$knownAttributes = array('value', 'type', 'name', 'placeholderkey');
+		$knownAttributes = array('value', 'type', 'name');
 		$attributes = $this->AppendAttributes($params, $knownAttributes);
 
 		if ($type == 'password')
 		{
-			$textbox = new SmartyPasswordbox($params['name'], 'password', $id, $value, $attributes, $smarty);
+			$textbox = new SmartyPasswordbox($params['name'], $id, $value, $attributes, $smarty);
 		}
 		else
 		{
-			$textbox = new SmartyTextbox($params['name'], $type, $id, $value, $attributes, $smarty);
+			$textbox = new SmartyTextbox($params['name'], $id, $value, $attributes, $smarty);
 		}
 
 		return $textbox->Html();
@@ -481,7 +464,7 @@ class SmartyPage extends Smarty
 			$_key = ($usemethod) ? $option->$key() : $option->$key;
 			$_label = ($usemethod) ? $option->$label() : $option->$label;
 			$isselected = ($_key == $selected) ? 'selected="selected"' : '';
-			$builder->Append(sprintf('<option label="%s" value="%s"%s>%s</option>', $_label, $_key,
+			$builder->Append(sprintf('<option label="%s" value="%s"%s>%s</option>', $_label,$_key,
 									 $isselected, $_label));
 		}
 
@@ -508,20 +491,16 @@ class SmartyPage extends Smarty
 	public function CreateUrl($url)
 	{
 		// credit to WordPress wp-includes/formatting.php
-		$make_url_clickable = function ($matches)
-		{
+		$make_url_clickable = function($matches) {
 			$ret = '';
 			$url = $matches[2];
 
-			if (empty($url))
-			{
+			if ( empty($url) )
 				return $matches[0];
-			}
 			// removed trailing [.,;:] from URL
-			if (in_array(substr($url, -1), array('.', ',', ';', ':')) === true)
-			{
+			if ( in_array(substr($url, -1), array('.', ',', ';', ':')) === true ) {
 				$ret = substr($url, -1);
-				$url = substr($url, 0, strlen($url) - 1);
+				$url = substr($url, 0, strlen($url)-1);
 			}
 
 			$text = $url;
@@ -533,21 +512,17 @@ class SmartyPage extends Smarty
 			return $matches[1] . "<a href=\"$url\" target=\"_blank\" rel=\"nofollow\">$text</a>" . $ret;
 		};
 
-		$make_web_ftp_clickable_cb = function ($matches)
-		{
+		$make_web_ftp_clickable_cb = function ($matches) {
 			$ret = '';
 			$dest = $matches[2];
 			$dest = 'http://' . $dest;
 
-			if (empty($dest))
-			{
+			if ( empty($dest) )
 				return $matches[0];
-			}
 			// removed trailing [,;:] from URL
-			if (in_array(substr($dest, -1), array('.', ',', ';', ':')) === true)
-			{
+			if ( in_array(substr($dest, -1), array('.', ',', ';', ':')) === true ) {
 				$ret = substr($dest, -1);
-				$dest = substr($dest, 0, strlen($dest) - 1);
+				$dest = substr($dest, 0, strlen($dest)-1);
 			}
 
 			$text = $dest;
@@ -559,19 +534,15 @@ class SmartyPage extends Smarty
 			return $matches[1] . "<a href=\"$dest\" rel=\"nofollow\">$text</a>" . $ret;
 		};
 
-		$make_email_clickable_cb = function ($matches)
-		{
+		$make_email_clickable_cb = function ($matches) {
 			$email = $matches[2] . '@' . $matches[3];
 			return $matches[1] . "<a href=\"mailto:$email\">$email</a>";
 		};
 
 		$url = ' ' . $url;
-		$url = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', $make_url_clickable,
-									 $url);
-		$url = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is',
-									 $make_web_ftp_clickable_cb, $url);
-		$url = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i',
-									 $make_email_clickable_cb, $url);
+		$url = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', $make_url_clickable, $url);
+		$url = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', $make_web_ftp_clickable_cb, $url);
+		$url = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', $make_email_clickable_cb, $url);
 		$url = preg_replace("#(<a( [^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i", "$1$3</a>", $url);
 		$url = trim($url);
 		return $url;
@@ -581,7 +552,6 @@ class SmartyPage extends Smarty
 	{
 		/** @var PageInfo $pageInfo */
 		$pageInfo = $params['pageInfo'];
-		$hideCount = isset($params['showCount']) && $params['showCount'] == false;
 
 		if (empty($pageInfo->Total))
 		{
@@ -591,49 +561,29 @@ class SmartyPage extends Smarty
 		$sb = new StringBuilder();
 
 		$viewAllText = $this->Resources->GetString('ViewAll');
-		if (!$hideCount)
+		$sb->Append('<p><br/>');
+		$sb->Append($this->Resources->GetString('Rows'));
+		$sb->Append(": {$pageInfo->ResultsStart} - {$pageInfo->ResultsEnd} ({$pageInfo->Total})");
+		$sb->Append('<span>&nbsp;</span>');
+		if ($pageInfo->TotalPages !=1)
 		{
-			$sb->Append('<div class="pagination-rows">');
-			$sb->Append($this->Resources->GetString('Rows'));
-			$sb->Append(": {$pageInfo->ResultsStart} - {$pageInfo->ResultsEnd} ({$pageInfo->Total})");
-			$sb->Append('<span>&nbsp;</span>');
-			if ($pageInfo->TotalPages != 1)
-			{
-				$sb->Append($this->CreatePageLink(array('page' => 1, 'size' => '-1', 'text' => $viewAllText), $smarty));
-			}
-			$sb->Append('</div>');
+			$sb->Append($this->CreatePageLink(array('page' => 1, 'size' => '-1', 'text' => $viewAllText), $smarty));
 		}
+		$sb->Append('</p><p>');
+		$sb->Append($this->Resources->GetString('Page'));
+		$sb->Append(': ');
 		$size = $pageInfo->PageSize;
 		$currentPage = $pageInfo->CurrentPage;
-
-		$sb->Append('<ul class="pagination">');
-		$sb->Append('<li>');
-		$sb->Append($this->CreatePageLink(array('page' => max(1,
-															  $currentPage - 1), 'size' => $size, 'text' => '&laquo;'),
-										  $smarty));
-		$sb->Append('</li>');
 
 		for ($i = 1; $i <= $pageInfo->TotalPages; $i++)
 		{
 			$isCurrent = ($i == $currentPage);
 
-			if ($isCurrent)
-			{
-				$sb->Append('<li class="active">');
-			}
-			else
-			{
-				$sb->Append('<li>');
-			}
-			$sb->Append($this->CreatePageLink(array('page' => $i, 'size' => $size), $smarty));
-			$sb->Append('</li>');
+			$sb->Append($this->CreatePageLink(array('page' => $i, 'size' => $size, 'iscurrent' => $isCurrent),
+											  $smarty));
+			$sb->Append(" ");
 		}
-		$sb->Append('<li>');
-		$sb->Append($this->CreatePageLink(array('page' => min($pageInfo->TotalPages,
-															  $currentPage + 1), 'size' => $size, 'text' => '&raquo;'),
-										  $smarty));
-		$sb->Append('</li>');
-		$sb->Append('</ul>');
+		$sb->Append('</p>');
 
 		return $sb->ToString();
 	}
@@ -666,7 +616,7 @@ class SmartyPage extends Smarty
 			}
 			else
 			{
-				$newUrl = sprintf('%s&amp;%s=%s', $url, $key, $value); // and has existing query string
+				$newUrl = sprintf('%s&%s=%s', $url, $key, $value); // and has existing query string
 			}
 		}
 		else
@@ -757,18 +707,7 @@ class SmartyPage extends Smarty
 		{
 			$src = "css/{$src}";
 		}
-		echo "<link rel='stylesheet' type='text/css' href='{$this->RootPath}{$src}?v=$versionNumber'/>";
-	}
-
-	public function DisplayIndicator($params, &$smarty)
-	{
-		$id = isset($params['id']) ? $params['id'] : '';
-		$spinClass = isset($params['spinClass']) ? $params['spinClass'] : 'fa-spinner';
-		$size = isset($params['size']) ? "fa-{$params['size']}x" : 'fa-2x';
-		$show = isset($params['show']) ? '' : 'no-show';
-		$class = isset($params['class']) ? $params['class'] : 'indicator';
-
-		echo "<span id=\"$id\" class=\"fa fa-spin $spinClass $size $class $show\"></span>";
+		echo "<link rel='stylesheet' type='text/css' href='{$this->RootPath}{$src}?v=$versionNumber'></link>";
 	}
 
 	public function ReadOnlyAttribute($params, &$smarty)
@@ -794,65 +733,6 @@ class SmartyPage extends Smarty
 
 	public function CSRFToken($params, &$smarty)
 	{
-		echo '<input type="hidden" id="csrf_token" name="' . FormKeys::CSRF_TOKEN . '" value="' .
-				ServiceLocator::GetServer()->GetUserSession()->CSRFToken . '"/>';
+		echo '<input type="hidden" id="csrf_token" name="' . FormKeys::CSRF_TOKEN . '" value="' . ServiceLocator::GetServer()->GetUserSession()->CSRFToken . '"/>';
 	}
-
-	private function GetButtonAttributes($params)
-	{
-		$knownAttributes = array('key', 'class');
-		return $this->AppendAttributes($params, $knownAttributes);
-	}
-
-	public function CancelButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Cancel';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="button" class="btn btn-default cancel ' . $class . '" data-dismiss="modal" ' . $this->GetButtonAttributes($params) . '>' .
-				Resources::GetInstance()->GetString($key) . '</button>';
-	}
-
-	public function UpdateButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Update';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="button" class="btn btn-success save ' . $class . '" ' . $this->GetButtonAttributes($params) . '><span class="glyphicon glyphicon-ok-circle"></span> ' . Resources::GetInstance()
-																																				 ->GetString($key) . '</span></button>';
-	}
-
-	public function AddButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Add';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="button" class="btn btn-success save ' . $class . '" ' . $this->GetButtonAttributes($params) . '><span class="glyphicon glyphicon-ok-circle"></span> ' . Resources::GetInstance()
-																																				 ->GetString($key) . '</span></button>';
-	}
-
-	public function DeleteButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Delete';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="button" class="btn btn-danger save ' . $class . '" ' . $this->GetButtonAttributes($params) . '><span class="glyphicon glyphicon-trash"></span> ' . Resources::GetInstance()->GetString($key) . '</span></button>';
-	}
-
-	public function ResetButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Reset';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="reset" class="btn btn-default ' . $class . '"" ' . $this->GetButtonAttributes($params) . '>' . Resources::GetInstance()->GetString($key) . '</button>';
-	}
-
-	public function FilterButton($params, &$smarty)
-	{
-		$key = isset($params['key']) ? $params['key'] : 'Filter';
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<button type="button" class="btn btn-primary ' . $class . '" ' . $this->GetButtonAttributes($params) . '> <span class="glyphicon glyphicon-search"></span> ' . Resources::GetInstance()->GetString($key) . '</button>';
-	}
-
-	public function ShowHideIcon($params, &$smarty)
-	{
-		$class = isset($params['class']) ? $params['class'] : '';
-		echo '<a href="#"><span class="icon black show-hide glyphicon ' . $class . '"></span></a>';
-	}
-
 }

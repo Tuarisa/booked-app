@@ -22,16 +22,18 @@ require_once(ROOT_DIR . 'lib/Application/Schedule/namespace.php');
 require_once(ROOT_DIR . 'lib/Application/Attributes/namespace.php');
 require_once(ROOT_DIR . 'lib/Application/Reservation/ReservationComponentBinder.php');
 
-require_once(ROOT_DIR . 'Pages/Reservation/ReservationPage.php');
+require_once(ROOT_DIR . 'Pages/ReservationPage.php');
 
 interface IReservationComponentInitializer
 {
 	/**
+	 * @abstract
 	 * @return int
 	 */
 	public function GetResourceId();
 
 	/**
+	 * @abstract
 	 * @return int
 	 */
 	public function GetScheduleId();
@@ -52,11 +54,13 @@ interface IReservationComponentInitializer
 	public function GetReservationDate();
 
 	/**
+	 * @abstract
 	 * @return int
 	 */
 	public function GetOwnerId();
 
 	/**
+	 * @abstract
 	 * @return string
 	 */
 	public function GetTimezone();
@@ -106,12 +110,12 @@ interface IReservationComponentInitializer
 	public function ShowReservationDetails($showReservationDetails);
 
 	/**
-	 * @param $resources array|IBookableResource[]
+	 * @param $resources array|ResourceDto[]
 	 */
 	public function BindAvailableResources($resources);
 
 	/**
-	 * @param $accessories Accessory[]
+	 * @param $accessories array|AccessoryDto[]
 	 */
 	public function BindAvailableAccessories($accessories);
 
@@ -183,6 +187,11 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 	protected $resourceBinder;
 
 	/**
+	 * @var IReservationComponentBinder
+	 */
+	protected $attributeBinder;
+
+	/**
 	 * @var int
 	 */
 	protected $currentUserId;
@@ -202,6 +211,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 	 * @param $userBinder IReservationComponentBinder
 	 * @param $dateBinder IReservationComponentBinder
 	 * @param $resourceBinder IReservationComponentBinder
+	 * @param $attributeBinder IReservationComponentBinder
 	 * @param $userSession UserSession
 	 */
 	public function __construct(
@@ -209,6 +219,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 		IReservationComponentBinder $userBinder,
 		IReservationComponentBinder $dateBinder,
 		IReservationComponentBinder $resourceBinder,
+		IReservationComponentBinder $attributeBinder,
 		UserSession $userSession
 	)
 	{
@@ -216,6 +227,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 		$this->userBinder = $userBinder;
 		$this->dateBinder = $dateBinder;
 		$this->resourceBinder = $resourceBinder;
+		$this->attributeBinder = $attributeBinder;
 		$this->currentUser = $userSession;
 		$this->currentUserId = $this->currentUser->UserId;
 	}
@@ -228,6 +240,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 		$this->BindResourceAndAccessories();
 		$this->BindDates();
 		$this->BindUser();
+		$this->BindAttributes();
 	}
 
 	protected function BindUser()
@@ -245,17 +258,16 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 		$this->dateBinder->Bind($this);
 	}
 
+	protected function BindAttributes()
+	{
+		$this->attributeBinder->Bind($this);
+		$this->basePage->SetCustomAttributes($this->customAttributes);
+	}
+
 	protected function SetSelectedDates(Date $startDate, Date $endDate, $startPeriods, $endPeriods)
 	{
 		$startPeriod = $this->GetStartSlotClosestTo($startPeriods, $startDate);
 
-		if (!$startPeriod->IsReservable())
-		{
-			// if there are no more slots today, move to tomorrow
-			$startDate = $startDate->AddDays(1)->GetDate();
-			$endDate = $endDate->AddDays(1)->GetDate();
-			$startPeriod = $this->GetStartSlotClosestTo($startPeriods, $startDate);
-		}
 		if ($endDate->LessThanOrEqual($startDate))
 		{
 			$endDate = $endDate->SetTime($startPeriod->End());
@@ -376,7 +388,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 	}
 
 	/**
-	 * @param $resources array|IResource[]
+	 * @param $resources array|ResourceDto[]
 	 */
 	public function BindAvailableResources($resources)
 	{
@@ -384,7 +396,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 	}
 
 	/**
-	 * @param $accessories Accessory[]
+	 * @param $accessories array|AccessoryDto[]
 	 */
 	public function BindAvailableAccessories($accessories)
 	{
@@ -405,7 +417,7 @@ abstract class ReservationInitializerBase implements IReservationInitializer, IR
 	}
 
 	/**
-	 * @param IBookableResource $resource
+	 * @param $resource ResourceDto
 	 */
 	public function SetReservationResource($resource)
 	{

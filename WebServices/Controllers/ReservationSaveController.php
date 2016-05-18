@@ -27,6 +27,7 @@ require_once(ROOT_DIR . 'lib/Application/Reservation/namespace.php');
 
 require_once(ROOT_DIR . 'WebServices/Requests/ReservationRequest.php');
 
+
 interface IReservationSaveController
 {
 	/**
@@ -88,15 +89,14 @@ class ReservationSaveController implements IReservationSaveController
 		$reservation = $presenter->BuildReservation();
 		$presenter->HandleReservation($reservation);
 
-		return new ReservationControllerResult($facade->ReferenceNumber(), $facade->Errors(),
-											   $facade->RequiresApproval());
+		return new ReservationControllerResult($facade->ReferenceNumber(), $facade->Errors(), $facade->RequiresApproval());
 	}
 
 	public function Update($request, $session, $referenceNumber, $updateScope)
 	{
 		$facade = new ReservationUpdateRequestResponseFacade($request, $session, $referenceNumber, $updateScope);
 
-		$validationErrors = $this->ValidateUpdateRequest($facade);
+		$validationErrors = $this->ValidateUpdateRequest($facade, $referenceNumber, $updateScope);
 
 		if (count($validationErrors) > 0)
 		{
@@ -107,8 +107,7 @@ class ReservationSaveController implements IReservationSaveController
 		$reservation = $presenter->BuildReservation();
 		$presenter->HandleReservation($reservation);
 
-		return new ReservationControllerResult($facade->ReferenceNumber(), $facade->Errors(),
-											   $facade->RequiresApproval());
+		return new ReservationControllerResult($facade->ReferenceNumber(), $facade->Errors(), $facade->RequiresApproval());
 	}
 
 	/**
@@ -260,6 +259,8 @@ class ReservationSaveController implements IReservationSaveController
 
 		return $errors;
 	}
+
+
 }
 
 class ReservationControllerResult
@@ -358,21 +359,6 @@ class ReservationRequestResponseFacade implements IReservationSavePage
 	 * @var RecurrenceRequestResponse
 	 */
 	private $recurrenceRule;
-
-	/**
-	 * @var bool
-	 */
-	private $_canBeRetried;
-
-	/**
-	 * @var ReservationRetryParameter[]
-	 */
-	private $_retryParameters = array();
-
-	/**
-	 * @var string[]
-	 */
-	private $_retryMessages = array();
 
 	/**
 	 * @param ReservationRequest $request
@@ -549,24 +535,6 @@ class ReservationRequestResponseFacade implements IReservationSavePage
 		return array();
 	}
 
-	public function GetParticipatingGuests()
-	{
-		if (!empty($this->request->participatingGuests) && is_array($this->request->participatingGuests))
-		{
-			return $this->request->participatingGuests;
-		}
-		return array();
-	}
-
-	public function GetInvitedGuests()
-	{
-		if (!empty($this->request->invitedGuests) && is_array($this->request->invitedGuests))
-		{
-			return $this->request->invitedGuests;
-		}
-		return array();
-	}
-
 	public function SetReferenceNumber($referenceNumber)
 	{
 		$this->_createdReferenceNumber = $referenceNumber;
@@ -675,52 +643,6 @@ class ReservationRequestResponseFacade implements IReservationSavePage
 	{
 		return $this->request->allowParticipation;
 	}
-
-	/**
-	 * @param bool $canBeRetried
-	 */
-	public function SetCanBeRetried($canBeRetried)
-	{
-		$this->_canBeRetried = $canBeRetried;
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		$this->_retryParameters = $retryParameters;
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		$retryParams = array();
-		if (isset($this->request->retryParameters))
-		{
-			$params = $this->request->retryParameters;
-
-			if (is_array($params))
-			{
-				foreach ($params as $param)
-				{
-					$retryParams[] = new ReservationRetryParameter($param->name, $param->value);
-				}
-			}
-		}
-
-		return $retryParams;
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		$this->_retryMessages = $messages;
-	}
 }
 
 class ReservationUpdateRequestResponseFacade extends ReservationRequestResponseFacade implements IReservationUpdatePage
@@ -761,11 +683,11 @@ class ReservationUpdateRequestResponseFacade extends ReservationRequestResponseF
 	 */
 	public function GetSeriesUpdateScope()
 	{
-		if (empty($this->updateScope))
+		if (($this->updateScope == SeriesUpdateScope::FullSeries || $this->updateScope == SeriesUpdateScope::FutureInstances || $this->updateScope == SeriesUpdateScope::ThisInstance))
 		{
-			return SeriesUpdateScope::FullSeries;
+			return $this->updateScope;
 		}
-		return $this->updateScope;
+		return SeriesUpdateScope::FullSeries;
 	}
 
 	public function GetRemovedAttachmentIds()
@@ -845,38 +767,6 @@ class ReservationDeleteRequestResponseFacade implements IReservationDeletePage
 	{
 		return $this->errors;
 	}
-
-	/**
-	 * @param bool $canBeRetried
-	 */
-	public function SetCanBeRetried($canBeRetried)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		// no-op
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		// no-op
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		// no-op
-	}
 }
 
 class ReservationApprovalRequestResponseFacade implements IReservationApprovalPage
@@ -927,34 +817,5 @@ class ReservationApprovalRequestResponseFacade implements IReservationApprovalPa
 	public function GetReferenceNumber()
 	{
 		return $this->referenceNumber;
-	}
-
-	public function SetCanBeRetried($canBeRetried)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		// no-op
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		// no-op
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		// no-op
 	}
 }

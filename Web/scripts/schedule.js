@@ -27,11 +27,11 @@ function Schedule(opts, resourceGroups) {
 			$(this).removeClass('hilite');
 		});
 
-		reservations.delegate('.clickres', 'mousedown', function () {
+		reservations.delegate('td.clickres', 'mousedown', function () {
 			$(this).addClass('clicked');
 		});
 
-		reservations.delegate('.clickres', 'mouseup', function () {
+		reservations.delegate('td.clickres', 'mouseup', function () {
 			$(this).removeClass('clicked');
 		});
 
@@ -57,7 +57,7 @@ function Schedule(opts, resourceGroups) {
 		this.initResources();
 		this.initNavigation();
 
-		var today = $(".today");
+		var today = $("tr.today");
 		if (today && today.length > 0)
 		{
 			$('html, body').animate({
@@ -73,16 +73,27 @@ function Schedule(opts, resourceGroups) {
 	};
 
 	this.initNavigation = function () {
+		$('.schedule_drop').hover(
+				function () {
+					$("#schedule_list").show()
+				},
+				function () {
+					$("#schedule_list").hide()
+				}
+		);
+
 		var datePicker = $("#datepicker");
 		var expandCalendar = readCookie('schedule_calendar_toggle');
 
 		function collapse() {
+			$('#calendar_toggle_img').attr("src", "img/calendar.png");
 			createCookie('schedule_calendar_toggle', false, 30, opts.scriptUrl);
 			datePicker.hide();
 			$('#individualDates').hide();
 		}
 
 		function expand() {
+			$('#calendar_toggle_img').attr("src", "img/calendar-minus.png");
 			createCookie('schedule_calendar_toggle', true, 30, opts.scriptUrl);
 			datePicker.show();
 			$('#individualDates').show();
@@ -137,7 +148,6 @@ function Schedule(opts, resourceGroups) {
 			if (scheduleSpecificDates.length == 0)
 			{
 				$('#individualDatesGo').hide();
-				$('#individualDatesGo').click();
 			}
 		});
 
@@ -149,8 +159,7 @@ function Schedule(opts, resourceGroups) {
 				var dates = scheduleSpecificDates.join(',');
 				RedirectToSelf('sds', /(sds=[\d\-\,]+)/i, 'sds=' + dates);
 			}
-			else
-			{
+			else {
 				RedirectToSelf('sds', /(sds=[\d\-\,]+)/i, '');
 			}
 		});
@@ -160,30 +169,11 @@ function Schedule(opts, resourceGroups) {
 			CheckMultiDateSelect();
 
 			multidateselect.attr('checked', true);
-			$.each(options.specificDates, function (i, v) {
+			$.each(options.specificDates, function(i,v) {
 				var d = v.split('-');
-				AddSpecificDate(v, {selectedYear: d[0], selectedMonth: d[1] - 1, selectedDay: d[2]});
+				AddSpecificDate(v, {selectedYear: d[0], selectedMonth: d[1]-1, selectedDay: d[2]});
 			});
 		}
-
-		$('#schedule-title').find('.schedule-id').on('click', function (e) {
-			e.preventDefault();
-			var scheduleId = $(this).attr('data-scheduleid');
-
-			RedirectToSelf("sid", /sid=\d+/i, "sid=" + scheduleId, function (url) {
-				var x = RemoveGroupId(url);
-				x = RemoveResourceId(x);
-				return x;
-			});
-		});
-
-		$('.schedule-dates').find('.change-date').on('click', function (e) {
-			e.preventDefault();
-			var year = $(this).attr('data-year');
-			var month = $(this).attr('data-month');
-			var day = $(this).attr('data-day');
-			ChangeDate(year, month, day)
-		});
 	};
 
 	this.initUserDefaultSchedule = function () {
@@ -196,7 +186,8 @@ function Schedule(opts, resourceGroups) {
 			var scheduleId = $('#scheduleId').val();
 			var changeDefaultUrl = options.setDefaultScheduleUrl.replace("[scheduleId]", scheduleId);
 			$.ajax({
-				url: changeDefaultUrl, success: function (data) {
+				url: changeDefaultUrl,
+				success: function (data) {
 					defaultSetMessage.show().delay(5000).fadeOut();
 				}
 			});
@@ -212,113 +203,54 @@ function Schedule(opts, resourceGroups) {
 		});
 	};
 
-	this.toggleResourceFilter = function () {
-
-		var shown = false;
-
-		function hide() {
-			shown = false;
-			$('#reservations-left').addClass('hidden');
-			$('#reservations').removeClass('col-md-10').addClass('col-md-12');
-			$('#restore-sidebar').removeClass('hidden');
-
-			localStorage.setItem('hide-sidebar-status', true);
-		}
-
-		function show() {
-			shown = true;
-			$('#reservations-left').removeClass('hidden');
-			$('#reservations').addClass('col-md-10').removeClass('col-md-12');
-			$('#restore-sidebar').addClass('hidden');
-
-			localStorage.removeItem('hide-sidebar-status');
-		}
-
-		function toggle() {
-			if (shown)
-			{
-				hide();
-			}
-			else
-			{
-				show();
-			}
-		}
-
-		$('.toggle-sidebar').on('click', function () {
-			toggle();
-		});
-
-		var hideSidebar = localStorage.getItem('hide-sidebar-status');
-		show();
-		if (hideSidebar)
-		{
-			hide();
-		}
-	};
-
 	this.initReservations = function () {
 		var reservations = $('#reservations');
 
 		this.makeSlotsSelectable(reservations);
-		this.makeReservationsMoveable(reservations);
 
-		$('.reserved', reservations).each(function () {
+		$('td.reserved', reservations).each(function () {
 			var resid = $(this).attr('resid');
 			var pattern = 'td[resid="' + resid + '"]';
 
-			$(this).hover(function () {
-				$(pattern, reservations).addClass('hilite');
-			}, function () {
-				$(pattern, reservations).removeClass('hilite');
-			});
+			$(this).hover(
+					function () {
+						$(pattern, reservations).addClass('hilite');
+					},
+					function () {
+						$(pattern, reservations).removeClass('hilite');
+					}
+			);
 
 			$(this).click(function () {
 				var reservationUrl = options.reservationUrlTemplate.replace("[referenceNumber]", resid);
 				window.location = reservationUrl;
 			});
 
-			var qTipElement = $(this);
-
-			if ($(this).is('div'))
-			{
-				qTipElement = $(this).find('.fa');
-				qTipElement.click(function (e) {
-					e.stopPropagation();
-				});
-			}
-
-			qTipElement.qtip({
+			$(this).qtip({
 				position: {
-					my: 'bottom left', at: 'top left', effect: false
+					my: 'bottom left',
+					at: 'top left',
+					viewport: $(window),
+					effect: false
 				},
-
 				content: {
-					text: function (event, api) {
-						var refNum = $(this).attr('id');
-						$.ajax({url: options.summaryPopupUrl, data: {id: resid}})
-								.done(function (html) {
-									api.set('content.text', html)
-								})
-								.fail(function (xhr, status, error) {
-									api.set('content.text', status + ': ' + error)
-								});
-
-						return 'Loading...';
+					text: 'Loading...',
+					ajax: {
+						url: options.summaryPopupUrl,
+						type: 'GET',
+						data: {id: resid},
+						dataType: 'html'
 					}
 				},
-
 				show: {
-					delay: 700, effect: false
+					delay: 700,
+					event: 'mouseenter'
 				},
-
+				style: {},
 				hide: {
-					fixed: true, delay: 500
+					fixed: true
 				},
-
-				style: {
-					classes: 'qtip-light qtip-bootstrap'
-				}
+				overwrite: false
 			});
 		});
 	};
@@ -340,15 +272,17 @@ function Schedule(opts, resourceGroups) {
 
 		reservationsElement.selectable({
 			filter: 'td.reservable',
-			cancel: 'td.reserved',
 			distance: 20,
 			start: function (event, ui) {
 				startHref = '';
-			}, selecting: function (event, ui) {
+			},
+			selecting: function (event, ui) {
 				select($(ui.selecting));
-			}, unselecting: function (event, ui) {
+			},
+			unselecting: function (event, ui) {
 				select($(ui.unselecting));
-			}, stop: function (event, ui) {
+			},
+			stop: function (event, ui) {
 				if (href != '' && startDate != '' && endDate != '')
 				{
 					var start = moment(decodeURIComponent(startDate));
@@ -368,57 +302,6 @@ function Schedule(opts, resourceGroups) {
 		});
 	};
 
-	this.makeReservationsMoveable = function (reservations) {
-		var sourceResourceId = null;
-		var referenceNumber = null;
-
-		reservations.find('td.reserved.mine').on('dragstart', function (event) {
-			$(event.target).removeClass('clicked');
-			referenceNumber = $(event.target).attr('resid');
-			sourceResourceId = $(event.target).attr('data-resourceId');
-
-			event.originalEvent.dataTransfer.setData("text", event.target.id);
-		});
-
-		reservations.find('td.reservable').on('dragover dragleave drop', function (event) {
-			event.preventDefault();
-
-			var targetSlot = $(event.target);
-
-			if (event.type == 'dragover')
-			{
-				$(event.target).addClass('hilite');
-			}
-			else if (event.type == 'dragleave')
-			{
-				$(event.target).removeClass('hilite');
-			}
-			else if (event.type === 'drop')
-			{
-				$(event.target).addClass('dropped');
-
-				var targetResourceId = targetSlot.attr('data-resourceId');
-				var startDate = decodeURIComponent(targetSlot.attr('data-start'));
-				$('#moveStartDate').val(startDate);
-				$('#moveReferenceNumber').val(referenceNumber);
-				$('#moveResourceId').val(targetResourceId);
-				$('#moveSourceResourceId').val(sourceResourceId);
-
-				ajaxPost($('#moveReservationForm'), options.updateReservationUrl, null, function (updateResult) {
-					if (updateResult.success)
-					{
-						document.location.reload();
-					}
-					else
-					{
-						$(event.target).removeClass('dropped');
-						return false;
-					}
-				});
-			}
-		});
-	};
-
 	this.initResourceFilter = function () {
 		$('#show_all_resources').click(function (e) {
 			e.preventDefault();
@@ -426,7 +309,7 @@ function Schedule(opts, resourceGroups) {
 			groupDiv.tree('selectNode', null);
 
 			eraseCookie('resource_filter' + scheduleId.val());
-			ShowAllResources();
+			ShowAllResources(options);
 		});
 
 		$('#resourceIdFilter').change(function (e) {
@@ -445,7 +328,8 @@ function Schedule(opts, resourceGroups) {
 		});
 
 		groupDiv.tree({
-			data: resourceGroups, saveState: 'tree' + options.scheduleId,
+			data: resourceGroups,
+			saveState: 'tree' + options.scheduleId,
 
 			onCreateLi: function (node, $li) {
 				var span = $li.find('span');
@@ -456,6 +340,7 @@ function Schedule(opts, resourceGroups) {
 
 				if (node.type == 'resource')
 				{
+					//$li.addClass('group-resource')
 					checkbox.attr('resource-id', node.resource_id);
 					checkbox.attr('group-id', node.group_id);
 					checkbox.val(node.resource_id);
@@ -467,24 +352,30 @@ function Schedule(opts, resourceGroups) {
 					$li.find('span').html(label);
 				}
 			}
+
 		});
 
-		groupDiv.bind('tree.click', function (event) {
-			if (event.node)
-			{
-				var node = event.node;
-				if (node.type != 'resource')
-				{
-					ChangeGroup(node.id);
-				}
-			}
-		});
-
-		this.toggleResourceFilter();
+		groupDiv.bind(
+				'tree.select',
+				function (event) {
+					if (event.node)
+					{
+						var node = event.node;
+						if (node.type == 'resource')
+						{
+							//ChangeResource(node.resource_id);
+						}
+						else
+						{
+							ChangeGroup(node.id);
+						}
+					}
+				});
 	};
 }
 
-function ShowAllResources() {
+function ShowAllResources(opts) {
+	eraseCookie('resource_filter' + $('#scheduleId').val(), opts.scriptUrl);
 	RedirectToSelf("", "", "", function (url) {
 		var x = RemoveGroupId(url);
 		x = RemoveResourceId(x);
@@ -505,11 +396,7 @@ function RemoveGroupId(url) {
 }
 
 function ChangeGroup(groupId) {
-	var $resourceGroups = $('#resourceGroups');
-
-	$resourceGroups.find(':checkbox').attr('checked', false);
-	$resourceGroups.find('input[group-id="' + groupId + '"]').click();
-	//RedirectToSelf('gid', /gid=\d+/i, "gid=" + groupId, RemoveResourceId);
+	RedirectToSelf('gid', /gid=\d+/i, "gid=" + groupId, RemoveResourceId);
 }
 
 function ChangeResource(resourceId) {
@@ -524,7 +411,7 @@ function AddSpecificDate(dateText, inst) {
 	}
 	$('#individualDatesGo').show();
 	scheduleSpecificDates.push(formattedDate);
-	var dateItem = '<div data-date="' + formattedDate + '">' + dateText + ' <i class="fa fa-remove icon remove removeSpecificDate"><i/><div>';
+	var dateItem = '<div data-date="' + formattedDate + '">' + dateText + '<img src="img/minus-circle.png" class="removeSpecificDate"/><div>';
 
 	$('#individualDatesList').html($('#individualDatesList').html() + dateItem);
 }
@@ -536,21 +423,20 @@ function dpDateChanged(dateText, inst) {
 	}
 	else
 	{
-
-		if (inst)
-		{
-			ChangeDate(inst.selectedYear, inst.selectedMonth + 1, inst.selectedDay);
-		}
-		else
-		{
-			var date = new Date();
-			ChangeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-		}
+		ChangeDate(inst.selectedYear, inst.selectedMonth + 1, inst.selectedDay);
 	}
 }
 
 function ChangeDate(year, month, day) {
 	RedirectToSelf("sd", /sd=\d{4}-\d{1,2}-\d{1,2}/i, "sd=" + year + "-" + month + "-" + day);
+}
+
+function ChangeSchedule(scheduleId) {
+	RedirectToSelf("sid", /sid=\d+/i, "sid=" + scheduleId, function (url) {
+		var x = RemoveGroupId(url);
+		x = RemoveResourceId(x);
+		return x;
+	});
 }
 
 function RedirectToSelf(queryStringParam, regexMatch, substitution, preProcess) {

@@ -18,10 +18,9 @@ class ReminderValidationRule implements IReservationValidationRule
 {
 	/**
 	 * @param ReservationSeries $reservationSeries
-	 * @param $retryParameters
 	 * @return ReservationRuleResult
 	 */
-	public function Validate($reservationSeries, $retryParameters)
+	public function Validate($reservationSeries)
 	{
 		$errorMessage = new StringBuilder();
 		if ($reservationSeries->GetStartReminder()->Enabled())

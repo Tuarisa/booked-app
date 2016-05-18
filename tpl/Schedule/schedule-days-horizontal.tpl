@@ -20,7 +20,13 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {extends file="Schedule/schedule.tpl"}
 
 {block name="reservations"}
+	<style type="text/css">
+		td.resdate-custom { background-color:#4279A5; }
+		td.today-custom { background-color:#5199d1; }
+	</style>
+
 	{assign var=TodaysDate value=Date::Now()}
+	<div id="reservations">
 		<table class="reservations" border="1" cellpadding="0" style="width:auto;">
 			<tr>
 				<td rowspan="2">&nbsp;</td>
@@ -30,9 +36,9 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 					{$periods.$ts = $DailyLayout->GetPeriods($date)}
 					{if $periods[$ts]|count == 0}{continue}{*dont show if there are no slots*}{/if}
 					{if $date->DateEquals($TodaysDate)}
-						{assign var=class value="today"}
+						{assign var=class value="today-custom"}
 					{/if}
-					<td class="resdate {$class}"
+					<td class="resdate-custom resdate {$class}"
 						colspan="{$periods[$ts]|count}">{formatdate date=$date key="schedule_daily"}</td>
 				{/foreach}
 			</tr>
@@ -55,7 +61,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 							<a href="{$href}" resourceId="{$resource->Id}"
 							   class="resourceNameSelector">{$resource->Name}</a>
 						{else}
-							<span resourceId="{$resource->Id}" resourceId="{$resource->Id}" class="resourceNameSelector">{$resource->Name}</span>
+							<span resourceId="{$resource->Id}" resourceId="{$resource->Id}"
+								  class="resourceNameSelector">{$resource->Name}</span>
 						{/if}
 					</td>
 					{foreach from=$BoundDates item=date}
@@ -69,8 +76,9 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				</tr>
 			{/foreach}
 		</table>
+	</div>
 {/block}
 
-{block name="scripts-before"}
+{block name="scripts"}
 
 {/block}

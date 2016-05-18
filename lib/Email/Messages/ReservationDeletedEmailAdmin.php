@@ -28,3 +28,5 @@ class ReservationDeletedEmailAdmin extends ReservationCreatedEmailAdmin
        return 'ReservationDeleted.tpl';
     }
 }
+
+?>

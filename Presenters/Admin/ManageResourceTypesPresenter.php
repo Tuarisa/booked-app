@@ -1,21 +1,21 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Domain/namespace.php');
@@ -28,7 +28,7 @@ class ManageResourceTypesActions
 	const Add = 'Add';
 	const Update = 'Update';
 	const Delete = 'Delete';
-	const ChangeAttribute = 'ChangeAttribute';
+	const ChangeAttributes = 'ChangeAttributes';
 }
 
 class ManageResourceTypesPresenter extends ActionPresenter
@@ -49,10 +49,10 @@ class ManageResourceTypesPresenter extends ActionPresenter
 	private $attributeService;
 
 	public function __construct(
-			IManageResourceTypesPage $page,
-			UserSession $user,
-			IResourceRepository $resourceRepository,
-			IAttributeService $attributeService)
+		IManageResourceTypesPage $page,
+		UserSession $user,
+		IResourceRepository $resourceRepository,
+		IAttributeService $attributeService)
 	{
 		parent::__construct($page);
 
@@ -63,20 +63,20 @@ class ManageResourceTypesPresenter extends ActionPresenter
 		$this->AddAction(ManageResourceTypesActions::Add, 'Add');
 		$this->AddAction(ManageResourceTypesActions::Update, 'Update');
 		$this->AddAction(ManageResourceTypesActions::Delete, 'Delete');
-		$this->AddAction(ManageResourceTypesActions::ChangeAttribute, 'ChangeAttribute');
+		$this->AddAction(ManageResourceTypesActions::ChangeAttributes, 'ChangeAttributes');
 	}
 
 	public function PageLoad()
 	{
 		$types = $this->resourceRepository->GetResourceTypes();
-//
-//		$ids = array();
-//		foreach ($types as $type)
-//		{
-//			$ids[] = $type->Id();
-//		}
 
-		$attributeList = $this->attributeService->GetByCategory(CustomAttributeCategory::RESOURCE_TYPE);
+		$ids = array();
+		foreach ($types as $type)
+		{
+			$ids[] = $type->Id();
+		}
+
+		$attributeList = $this->attributeService->GetAttributes(CustomAttributeCategory::RESOURCE_TYPE, $ids);
 		$this->page->BindAttributeList($attributeList);
 
 		$this->page->BindResourceTypes($types);
@@ -84,7 +84,7 @@ class ManageResourceTypesPresenter extends ActionPresenter
 
 	public function Add()
 	{
-		$name = $this->page->GetResourceTypeName();
+		$name = $this->page->GetName();
 		$description = $this->page->GetDescription();
 
 		Log::Debug('Adding resource type. Name=%s', $name);
@@ -95,7 +95,7 @@ class ManageResourceTypesPresenter extends ActionPresenter
 	public function Update()
 	{
 		$id = $this->page->GetId();
-		$name = $this->page->GetResourceTypeName();
+		$name = $this->page->GetName();
 		$description = $this->page->GetDescription();
 
 		Log::Debug('Updating resource type id=%s', $id);
@@ -108,28 +108,17 @@ class ManageResourceTypesPresenter extends ActionPresenter
 		$this->resourceRepository->UpdateResourceType($type);
 	}
 
-	private function GetInlineAttributeValue()
-	{
-		$value = $this->page->GetValue();
-		if (is_array($value))
-		{
-			$value = $value[0];
-		}
-		$id = str_replace(FormKeys::ATTRIBUTE_PREFIX, '', $this->page->GetName());
-
-		return new AttributeValue($id, $value);
-	}
-
-	public function ChangeAttribute()
+	public function ChangeAttributes()
 	{
 		$id = $this->page->GetId();
+		Log::Debug('Changing attributes for resource type id=%s', $id);
+
 		$type = $this->resourceRepository->LoadResourceType($id);
 
-		$attributeValue = $this->GetInlineAttributeValue();
+		$attributes = $this->GetAttributeValues();
 
-		Log::Debug('Changing attributes. ResourceTypeId=%s, AttributeId=%s, Value=%s', $id, $attributeValue->AttributeId, $attributeValue->Value);
+		$type->ChangeAttributes($attributes);
 
-		$type->ChangeAttribute($attributeValue);
 		$this->resourceRepository->UpdateResourceType($type);
 	}
 
@@ -141,27 +130,32 @@ class ManageResourceTypesPresenter extends ActionPresenter
 		$this->resourceRepository->RemoveResourceType($id);
 	}
 
+	private function GetAttributeValues()
+	{
+		$attributes = array();
+		foreach ($this->page->GetAttributes() as $attribute)
+		{
+			$attributes[] = new AttributeValue($attribute->Id, $attribute->Value);
+		}
+		return $attributes;
+	}
+
 	public function ProcessDataRequest($dataRequest)
 	{
 		if ($dataRequest == 'all')
 		{
 			$this->page->SetResourceTypesJson(array_map(array('ResourceTypeJson', 'FromResourceType'),
-														$this->resourceRepository->GetResourceTypes()));
+													$this->resourceRepository->GetResourceTypes()));
 		}
 	}
 
 	protected function LoadValidators($action)
 	{
-		if ($action == ManageResourceTypesActions::ChangeAttribute)
+		if ($action == ManageResourceTypesActions::ChangeAttributes)
 		{
-
-			$attributes = $this->GetInlineAttributeValue();
+			$attributes = $this->GetAttributeValues();
 			$this->page->RegisterValidator('attributeValidator',
-										   new AttributeValidatorInline($this->attributeService,
-																		CustomAttributeCategory::RESOURCE_TYPE,
-																		$attributes,
-																		$this->page->GetId(),
-																		true, true));
+										   new AttributeValidator($this->attributeService, CustomAttributeCategory::RESOURCE_TYPE, $attributes, $this->page->GetId()));
 		}
 	}
 }

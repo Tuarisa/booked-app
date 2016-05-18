@@ -92,3 +92,5 @@ class UserSessionRepository implements IUserSessionRepository
 		ServiceLocator::GetDatabase()->Execute(new DeleteUserSessionCommand($session->SessionToken));
 	}
 }
+
+?>

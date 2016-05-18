@@ -175,7 +175,7 @@ interface IUserViewRepository
 	function GetById($userId);
 
 	/**
-	 * @return UserDto[]
+	 * @return array|UserDto[]
 	 */
 	function GetAll();
 
@@ -270,10 +270,8 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
 		while ($row = $reader->GetRow())
 		{
 			$preferences = isset($row[ColumnNames::USER_PREFERENCES]) ? $row[ColumnNames::USER_PREFERENCES] : '';
-			$creditCount = isset($row[ColumnNames::CREDIT_COUNT]) ? $row[ColumnNames::CREDIT_COUNT] : '';
-
 			$users[] = new UserDto($row[ColumnNames::USER_ID], $row[ColumnNames::FIRST_NAME], $row[ColumnNames::LAST_NAME], $row[ColumnNames::EMAIL],
-								   $row[ColumnNames::TIMEZONE_NAME], $row[ColumnNames::LANGUAGE_CODE], $preferences, $creditCount);
+								   $row[ColumnNames::TIMEZONE_NAME], $row[ColumnNames::LANGUAGE_CODE], $preferences);
 		}
 
 		return $users;
@@ -331,7 +329,6 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
 			$user->WithEmailPreferences($emailPreferences);
 			$user->WithPermissions($permissions);
 			$user->WithGroups($groups);
-			$user->WithCredits($row[ColumnNames::CREDIT_COUNT]);
 			$this->LoadAttributes($userId, $user);
 
 			if ($user->IsGroupAdmin())
@@ -428,6 +425,15 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
 			}
 		}
 
+		$addedPermissions = $user->GetAddedPermissions();
+		if (!empty($addedPermissions))
+		{
+			foreach ($addedPermissions as $resourceId)
+			{
+				$db->Execute(new AddUserResourcePermission($id, $resourceId));
+			}
+		}
+
 		return $id;
 	}
 
@@ -454,8 +460,7 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
 												   $user->GetIsCalendarSubscriptionAllowed(),
 												   $user->GetPublicId(),
 												   $user->Language(),
-												   $user->GetDefaultScheduleId(),
-												   $user->GetCurrentCredits());
+												   $user->GetDefaultScheduleId());
 		$db->Execute($updateUserCommand);
 
 		$removedPermissions = $user->GetRemovedPermissions();
@@ -766,10 +771,8 @@ class UserDto
 	public $Timezone;
 	public $LanguageCode;
 	public $Preferences;
-	public $CurrentCreditCount;
 
-	public function __construct($userId, $firstName, $lastName, $emailAddress, $timezone = null, $languageCode = null, $preferences = null,
-								$currentCreditCount = null)
+	public function __construct($userId, $firstName, $lastName, $emailAddress, $timezone = null, $languageCode = null, $preferences = null)
 	{
 		$this->UserId = $userId;
 		$this->FirstName = $firstName;
@@ -780,7 +783,6 @@ class UserDto
 		$name = new FullName($this->FirstName(), $this->LastName());
 		$this->FullName = $name->__toString() . " ({$this->EmailAddress})";
 		$this->Preferences = UserPreferences::Parse($preferences)->All();
-		$this->CurrentCreditCount = $currentCreditCount;
 	}
 
 	public function Id()
@@ -818,17 +820,13 @@ class UserDto
 		return $this->LanguageCode;
 	}
 
-	public function CurrentCreditCount()
-	{
-		return $this->CurrentCreditCount;
-	}
 }
 
 class NullUserDto extends UserDto
 {
 	public function __construct()
 	{
-		parent::__construct(0, null, null, null, null, null, null, null);
+		parent::__construct(0, null, null, null, null, null);
 	}
 
 	public function FullName()
@@ -844,6 +842,9 @@ class UserItemView
 	public $First;
 	public $Last;
 	public $Email;
+	public $FirstName;
+	public $LastName;
+	public $EmailAddress;
 	public $Phone;
 	/**
 	 * @var Date
@@ -867,8 +868,6 @@ class UserItemView
 	 * @var UserPreferences
 	 */
 	public $Preferences;
-	
-	public $CurrentCreditCount;
 
 	public function __construct()
 	{
@@ -898,6 +897,11 @@ class UserItemView
 		$user->Position = $row[ColumnNames::POSITION];
 		$user->Language = $row[ColumnNames::LANGUAGE_CODE];
 
+		// aliases
+		$user->FirstName = $user->First;
+		$user->LastName = $user->Last;
+		$user->EmailAddress = $user->Email;
+
 		if (isset($row[ColumnNames::ATTRIBUTE_LIST]))
 		{
 			$user->Attributes = CustomAttributes::Parse($row[ColumnNames::ATTRIBUTE_LIST]);
@@ -920,9 +924,6 @@ class UserItemView
 		{
 			$user->Preferences = new UserPreferences();
 		}
-
-		$user->CurrentCreditCount = isset($row[ColumnNames::CREDIT_COUNT]) ? $row[ColumnNames::CREDIT_COUNT] : '';
-
 
 		return $user;
 	}

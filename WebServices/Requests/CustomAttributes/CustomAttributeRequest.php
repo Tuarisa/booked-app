@@ -59,19 +59,9 @@ class CustomAttributeRequest extends JsonRequest
 	public $sortOrder;
 
 	/**
-	 * @var int[]
+	 * @var int
 	 */
-	public $appliesToIds = array();
-
-	/**
-	 * @var bool
-	 */
-	public $adminOnly;
-
-	/**
-	 * @var bool
-	 */
-	public $isPrivate;
+	public $appliesToId;
 
 	/**
 	 * @return ExampleCustomAttributeRequest
@@ -103,8 +93,6 @@ class ExampleCustomAttributeRequest extends CustomAttributeRequest
 		$this->required = true;
 		$this->possibleValues = array('possible','values','only valid for select list');
 		$this->sortOrder = 100;
-		$this->appliesToIds = array(10);
-		$this->adminOnly = true;
-		$this->isPrivate = true;
+		$this->appliesToId = 10;
 	}
 }

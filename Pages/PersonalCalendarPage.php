@@ -20,7 +20,6 @@
 
 require_once(ROOT_DIR . 'Pages/SecurePage.php');
 require_once(ROOT_DIR . 'Presenters/Calendar/PersonalCalendarPresenter.php');
-require_once(ROOT_DIR . 'lib/Application/Schedule/CalendarSubscriptionService.php');
 
 interface IPersonalCalendarPage extends IActionPage
 {
@@ -96,11 +95,8 @@ class PersonalCalendarPage extends ActionPage implements IPersonalCalendarPage
 		$userRepository = new UserRepository();
 		$subscriptionService = new CalendarSubscriptionService($userRepository, new ResourceRepository(), new ScheduleRepository());
 		$resourceRepository = new ResourceRepository();
-		$resourceService = new ResourceService($resourceRepository,
-											   PluginManager::Instance()->LoadPermission(),
-											   new AttributeService(new AttributeRepository()),
-											   $userRepository,
-											   new AccessoryRepository());
+		$resourceService = new ResourceService($resourceRepository, PluginManager::Instance()
+																				 ->LoadPermission(), new AttributeService(new AttributeRepository()), $userRepository);
 
 		$this->presenter = new PersonalCalendarPresenter(
 				$this,

@@ -1,23 +1,23 @@
 <?php
+
 /**
-Copyright 2012-2015 Nick Korbel
-
-This file is part of Booked Scheduler.
-
-Booked Scheduler is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Booked Scheduler is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2012-2015 Nick Korbel
+ *
+ * This file is part of Booked Scheduler.
+ *
+ * Booked Scheduler is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Booked Scheduler is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class ReportCommandBuilder
 {
 	const REPORT_TEMPLATE = 'SELECT [SELECT_TOKEN]
@@ -26,15 +26,15 @@ class ReportCommandBuilder
 				INNER JOIN users owner ON owner.user_id = rs.owner_id
 
 				[JOIN_TOKEN]
-				WHERE rs.status_id <> 2
+				WHERE 1=1
+				[STATUS_TOKEN]
 				[AND_TOKEN]
 				[GROUP_BY_TOKEN]
 				[ORDER_TOKEN]
 				[LIMIT_TOKEN]';
 
-	const RESERVATION_LIST_FRAGMENT = 'rs.date_created as date_created, rs.last_modified as last_modified, rs.repeat_type, rs.description as description,
-	rs.title as title, rs.status_id as status_id,
-		ri.reference_number, ri.start_date, ri.end_date, ri.checkin_date, ri.checkout_date, ri.previous_end_date, TIMESTAMPDIFF(SECOND, ri.start_date, ri.end_date) as duration,
+	const RESERVATION_LIST_FRAGMENT = 'rs.date_created as date_created, rs.last_modified as last_modified, rs.repeat_type,
+		rs.description as description, rs.title as title, rs.status_id as status_id, ri.reference_number, ri.start_date, ri.end_date, TIMESTAMPDIFF(SECOND, ri.start_date, ri.end_date) as duration,
 							(SELECT GROUP_CONCAT(CONCAT(cav.custom_attribute_id,\'=\', cav.attribute_value) SEPARATOR "!sep!")
 								FROM custom_attribute_values cav WHERE cav.entity_id = ri.series_id AND cav.attribute_category = 1) as attribute_list,
 							(SELECT GROUP_CONCAT(CONCAT(participant_users.fname, " ", participant_users.lname) SEPARATOR "!sep!")
@@ -205,6 +205,10 @@ class ReportCommandBuilder
 	 * @var int
 	 */
 	private $limit = 0;
+	/**
+	 * @var bool
+	 */
+	private $includeDeleted = false;
 	/**
 	 * @var array|Parameter[]
 	 */
@@ -389,6 +393,16 @@ class ReportCommandBuilder
 	public function LimitedTo($limit)
 	{
 		$this->limit = $limit;
+		return $this;
+	}
+
+	/**
+	 * @return ReportCommandBuilder
+	 */
+	public function WithDeleted()
+	{
+		$this->includeDeleted = true;
+		return $this;
 	}
 
 	/**
@@ -403,6 +417,7 @@ class ReportCommandBuilder
 		$sql = str_replace('[GROUP_BY_TOKEN]', $this->GetGroupBy(), $sql);
 		$sql = str_replace('[ORDER_TOKEN]', $this->GetOrderBy(), $sql);
 		$sql = str_replace('[LIMIT_TOKEN]', $this->GetLimit(), $sql);
+		$sql = str_replace('[STATUS_TOKEN]', $this->GetStatusFilter(), $sql);
 
 		$query = new AdHocCommand($sql, true);
 		foreach ($this->parameters as $parameter)
@@ -589,7 +604,8 @@ class ReportCommandBuilder
 		{
 			$orderBy->Append(self::ORDER_BY_FRAGMENT);
 		}
-		else {
+		else
+		{
 			if ($this->count)
 			{
 				$orderBy->Append(self::TOTAL_ORDER_BY_FRAGMENT);
@@ -621,6 +637,15 @@ class ReportCommandBuilder
 	{
 		$this->parameters[] = $parameter;
 	}
+
+	private function GetStatusFilter() {
+		if ($this->includeDeleted)
+		{
+			return '';
+		}
+
+		return 'AND rs.status_id <> 2';
+	}
 }
 
 class ReportQueryFragment
@@ -642,5 +667,3 @@ class ReportQueryFragment
 		return $this->sql;
 	}
 }
-
-?>

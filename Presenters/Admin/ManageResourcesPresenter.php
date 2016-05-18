@@ -1,21 +1,21 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Domain/namespace.php');
@@ -27,10 +27,10 @@ class ManageResourcesActions
 {
 	const ActionAdd = 'add';
 	const ActionChangeAdmin = 'changeAdmin';
+	const ActionChangeConfiguration = 'configuration';
 	const ActionChangeDescription = 'description';
 	const ActionChangeImage = 'image';
 	const ActionChangeLocation = 'location';
-	const ActionChangeContact = 'contact';
 	const ActionChangeNotes = 'notes';
 	const ActionChangeSchedule = 'schedule';
 	const ActionRemoveImage = 'removeImage';
@@ -39,20 +39,14 @@ class ManageResourcesActions
 	const ActionChangeStatus = 'changeStatus';
 	const ActionEnableSubscription = 'enableSubscription';
 	const ActionDisableSubscription = 'disableSubscription';
+	const ActionChangeAttributes = 'changeAttributes';
 	const ActionChangeSort = 'changeSort';
 	const ActionChangeResourceType = 'changeResourceType';
 	const ActionBulkUpdate = 'bulkUpdate';
-	const ActionChangeDuration = 'changeDuration';
-	const ActionChangeCapacity = 'changeCapacity';
-	const ActionChangeAccess = 'changeAccess';
-	const ActionChangeAttribute = 'changeAttribute';
 	const ActionAddUserPermission = 'addUserPermission';
 	const ActionRemoveUserPermission = 'removeUserPermission';
 	const ActionAddGroupPermission = 'addGroupPermission';
 	const ActionRemoveGroupPermission = 'removeGroupPermission';
-	const ActionChangeResourceGroups = 'changeResourceGroups';
-	const ActionChangeColor = 'changeColor';
-	const ActionChangeCredits = 'changeCredits';
 }
 
 class ManageResourcesPresenter extends ActionPresenter
@@ -93,13 +87,13 @@ class ManageResourcesPresenter extends ActionPresenter
 	private $userPreferenceRepository;
 
 	public function __construct(
-			IManageResourcesPage $page,
-			IResourceRepository $resourceRepository,
-			IScheduleRepository $scheduleRepository,
-			IImageFactory $imageFactory,
-			IGroupViewRepository $groupRepository,
-			IAttributeService $attributeService,
-			IUserPreferenceRepository $userPreferenceRepository)
+		IManageResourcesPage $page,
+		IResourceRepository $resourceRepository,
+		IScheduleRepository $scheduleRepository,
+		IImageFactory $imageFactory,
+		IGroupViewRepository $groupRepository,
+		IAttributeService $attributeService,
+		IUserPreferenceRepository $userPreferenceRepository)
 	{
 		parent::__construct($page);
 
@@ -113,10 +107,10 @@ class ManageResourcesPresenter extends ActionPresenter
 
 		$this->AddAction(ManageResourcesActions::ActionAdd, 'Add');
 		$this->AddAction(ManageResourcesActions::ActionChangeAdmin, 'ChangeAdmin');
+		$this->AddAction(ManageResourcesActions::ActionChangeConfiguration, 'ChangeConfiguration');
 		$this->AddAction(ManageResourcesActions::ActionChangeDescription, 'ChangeDescription');
 		$this->AddAction(ManageResourcesActions::ActionChangeImage, 'ChangeImage');
 		$this->AddAction(ManageResourcesActions::ActionChangeLocation, 'ChangeLocation');
-		$this->AddAction(ManageResourcesActions::ActionChangeContact, 'ChangeContact');
 		$this->AddAction(ManageResourcesActions::ActionChangeNotes, 'ChangeNotes');
 		$this->AddAction(ManageResourcesActions::ActionChangeSchedule, 'ChangeSchedule');
 		$this->AddAction(ManageResourcesActions::ActionRemoveImage, 'RemoveImage');
@@ -125,20 +119,14 @@ class ManageResourcesPresenter extends ActionPresenter
 		$this->AddAction(ManageResourcesActions::ActionChangeStatus, 'ChangeStatus');
 		$this->AddAction(ManageResourcesActions::ActionEnableSubscription, 'EnableSubscription');
 		$this->AddAction(ManageResourcesActions::ActionDisableSubscription, 'DisableSubscription');
+		$this->AddAction(ManageResourcesActions::ActionChangeAttributes, 'ChangeAttributes');
 		$this->AddAction(ManageResourcesActions::ActionChangeSort, 'ChangeSortOrder');
 		$this->AddAction(ManageResourcesActions::ActionChangeResourceType, 'ChangeResourceType');
 		$this->AddAction(ManageResourcesActions::ActionBulkUpdate, 'BulkUpdate');
-		$this->AddAction(ManageResourcesActions::ActionChangeDuration, 'ChangeDuration');
-		$this->AddAction(ManageResourcesActions::ActionChangeCapacity, 'ChangeCapacity');
-		$this->AddAction(ManageResourcesActions::ActionChangeAccess, 'ChangeAccess');
-		$this->AddAction(ManageResourcesActions::ActionChangeAttribute, 'ChangeAttribute');
 		$this->AddAction(ManageResourcesActions::ActionAddUserPermission, 'AddUserPermission');
 		$this->AddAction(ManageResourcesActions::ActionRemoveUserPermission, 'RemoveUserPermission');
 		$this->AddAction(ManageResourcesActions::ActionAddGroupPermission, 'AddGroupPermission');
 		$this->AddAction(ManageResourcesActions::ActionRemoveGroupPermission, 'RemoveGroupPermission');
-		$this->AddAction(ManageResourcesActions::ActionChangeResourceGroups, 'ChangeResourceGroups');
-		$this->AddAction(ManageResourcesActions::ActionChangeColor, 'ChangeColor');
-		$this->AddAction(ManageResourcesActions::ActionChangeCredits, 'ChangeCredits');
 	}
 
 	public function PageLoad()
@@ -147,8 +135,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
 		$filterValues = $this->page->GetFilterValues();
 
-		$results = $this->resourceRepository->GetList($this->page->GetPageNumber(), $this->page->GetPageSize(), null, null,
-													  $filterValues->AsFilter($resourceAttributes));
+		$results = $this->resourceRepository->GetList($this->page->GetPageNumber(), $this->page->GetPageSize(), null, null, $filterValues->AsFilter($resourceAttributes));
 		$resources = $results->Results();
 		$this->page->BindResources($resources);
 		$this->page->BindPageInfo($results->PageInfo());
@@ -186,12 +173,17 @@ class ManageResourcesPresenter extends ActionPresenter
 		$groups = $this->groupRepository->GetGroupsByRole(RoleLevel::RESOURCE_ADMIN);
 		$this->page->BindAdminGroups($groups);
 
-		$attributeList = $this->attributeService->GetByCategory(CustomAttributeCategory::RESOURCE);
+		$resourceIds = array();
+		foreach ($resources as $resource)
+		{
+			$resourceIds[] = $resource->GetId();
+		}
+
+		$attributeList = $this->attributeService->GetAttributes(CustomAttributeCategory::RESOURCE, $resourceIds);
 		$this->page->BindAttributeList($attributeList);
 
-		$this->InitializeFilter($filterValues, $resourceAttributes);
 
-		$this->page->BindResourceGroups($this->resourceRepository->GetResourceGroups(null, new ResourceFilterNone()));
+		$this->InitializeFilter($filterValues, $resourceAttributes);
 	}
 
 	public function Add()
@@ -201,78 +193,43 @@ class ManageResourcesPresenter extends ActionPresenter
 		$autoAssign = $this->page->GetAutoAssign();
 		$resourceAdminGroupId = $this->page->GetAdminGroupId();
 
-		Log::Debug("Adding new resource with name: %s, scheduleId: %s, autoAssign: %s, resourceAdminGroupId %s", $name, $scheduleId, $autoAssign,
-				   $resourceAdminGroupId);
+		Log::Debug("Adding new resource with name: %s, scheduleId: %s, autoAssign: %s, resourceAdminGroupId %s", $name, $scheduleId, $autoAssign, $resourceAdminGroupId);
 
 		$resource = BookableResource::CreateNew($name, $scheduleId, $autoAssign);
 		$resource->SetAdminGroupId($resourceAdminGroupId);
 		$this->resourceRepository->Add($resource);
 	}
 
-	public function ChangeDuration()
+	public function ChangeConfiguration()
 	{
 		$resourceId = $this->page->GetResourceId();
 		$minDuration = $this->page->GetMinimumDuration();
 		$maxDuration = $this->page->GetMaximumDuration();
-		$bufferTime = $this->page->GetBufferTime();
 		$allowMultiDay = $this->page->GetAllowMultiday();
-
-		$resource = $this->resourceRepository->LoadById($resourceId);
-		$resource->SetMinLength($minDuration);
-		$resource->SetMaxLength($maxDuration);
-		$resource->SetBufferTime($bufferTime);
-		$resource->SetAllowMultiday($allowMultiDay);
-
-		Log::Debug('Updating resource id=%s, minDuration=%s, maxDuration=%s, buffer=%s, allowMultiDay=%s',
-				   $resourceId, $minDuration, $maxDuration, $bufferTime, $allowMultiDay);
-
-		$this->resourceRepository->Update($resource);
-
-		$this->page->BindUpdatedDuration($resource);
-	}
-
-	public function ChangeCapacity()
-	{
-		$resourceId = $this->page->GetResourceId();
-		$maxParticipants = $this->page->GetMaxParticipants();
-
-		$resource = $this->resourceRepository->LoadById($resourceId);
-		$resource->SetMaxParticipants($maxParticipants);
-
-		Log::Debug('Updating resource id=%s, maxParticipants=%s',
-				   $resourceId, $maxParticipants);
-
-		$this->resourceRepository->Update($resource);
-
-		$this->page->BindUpdatedCapacity($resource);
-	}
-
-	public function ChangeAccess()
-	{
-		$resourceId = $this->page->GetResourceId();
 		$requiresApproval = $this->page->GetRequiresApproval();
 		$autoAssign = $this->page->GetAutoAssign();
-		$clearAllPermissions = $this->page->GetAutoAssignClear();
 		$minNotice = $this->page->GetStartNoticeMinutes();
 		$maxNotice = $this->page->GetEndNoticeMinutes();
-		$enableCheckin = $this->page->GetEnableCheckin();
-		$autoReleaseMinutes = $this->page->GetAutoReleaseMinutes();
+		$maxParticipants = $this->page->GetMaxParticipants();
+		$bufferTime = $this->page->GetBufferTime();
+		$clearAllPermissions = $this->page->GetAutoAssignClear();
+
+		Log::Debug('Updating resource id %s', $resourceId);
 
 		$resource = $this->resourceRepository->LoadById($resourceId);
 
+		$resource->SetMinLength($minDuration);
+		$resource->SetMaxLength($maxDuration);
+		$resource->SetAllowMultiday($allowMultiDay);
 		$resource->SetRequiresApproval($requiresApproval);
 		$resource->SetAutoAssign($autoAssign);
 		$resource->SetClearAllPermissions($clearAllPermissions);
 		$resource->SetMinNotice($minNotice);
 		$resource->SetMaxNotice($maxNotice);
-		$resource->SetCheckin($enableCheckin, $autoReleaseMinutes);
-
-		Log::Debug('Updating resource id=%s, requiresApproval=%s, autoAssign=%s, minNotice=%s, maxNotice=%s',
-				   $resourceId, $requiresApproval, $autoAssign, $minNotice, $maxNotice);
+		$resource->SetMaxParticipants($maxParticipants);
+		$resource->SetBufferTime($bufferTime);
 
 		$this->resourceRepository->Update($resource);
-
-		$this->page->BindUpdatedAccess($resource);
 	}
 
 	public function Delete()
@@ -285,7 +242,7 @@ class ManageResourcesPresenter extends ActionPresenter
 	{
 		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
 
-		$resource->SetDescription($this->page->GetValue());
+		$resource->SetDescription($this->page->GetDescription());
 
 		$this->resourceRepository->Update($resource);
 	}
@@ -294,7 +251,7 @@ class ManageResourcesPresenter extends ActionPresenter
 	{
 		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
 
-		$resource->SetNotes($this->page->GetValue());
+		$resource->SetNotes($this->page->GetNotes());
 
 		$this->resourceRepository->Update($resource);
 	}
@@ -303,29 +260,17 @@ class ManageResourcesPresenter extends ActionPresenter
 	{
 		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
 
-		$name = $this->page->GetValue();
-		if (!empty($name))
-		{
-			$resource->SetName($name);
+		$resource->SetName($this->page->GetResourceName());
 
-			$this->resourceRepository->Update($resource);
-		}
+		$this->resourceRepository->Update($resource);
 	}
 
 	public function ChangeLocation()
 	{
 		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
 
-		$resource->SetLocation($this->page->GetValue());
-
-		$this->resourceRepository->Update($resource);
-	}
-
-	public function ChangeContact()
-	{
-		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
-
-		$resource->SetContact($this->page->GetValue());
+		$resource->SetLocation($this->page->GetLocation());
+		$resource->SetContact($this->page->GetContact());
 
 		$this->resourceRepository->Update($resource);
 	}
@@ -335,11 +280,6 @@ class ManageResourcesPresenter extends ActionPresenter
 		Log::Debug("Changing resource image for resource id %s", $this->page->GetResourceId());
 
 		$uploadedImage = $this->page->GetUploadedImage();
-
-		if ($uploadedImage == null)
-		{
-			return;
-		}
 
 		if ($uploadedImage->IsError())
 		{
@@ -367,12 +307,9 @@ class ManageResourcesPresenter extends ActionPresenter
 		{
 			$path = $imageUploadDirectory;
 		}
-		else
+		else if (is_dir(ROOT_DIR . $imageUploadDirectory))
 		{
-			if (is_dir(ROOT_DIR . $imageUploadDirectory))
-			{
-				$path = ROOT_DIR . $imageUploadDirectory;
-			}
+			$path = ROOT_DIR . $imageUploadDirectory ;
 		}
 
 		$path = "$path/$fileName";
@@ -410,16 +347,14 @@ class ManageResourcesPresenter extends ActionPresenter
 
 	public function ChangeSchedule()
 	{
-		$scheduleId = $this->page->GetValue();
-		if (!empty($scheduleId))
-		{
-			$resourceId = $this->page->GetResourceId();
-			Log::Debug('Changing schedule for resource %s', $resourceId);
-			$resource = $this->resourceRepository->LoadById($resourceId);
+		$resourceId = $this->page->GetResourceId();
+		Log::Debug('Changing schedule for resource %s', $resourceId);
 
-			$resource->SetScheduleId($scheduleId);
-			$this->resourceRepository->Update($resource);
-		}
+		$resource = $this->resourceRepository->LoadById($resourceId);
+
+		$scheduleId = $this->page->GetScheduleId();
+		$resource->SetScheduleId($scheduleId);
+		$this->resourceRepository->Update($resource);
 	}
 
 	public function ChangeAdmin()
@@ -428,7 +363,7 @@ class ManageResourcesPresenter extends ActionPresenter
 		Log::Debug('Changing resource admin for resource %s', $resourceId);
 
 		$resource = $this->resourceRepository->LoadById($resourceId);
-		$adminGroupId = $this->page->GetValue();
+		$adminGroupId = $this->page->GetAdminGroupId();
 		$resource->SetAdminGroupId($adminGroupId);
 		$this->resourceRepository->Update($resource);
 	}
@@ -453,35 +388,23 @@ class ManageResourcesPresenter extends ActionPresenter
 		$this->resourceRepository->Update($resource);
 	}
 
-	public function ChangeAttribute()
+	public function ChangeAttributes()
 	{
 		$resourceId = $this->page->GetResourceId();
+		Log::Debug('Changing attributes for resource %s', $resourceId);
 
 		$resource = $this->resourceRepository->LoadById($resourceId);
 
-		$attributeValue = $this->GetInlineAttributeValue();
-		Log::Debug('Changing attributes. ResourceId=%s, AttributeId=%s, Value=%s', $resourceId, $attributeValue->AttributeId, $attributeValue->Value);
+		$attributes = $this->GetAttributeValues();
 
-		$resource->ChangeAttribute($attributeValue);
+		$resource->ChangeAttributes($attributes);
 		$this->resourceRepository->Update($resource);
-	}
-
-	private function GetInlineAttributeValue()
-	{
-		$value = $this->page->GetValue();
-		if (is_array($value))
-		{
-			$value = $value[0];
-		}
-		$id = str_replace(FormKeys::ATTRIBUTE_PREFIX, '', $this->page->GetName());
-
-		return new AttributeValue($id, $value);
 	}
 
 	public function ChangeSortOrder()
 	{
 		$resourceId = $this->page->GetResourceId();
-		$sortOrder = $this->page->GetValue();
+		$sortOrder = $this->page->GetSortOrder();
 		Log::Debug('Changing sort order for resource %s', $resourceId);
 
 		$resource = $this->resourceRepository->LoadById($resourceId);
@@ -491,9 +414,10 @@ class ManageResourcesPresenter extends ActionPresenter
 
 	public function ChangeResourceType()
 	{
-		$resourceTypeId = $this->page->GetValue();
 		$resourceId = $this->page->GetResourceId();
+		$resourceTypeId = $this->page->GetResourceTypeId();
 		Log::Debug('Changing resource type for resource %s', $resourceId);
+
 		$resource = $this->resourceRepository->LoadById($resourceId);
 		$resource->SetResourceTypeId($resourceTypeId);
 		$this->resourceRepository->Update($resource);
@@ -552,7 +476,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
 		$statusId = $this->page->GetStatusId();
 		$reasonId = $this->page->GetStatusReasonId();
-		
+
 		// need to figure out difference between empty and unchanged
 		$minDuration = $this->page->GetMinimumDuration();
 		$minDurationNone = $this->page->GetMinimumDurationNone();
@@ -568,11 +492,12 @@ class ManageResourcesPresenter extends ActionPresenter
 		$requiresApproval = $this->page->GetRequiresApproval();
 		$autoAssign = $this->page->GetAutoAssign();
 		$allowSubscription = $this->page->GetAllowSubscriptions();
+		$attributes = $this->page->GetAttributes();
 
 		$resourceIds = $this->page->GetBulkUpdateResourceIds();
 
 		$emptyDuration = 'dhm';
-				
+		
 		foreach ($resourceIds as $resourceId)
 		{
 			try
@@ -611,21 +536,41 @@ class ManageResourcesPresenter extends ActionPresenter
 				{
 					$resource->ChangeStatus($statusId, $reasonId);
 				}
+				if ($minDurationNone)
+				{
+					$resource->SetMinLength(0);
+				}
 				if (!$minDurationNone && $minDuration != $emptyDuration)
 				{
 					$resource->SetMinLength($minDuration);
+				}
+				if ($maxDurationNone)
+				{
+					$resource->SetMaxLength(0);
 				}
 				if (!$maxDurationNone && $maxDuration != $emptyDuration)
 				{
 					$resource->SetMaxLength($maxDuration);
 				}
+				if ($bufferTimeNone)
+				{
+					$resource->SetBufferTime(0);
+				}
 				if (!$bufferTimeNone && $bufferTime != $emptyDuration)
 				{
 					$resource->SetBufferTime($bufferTime);
 				}
+				if ($minNoticeNone)
+				{
+					$resource->SetMinNotice(0);
+				}
 				if (!$minNoticeNone && $minNotice != $emptyDuration)
 				{
 					$resource->SetMinNotice($minNotice);
+				}
+				if ($maxNoticeNone)
+				{
+					$resource->SetMaxNotice(0);
 				}
 				if (!$maxNoticeNone && $maxNotice != $emptyDuration)
 				{
@@ -658,11 +603,15 @@ class ManageResourcesPresenter extends ActionPresenter
 				/** @var AttributeValue $attribute */
 				foreach ($this->GetAttributeValues() as $attribute)
 				{
-					$resource->ChangeAttribute($attribute);
+					if (!empty($attribute->Value))
+					{
+						$resource->ChangeAttribute($attribute);
+					}
 				}
 
 				$this->resourceRepository->Update($resource);
-			} catch (Exception $ex)
+			}
+			catch(Exception $ex)
 			{
 				Log::Error('Error bulk updating resource. Id=%s. Error=%s', $resourceId, $ex);
 			}
@@ -701,71 +650,17 @@ class ManageResourcesPresenter extends ActionPresenter
 		$this->resourceRepository->RemoveResourceGroupPermission($resourceId, $groupId);
 	}
 
-	public function ChangeResourceGroups()
-	{
-		$resourceId = $this->page->GetResourceId();
-		$resourceGroups = $this->page->GetResourceGroupIds();
-
-		$resource = $this->resourceRepository->LoadById($resourceId);
-		$currentGroupIds = $resource->GetResourceGroupIds();
-
-		$diff = new ArrayDiff($currentGroupIds, $resourceGroups);
-
-		foreach ($diff->GetRemovedFromArray1() as $i => $groupId)
-		{
-			$this->resourceRepository->RemoveResourceFromGroup($resourceId, $groupId);
-		}
-
-		foreach ($diff->GetAddedToArray1() as $i => $groupId)
-		{
-			$this->resourceRepository->AddResourceToGroup($resourceId, $groupId);
-		}
-
-		$resource->SetResourceGroupIds($resourceGroups);
-
-		$groups = $this->resourceRepository->GetResourceGroups();
-		$this->page->BindUpdatedResourceGroups($resource, $groups->GetGroupList(false));
-	}
-
-	public function ChangeColor()
-	{
-		$color = $this->page->GetColor();
-		$resource = $this->resourceRepository->LoadById($this->page->GetResourceId());
-
-		$resource->SetColor($color);
-
-		$this->resourceRepository->Update($resource);
-	}
-
-	public function ChangeCredits()
-	{
-		$resourceId = $this->page->GetResourceId();
-		$credits = $this->page->GetCredits();
-		$peakCredits = $this->page->GetPeakCredits();
-
-		$resource = $this->resourceRepository->LoadById($resourceId);
-		$resource->SetCreditsPerSlot($credits);
-		$resource->SetPeakCreditsPerSlot($peakCredits);
-
-		$this->resourceRepository->Update($resource);
-
-		$this->page->BindUpdatedResourceCredits($resource);
-	}
-
 	protected function LoadValidators($action)
 	{
-		if ($action == ManageResourcesActions::ActionChangeAttribute)
+		if ($action == ManageResourcesActions::ActionChangeAttributes)
 		{
-			$attributes = $this->GetInlineAttributeValue();
-			$this->page->RegisterValidator('attributeValidator', new AttributeValidatorInline($this->attributeService,
-																						CustomAttributeCategory::RESOURCE, $attributes,
-																						$this->page->GetResourceId(), true, true));
+			$attributes = $this->GetAttributeValues();
+			$this->page->RegisterValidator('attributeValidator', new AttributeValidator($this->attributeService, CustomAttributeCategory::RESOURCE, $attributes, $this->page->GetResourceId()));
 		}
 		if ($action == ManageResourcesActions::ActionBulkUpdate)
 		{
 			$attributes = $this->GetAttributeValues();
-			$this->page->RegisterValidator('bulkAttributeValidator',
-										   new AttributeValidator($this->attributeService, CustomAttributeCategory::RESOURCE, $attributes, null, true, true));
+			$this->page->RegisterValidator('bulkAttributeValidator', new AttributeValidator($this->attributeService, CustomAttributeCategory::RESOURCE, $attributes, null, true));
 		}
 	}
 
@@ -777,8 +672,8 @@ class ManageResourcesPresenter extends ActionPresenter
 		}
 		else if ($dataRequest == 'users')
 		{
-			$users = $this->resourceRepository->GetUsersWithPermission($this->page->GetResourceId());
-			$response = new UserResults($users->Results(), $users->PageInfo()->Total);
+			$groups = $this->resourceRepository->GetUsersWithPermission($this->page->GetResourceId());
+			$response = new UserResults($groups->Results(), $groups->PageInfo()->Total);
 			$this->page->SetJsonResponse($response);
 		}
 		else if ($dataRequest == 'groups')
@@ -864,17 +759,4 @@ class GroupResults
 	 * @var GroupItemView[]
 	 */
 	public $Groups;
-}
-
-class ResourceFilterNone implements IResourceFilter
-{
-
-	/**
-	 * @param IResource $resource
-	 * @return bool
-	 */
-	function ShouldInclude($resource)
-	{
-		return false;
-	}
 }

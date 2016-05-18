@@ -211,12 +211,24 @@ class ReservationSlot implements IReservationSlot
 
 	public function Color()
 	{
-		return $this->_reservation->GetColor();
+		$color = $this->_reservation->UserPreferences->Get(UserPreferences::RESERVATION_COLOR);
+		if (!empty($color))
+		{
+			return "#$color";
+		}
+
+		return null;
 	}
 
 	public function TextColor()
 	{
-		return $this->_reservation->GetTextColor();
+		$color = $this->Color();
+		if (!empty($color))
+		{
+			return new ContrastingColor($color);
+		}
+
+		return null;
 	}
 
 	/**
@@ -225,10 +237,5 @@ class ReservationSlot implements IReservationSlot
 	public function Reservation()
 	{
 		return $this->_reservation;
-	}
-
-	public function CollidesWith(Date $date)
-	{
-		return $this->_reservation->CollidesWith($date);
 	}
 }

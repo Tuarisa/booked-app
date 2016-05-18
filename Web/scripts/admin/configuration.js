@@ -19,7 +19,7 @@ function Configuration() {
 
 		elements.form.bind('onValidationFailed', onValidationFailed);
 
-		ConfigureAsyncForm(elements.form, defaultSubmitCallback, successHandler, null, {onBeforeSubmit: onBeforeAddSubmit});
+		ConfigureAdminForm(elements.form, defaultSubmitCallback, successHandler, null, {onBeforeSubmit: onBeforeAddSubmit});
 	};
 
 	var defaultSubmitCallback = function (form) {
@@ -40,14 +40,17 @@ function Configuration() {
 	function onBeforeAddSubmit(formData, jqForm, opts)
 	{
 		$('#updatedMessage').hide();
-		$.blockUI({message: $('#wait-box')});
+
+		$.colorbox({inline:true, href:"#modalDiv", transition:"none", width:"75%", height:"75%", overlayClose: false});
+		$('#modalDiv').show();
 
 		return true;
 	}
 
 	function hideModal()
 	{
-		$.unblockUI();
+		$('#modalDiv').hide();
+		$.colorbox.close();
 
 		var top = $("#updatedMessage").scrollTop();
 		$('html, body').animate({scrollTop:top}, 'slow');

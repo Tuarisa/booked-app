@@ -130,7 +130,7 @@ class DailyLayout implements IDailyLayout
 
 	public function IsDateReservable(Date $date)
 	{
-		 return $date->DateCompare(Date::Now()) >= 0;
+		return $date->DateCompare(Date::Now()) >= 0;
 	}
 
 	public function GetLabels(Date $displayDate)
@@ -247,3 +247,5 @@ class SpanablePeriod extends SchedulePeriod
 		return $this->period->IsReservable();
 	}
 }
+
+?>

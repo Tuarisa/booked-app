@@ -1,21 +1,21 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Pages/SecurePage.php');
@@ -138,16 +138,6 @@ interface IReservationSavePage extends IReservationSaveResultsView, IRepeatOptio
 	 * @return bool
 	 */
 	public function GetAllowParticipation();
-
-	/**
-	 * @return string[]
-	 */
-	public function GetParticipatingGuests();
-
-	/**
-	 * @return string[]
-	 */
-	public function GetInvitedGuests();
 }
 
 class ReservationSavePage extends SecurePage implements IReservationSavePage
@@ -394,28 +384,6 @@ class ReservationSavePage extends SecurePage implements IReservationSavePage
 		return array();
 	}
 
-	public function GetInvitedGuests()
-	{
-		$invitees = $this->GetForm(FormKeys::GUEST_INVITATION_LIST);
-		if (is_array($invitees))
-		{
-			return $invitees;
-		}
-
-		return array();
-	}
-
-	public function GetParticipatingGuests()
-	{
-		$participants = $this->GetForm(FormKeys::GUEST_PARTICIPATION_LIST);
-		if (is_array($participants))
-		{
-			return $participants;
-		}
-
-		return array();
-	}
-
 	/**
 	 * @return AccessoryFormElement[]
 	 */
@@ -520,38 +488,6 @@ class ReservationSavePage extends SecurePage implements IReservationSavePage
 	{
 		$val = $this->server->GetForm(FormKeys::ALLOW_PARTICIPATION);
 		return !empty($val);
-	}
-
-	/**
-	 * @param bool $canBeRetried
-	 */
-	public function SetCanBeRetried($canBeRetried)
-	{
-		$this->Set('CanBeRetried', $canBeRetried);
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		$this->Set('RetryParameters', $retryParameters);
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		return ReservationRetryParameter::GetParamsFromForm($this->GetForm(FormKeys::RESERVATION_RETRY_PREFIX));
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		$this->Set('RetryMessages', $messages);
 	}
 }
 

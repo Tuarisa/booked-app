@@ -47,12 +47,12 @@ class iCalendarReservationView
 		}
 		$factory = new SlotLabelFactory($currentUser);
 		$this->ReservationItemView = $res;
-		$canViewUser = $privacyFilter->CanViewUser($currentUser, $res, $res->OwnerId);
-		$canViewDetails = $privacyFilter->CanViewDetails($currentUser, $res, $res->OwnerId);
+		$canViewUser = $privacyFilter->CanViewUser($currentUser, $res, $res->UserId);
+		$canViewDetails = $privacyFilter->CanViewDetails($currentUser, $res, $res->UserId);
 
 		$privateNotice = 'Private';
 
-		$this->DateCreated = $res->DateCreated;
+		$this->DateCreated = $res->CreatedDate;
 		$this->DateEnd = $res->EndDate;
 		$this->DateStart = $res->StartDate;
 		$this->Description = $canViewDetails ? $res->Description : $privateNotice;
@@ -69,7 +69,7 @@ class iCalendarReservationView
 		$this->StartReminder = $res->StartReminder;
 		$this->EndReminder = $res->EndReminder;
 
-		if ($res->OwnerId == $currentUser->UserId)
+		if ($res->UserId == $currentUser->UserId)
 		{
 			$this->OrganizerEmail = str_replace('@', '-noreply@', $res->OwnerEmailAddress);
 		}

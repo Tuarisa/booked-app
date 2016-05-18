@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS booked;
+DROP DATABASE IF EXISTS phpscheduleit2;
 
-CREATE DATABASE booked;
+CREATE DATABASE phpscheduleit2;
 
-USE booked;
+USE phpscheduleit2;

@@ -17,7 +17,7 @@
  along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function ReportsCommon(opts) {
+function ReportsCommon() {
 	return {
 		init: function () {
 
@@ -40,7 +40,7 @@ function ReportsCommon(opts) {
 				var th = reportResults.find('th[data-columnTitle="' + title + '"]');
 				var allCells = th.closest('tr').children();
 				var normalIndex = allCells.index(th) + 1;
-				var colSelector = 'td:nth-child(' + normalIndex + ')';
+var colSelector = 'td:nth-child(' + normalIndex + ')';
 				var col = reportResults.find(colSelector );
 
 				if (show)
@@ -57,11 +57,7 @@ function ReportsCommon(opts) {
 
 			function initColumns(savedColumns){
 				$.each(getAllColumnTitles(), function(i, title){
-					if (savedColumns.length < 1)
-					{
-						showColumn(title, false);
-					}
-					else if ($.inArray(title, savedColumns) == -1) {
+					if ($.inArray(title, savedColumns) == -1 && savedColumns.length > 0) {
 						showColumn(title, false);
 					}
 				});
@@ -78,7 +74,7 @@ function ReportsCommon(opts) {
 				var separator = '!s!';
 				var cookie = readCookie(cookieName);
 				var savedCols = cookie ? cookie.split(separator) : [];
-				//initColumns(savedCols);
+				initColumns(savedCols);
 
 				var items = [];
 				var allColumns = getAllColumnTitles();

@@ -24,3 +24,4 @@ require_once(ROOT_DIR . 'Pages/Ajax/ReservationApprovalPage.php');
 
 $page = new ReservationApprovalPage();
 $page->PageLoad();
+?>

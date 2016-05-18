@@ -42,6 +42,8 @@ interface IReservationViewRepository
 	 * @param int|ReservationUserLevel|null $userLevel
 	 * @param int|null $scheduleId
 	 * @param int|null $resourceId
+	 * @param boolean $includeDeleted
+	 * @param Date $modifiedSinceDate
 	 * @return ReservationItemView[]
 	 */
 	public function GetReservationList(
@@ -50,7 +52,9 @@ interface IReservationViewRepository
 			$userId = ReservationViewRepository::ALL_USERS,
 			$userLevel = ReservationUserLevel::OWNER,
 			$scheduleId = ReservationViewRepository::ALL_SCHEDULES,
-			$resourceId = ReservationViewRepository::ALL_RESOURCES);
+			$resourceId = ReservationViewRepository::ALL_RESOURCES,
+			$includeDeleted = false,
+			$modifiedSinceDate = null);
 
 	/**
 	 * @abstract
@@ -145,9 +149,6 @@ class ReservationViewRepository implements IReservationViewRepository
 			$reservationView->RepeatMonthlyType = $repeatConfig->MonthlyType;
 			$reservationView->RepeatTerminationDate = $repeatConfig->TerminationDate;
 			$reservationView->AllowParticipation = $row[ColumnNames::RESERVATION_ALLOW_PARTICIPATION];
-			$reservationView->CheckinDate = Date::FromDatabase($row[ColumnNames::CHECKIN_DATE]);
-			$reservationView->CheckoutDate = Date::FromDatabase($row[ColumnNames::CHECKOUT_DATE]);
-			$reservationView->PreviousEndDate = Date::FromDatabase($row[ColumnNames::PREVIOUS_END_DATE]);
 
 			$this->SetResources($reservationView);
 			$this->SetParticipants($reservationView);
@@ -155,7 +156,6 @@ class ReservationViewRepository implements IReservationViewRepository
 			$this->SetAttributes($reservationView);
 			$this->SetAttachments($reservationView);
 			$this->SetReminders($reservationView);
-			$this->SetGuests($reservationView);
 		}
 
 		return $reservationView;
@@ -167,7 +167,9 @@ class ReservationViewRepository implements IReservationViewRepository
 			$userId = self::ALL_USERS,
 			$userLevel = ReservationUserLevel::OWNER,
 			$scheduleId = self::ALL_SCHEDULES,
-			$resourceId = self::ALL_RESOURCES)
+			$resourceId = self::ALL_RESOURCES,
+			$includeDeleted = false,
+			$modifiedSinceDate = null)
 	{
 		if (empty($userId))
 		{
@@ -185,22 +187,21 @@ class ReservationViewRepository implements IReservationViewRepository
 		{
 			$resourceId = self::ALL_RESOURCES;
 		}
+		if (empty($modifiedSinceDate))
+		{
+			$modifiedSinceDate = Date::Min();
+		}
 
 		$getReservations = new GetReservationListCommand($startDate, $endDate, $userId, $userLevel, $scheduleId,
-														 $resourceId);
+														 $resourceId, $includeDeleted, $modifiedSinceDate);
 
 		$result = ServiceLocator::GetDatabase()->Query($getReservations);
 
 		$reservations = array();
 
-		$reservationRepository = new ReservationRepository();
-		$rules = $reservationRepository->GetReservationColorRules();
-
 		while ($row = $result->GetRow())
 		{
-			$reservation = ReservationItemView::Populate($row);
-			$reservation->WithColorRules($rules);
-			$reservations[] = $reservation;
+			$reservations[] = ReservationItemView::Populate($row);
 		}
 
 		$result->Free();
@@ -257,9 +258,7 @@ class ReservationViewRepository implements IReservationViewRepository
 					$row[ColumnNames::RESOURCE_ADMIN_GROUP_ID],
 					$row[ColumnNames::SCHEDULE_ID],
 					$row[ColumnNames::SCHEDULE_ADMIN_GROUP_ID_ALIAS],
-					$row[ColumnNames::RESOURCE_STATUS_ID],
-					$row[ColumnNames::ENABLE_CHECK_IN],
-					$row[ColumnNames::AUTO_RELEASE_MINUTES]
+					$row[ColumnNames::RESOURCE_STATUS_ID]
 			);
 		}
 	}
@@ -353,29 +352,6 @@ class ReservationViewRepository implements IReservationViewRepository
 		}
 	}
 
-	private function SetGuests(ReservationView $reservationView)
-	{
-		$getGuests = new GetReservationGuestsCommand($reservationView->ReservationId);
-
-		$result = ServiceLocator::GetDatabase()->Query($getGuests);
-
-		while ($row = $result->GetRow())
-		{
-			$levelId = $row[ColumnNames::RESERVATION_USER_LEVEL];
-			$email = $row[ColumnNames::EMAIL];
-
-			if ($levelId == ReservationUserLevel::PARTICIPANT)
-			{
-				$reservationView->ParticipatingGuests[] = $email;
-			}
-
-			if ($levelId == ReservationUserLevel::INVITEE)
-			{
-				$reservationView->InvitedGuests[] = $email;
-			}
-		}
-	}
-
 	public function GetAccessoriesWithin(DateRange $dateRange)
 	{
 		$getAccessoriesCommand = new GetAccessoryListCommand($dateRange->GetBegin(), $dateRange->GetEnd());
@@ -437,11 +413,9 @@ class ReservationResourceView implements IResource
 	private $_scheduleId;
 	private $_scheduleAdminGroupId;
 	private $_statusId;
-	private $_checkinEnabled;
-	private $_autoReleaseMinutes;
 
 	public function __construct($resourceId, $resourceName, $adminGroupId, $scheduleId, $scheduleAdminGroupId,
-								$statusId = ResourceStatus::AVAILABLE, $enableCheckin, $autoReleaseMinutes)
+								$statusId = ResourceStatus::AVAILABLE)
 	{
 		$this->_id = $resourceId;
 		$this->_resourceName = $resourceName;
@@ -449,8 +423,6 @@ class ReservationResourceView implements IResource
 		$this->_scheduleId = $scheduleId;
 		$this->_scheduleAdminGroupId = $scheduleAdminGroupId;
 		$this->_statusId = $statusId;
-		$this->_checkinEnabled = $enableCheckin;
-		$this->_autoReleaseMinutes = $autoReleaseMinutes;
 	}
 
 	/**
@@ -525,30 +497,6 @@ class ReservationResourceView implements IResource
 	{
 		return $this->_statusId;
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsCheckInEnabled()
-	{
-		return $this->_checkinEnabled;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsAutoReleased()
-	{
-		return !is_null($this->_autoReleaseMinutes);
-	}
-
-	/**
-	 * @return int|null
-	 */
-	public function GetAutoReleaseMinutes()
-	{
-		return $this->_autoReleaseMinutes;
-	}
 }
 
 class ReservationUserView
@@ -587,6 +535,10 @@ class NullReservationView extends ReservationView
 	 * @var NullReservationView
 	 */
 	private static $instance;
+
+	private function __construct()
+	{
+	}
 
 	public static function Instance()
 	{
@@ -666,18 +618,6 @@ class ReservationView
 	 * @var Date
 	 */
 	public $DateModified;
-	/**
-	 * @var Date
-	 */
-	public $CheckinDate;
-	/**
-	 * @var Date
-	 */
-	public $CheckoutDate;
-	/**
-	 * @var Date
-	 */
-	public $PreviousEndDate;
 	public $OwnerId;
 	public $OwnerEmailAddress;
 	public $OwnerFirstName;
@@ -750,26 +690,9 @@ class ReservationView
 	public $EndReminder;
 
 	/**
-	 * @var string[]
-	 */
-	public $ParticipatingGuests = array();
-
-	/**
-	 * @var string[]
-	 */
-	public $InvitedGuests = array();
-
-	/**
 	 * @var bool
 	 */
 	public $AllowParticipation = false;
-
-	public function __construct()
-	{
-		$this->CheckinDate = new NullDate();
-		$this->CheckoutDate = new NullDate();
-		$this->PreviousEndDate = new NullDate();
-	}
 
 	/**
 	 * @param AttributeValue $attribute
@@ -953,12 +876,6 @@ class ReservationItemView implements IReservedItemView
 	public $CreatedDate;
 
 	/**
-	 * alias of $CreatedDate
-	 * @var null|Date
-	 */
-	public $DateCreated;
-
-	/**
 	 * @var null|Date
 	 */
 	public $ModifiedDate;
@@ -1000,11 +917,6 @@ class ReservationItemView implements IReservedItemView
 	public $RepeatTerminationDate;
 
 	/**
-	 * @var int
-	 */
-	public $OwnerId;
-
-	/**
 	 * @var string
 	 */
 	public $OwnerEmailAddress;
@@ -1031,7 +943,8 @@ class ReservationItemView implements IReservedItemView
 	 */
 	public $ParticipantIds = array();
 
-	/** @var array|string[]
+	/**
+	 * @var array|string[]
 	 */
 	public $ParticipantNames = array();
 
@@ -1076,46 +989,16 @@ class ReservationItemView implements IReservedItemView
 	public $EndReminder;
 
 	/**
-	 * @var string|null
-	 */
-	public $ResourceColor;
-
-	/**
-	 * @var int|null
-	 */
-	public $ResourceId;
-
-	/**
-	 * @var null|string
-	 */
-	public $OwnerFirstName;
-
-	/**
-	 * @var null|string
-	 */
-	public $OwnerLastName;
-
-	/**
-	 * @var Date
-	 */
-	public $CheckinDate;
-
-	/**
-	 * @var Date
-	 */
-	public $CheckoutDate;
-
-	/**
-	 * @var Date
-	 */
-	public $OriginalEndDate;
-
-	/**
 	 * @var int|null
 	 */
 	private $bufferSeconds = 0;
 
 	private $ownerGroupIds = array();
+
+	/**
+	 * @var int
+	 */
+	public $StatusId;
 
 	/**
 	 * @param $referenceNumber string
@@ -1159,7 +1042,8 @@ class ReservationItemView implements IReservedItemView
 			$participant_list = null,
 			$invitee_list = null,
 			$attribute_list = null,
-			$preferences = null
+			$preferences = null,
+			$statusId = null
 	)
 	{
 		$this->ReferenceNumber = $referenceNumber;
@@ -1179,8 +1063,8 @@ class ReservationItemView implements IReservedItemView
 		$this->OwnerOrganization = $userOrganization;
 		$this->OwnerPosition = $userPosition;
 		$this->UserId = $userId;
-		$this->OwnerId = $userId;
 		$this->UserLevelId = $userLevelId;
+		$this->StatusId = $statusId;
 
 		if (!empty($startDate) && !empty($endDate))
 		{
@@ -1250,7 +1134,8 @@ class ReservationItemView implements IReservedItemView
 				$row[ColumnNames::PARTICIPANT_LIST],
 				$row[ColumnNames::INVITEE_LIST],
 				$row[ColumnNames::ATTRIBUTE_LIST],
-				$row[ColumnNames::USER_PREFERENCES]
+				$row[ColumnNames::USER_PREFERENCES],
+				$row[ColumnNames::RESERVATION_STATUS]
 		);
 
 		if (isset($row[ColumnNames::RESERVATION_CREATED]))
@@ -1321,21 +1206,10 @@ class ReservationItemView implements IReservedItemView
 		{
 			$view->EndReminder = new ReservationReminderView($row[ColumnNames::END_REMINDER_MINUTES_PRIOR]);
 		}
-		if (isset($row[ColumnNames::RESERVATION_COLOR]))
-		{
-			$view->ResourceColor = $row[ColumnNames::RESERVATION_COLOR];
-		}
-		$view->CheckinDate = Date::FromDatabase($row[ColumnNames::CHECKIN_DATE]);
-		$view->CheckoutDate = Date::FromDatabase($row[ColumnNames::CHECKOUT_DATE]);
-		$view->OriginalEndDate = Date::FromDatabase($row[ColumnNames::PREVIOUS_END_DATE]);
 
 		return $view;
 	}
 
-	/**
-	 * @param ReservationView $r
-	 * @return ReservationItemView
-	 */
 	public static function FromReservationView(ReservationView $r)
 	{
 
@@ -1506,15 +1380,6 @@ class ReservationItemView implements IReservedItemView
 	}
 
 	/**
-	 * @param int $attributeId
-	 * @return null|string
-	 */
-	public function GetAttributeValue($attributeId)
-	{
-		return $this->Attributes->Get($attributeId);
-	}
-
-	/**
 	 * @return TimeInterval
 	 */
 	public function GetBufferTime()
@@ -1539,98 +1404,12 @@ class ReservationItemView implements IReservedItemView
 	}
 
 	/**
-	 * @param Date $date
-	 * @return bool
-	 */
-	public function CollidesWith(Date $date)
-	{
-		if ($this->HasBufferTime())
-		{
-			$range = new DateRange($this->StartDate->SubtractInterval($this->BufferTime),
-								   $this->EndDate->AddInterval($this->BufferTime));
-		}
-		else
-		{
-			$range = new DateRange($this->StartDate, $this->EndDate);
-		}
-
-		return $range->Contains($date, false);
-	}
-
-	/**
-	 * @var null|string
-	 */
-	private $_color = null;
-
-	/**
-	 * @var ReservationColorRule[]
-	 */
-	private $_colorRules = array();
-
-	/**
-	 * @param ReservationColorRule[] $colorRules
-	 */
-	public function WithColorRules($colorRules = array())
-	{
-		$this->_colorRules = $colorRules;
-	}
-
-	/**
+	 * @param int $attributeId
 	 * @return null|string
 	 */
-	public function GetColor()
+	public function GetAttributeValue($attributeId)
 	{
-		if ($this->_color == null)
-		{
-			// cache the color after the first call to prevent multiple iterations of this logic
-			$this->_color = $this->UserPreferences->Get(UserPreferences::RESERVATION_COLOR);
-			$resourceColor = $color = $this->ResourceColor;
-
-			if (!empty($this->_color))
-			{
-				$this->_color = "#{$this->_color}";
-			}
-			elseif (!empty($resourceColor))
-			{
-				$this->_color = "$resourceColor";
-			}
-			else
-			{
-				if (count($this->_colorRules) > 0)
-				{
-					foreach ($this->_colorRules as $rule)
-					{
-						if ($rule->IsSatisfiedBy($this))
-						{
-							$this->_color = "#{$rule->Color}";
-							break;
-						}
-					}
-				}
-				else
-				{
-					$this->_color = "";
-				}
-			}
-		}
-
-		if (!empty($this->_color) && !BookedStringHelper::StartsWith($this->_color, '#'))
-		{
-			$this->_color = "#$this->_color";
-		}
-
-		return $this->_color;
-	}
-
-	public function GetTextColor()
-	{
-		$color = $this->GetColor();
-		if (!empty($color))
-		{
-			return new ContrastingColor($color);
-		}
-
-		return null;
+		return $this->Attributes->Get($attributeId);
 	}
 }
 
@@ -1856,11 +1635,6 @@ class BlackoutItemView implements IReservedItemView
 	public function BufferedTimes()
 	{
 		return new DateRange($this->GetStartDate(), $this->GetEndDate());
-	}
-
-	public function CollidesWith(Date $date)
-	{
-		return $this->BufferedTimes()->Contains($date, false);
 	}
 }
 

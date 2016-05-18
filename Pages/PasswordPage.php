@@ -54,7 +54,7 @@ class PasswordPage extends SecurePage implements IPasswordPage
 	public function PageLoad()
 	{
 		$this->presenter->PageLoad();
-		$this->Display('MyAccount/password.tpl');
+		$this->Display('password.tpl');
 	}
 
 	public function GetCurrentPassword()
@@ -79,13 +79,16 @@ class PasswordPage extends SecurePage implements IPasswordPage
 		return !empty($x);
 	}
 
-	public function SetAllowedActions($authenticationOptions)
-	{
-		$this->Set('AllowPasswordChange', $authenticationOptions->AllowPasswordChange());
-	}
-
 	public function ShowResetPasswordSuccess($resetPasswordSuccess)
 	{
 		$this->Set('ResetPasswordSuccess', $resetPasswordSuccess);
+	}
+
+	/**
+	 * @param IAuthenticationActionOptions $authenticationOptions
+	 */
+	public function SetAllowedActions($authenticationOptions)
+	{
+		$this->Set('AllowPasswordChange', $authenticationOptions->AllowPasswordChange());
 	}
 }

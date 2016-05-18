@@ -115,10 +115,4 @@ interface IReservationSlot
 	 * @return string
 	 */
 	public function TextColor();
-
-	/**
-	 * @param Date $date
-	 * @return bool
-	 */
-	public function CollidesWith(Date $date);
 }

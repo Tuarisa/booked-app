@@ -45,3 +45,4 @@ class ErrorPage extends Page
 		$this->Display('error.tpl');
 	}
 }
+?>

@@ -27,7 +27,7 @@ jQuery.fn.bindAjaxSubmit = function (updateButton, successElement, modalDiv)
 	{
 		successElement.hide();
 
-		$.blockUI({ message: $('#' +  modalDiv.attr('id'))});
+		$.colorbox({inline:true, href:"#" + modalDiv.attr('id'), transition:"none", width:"75%", height:"75%", overlayClose:false});
 		modalDiv.show();
 
 		return true;
@@ -36,12 +36,12 @@ jQuery.fn.bindAjaxSubmit = function (updateButton, successElement, modalDiv)
 	function hideModal()
 	{
 		modalDiv.hide();
-		$.unblockUI();
+		$.colorbox.close();
 
 		var top = self.scrollTop();
 		$('html, body').animate({scrollTop:top}, 'slow');
 	}
 
 	self.bind('onValidationFailed', onValidationFailed);
-	ConfigureAsyncForm(self, defaultSubmitCallback, successHandler, null, {onBeforeSubmit:onBeforeAddSubmit});
+	ConfigureAdminForm(self, defaultSubmitCallback, successHandler, null, {onBeforeSubmit:onBeforeAddSubmit});
 };

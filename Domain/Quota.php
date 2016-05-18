@@ -18,7 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 interface IQuota
 {
 	/**
@@ -29,11 +28,6 @@ interface IQuota
 	 * @return bool
 	 */
 	public function ExceedsQuota($reservationSeries, $user, $schedule, IReservationViewRepository $reservationViewRepository);
-
-	/**
-	 * @return int
-	 */
-	public function Id();
 
 	public function ToString();
 }
@@ -71,39 +65,14 @@ class Quota implements IQuota
 	private $scheduleId;
 
 	/**
-	 * @var null|Time
-	 */
-	private $enforcedStartTime;
-
-	/**
-	 * @var null|Time
-	 */
-	private $enforcedEndTime;
-
-	/**
-	 * @var array|int[]|string[]
-	 */
-	private $enforcedDays = array();
-
-	/**
-	 * @var IQuotaScope
-	 */
-	private $scope;
-
-	/**
 	 * @param int $quotaId
 	 * @param IQuotaDuration $duration
 	 * @param IQuotaLimit $limit
 	 * @param int $resourceId
 	 * @param int $groupId
 	 * @param int $scheduleId
-	 * @param string $enforcedStartTime
-	 * @param string null $enforcedEndTime
-	 * @param array $enforcedDays
-	 * @param IQuotaScope $scope
 	 */
-	public function __construct($quotaId, $duration, $limit, $resourceId = null, $groupId = null, $scheduleId = null, $enforcedStartTime = null,
-								$enforcedEndTime = null, $enforcedDays = array(), $scope = null)
+	public function __construct($quotaId, $duration, $limit, $resourceId = null, $groupId = null, $scheduleId = null)
 	{
 		$this->quotaId = $quotaId;
 		$this->duration = $duration;
@@ -111,10 +80,6 @@ class Quota implements IQuota
 		$this->resourceId = empty($resourceId) ? null : $resourceId;
 		$this->groupId = empty($groupId) ? null : $groupId;
 		$this->scheduleId = empty($scheduleId) ? null : $scheduleId;
-		$this->enforcedStartTime = empty($enforcedStartTime) ? null : Time::Parse($enforcedStartTime);
-		$this->enforcedEndTime = empty($enforcedEndTime) ? null : Time::Parse($enforcedEndTime);
-		$this->enforcedDays = empty($enforcedDays) ? array() : $enforcedDays;
-		$this->scope = empty($scope) ? new QuotaScopeIncluded() : $scope;
 	}
 
 	/**
@@ -125,16 +90,11 @@ class Quota implements IQuota
 	 * @param int $resourceId
 	 * @param int $groupId
 	 * @param int $scheduleId
-	 * @param string $enforcedStartTime
-	 * @param string $enforcedEndTime
-	 * @param array|int[]|string[] $enforcedDays
-	 * @param string $scope
 	 * @return Quota
 	 */
-	public static function Create($duration, $limit, $unit, $resourceId, $groupId, $scheduleId, $enforcedStartTime, $enforcedEndTime, $enforcedDays, $scope)
+	public static function Create($duration, $limit, $unit, $resourceId, $groupId, $scheduleId)
 	{
-		return new Quota(0, self::CreateDuration($duration), self::CreateLimit($limit, $unit), $resourceId, $groupId, $scheduleId, $enforcedStartTime,
-						 $enforcedEndTime, $enforcedDays, self::CreateScope($scope));
+		return new Quota(0, self::CreateDuration($duration), self::CreateLimit($limit, $unit), $resourceId, $groupId, $scheduleId);
 	}
 
 	/**
@@ -175,20 +135,6 @@ class Quota implements IQuota
 			return new QuotaDurationMonth();
 		}
 		return new QuotaDurationYear();
-	}
-
-	/**
-	 * @param string|QuotaScope $scope
-	 * @return IQuotaScope
-	 */
-	public static function CreateScope($scope)
-	{
-		if ($scope == QuotaScope::ExcludeCompleted)
-		{
-			return new QuotaScopeExcluded();
-		}
-
-		return new QuotaScopeIncluded();
 	}
 
 	/**
@@ -248,8 +194,7 @@ class Quota implements IQuota
 		}
 
 		$dates = $this->duration->GetSearchDates($reservationSeries, $timezone);
-		$reservationsWithinRange = $reservationViewRepository->GetReservationList($this->GetScope()->GetSearchStartDate($dates->Start()), $dates->End(),
-																				  $reservationSeries->UserId(),
+		$reservationsWithinRange = $reservationViewRepository->GetReservationList($dates->Start(), $dates->End(), $reservationSeries->UserId(),
 																				  ReservationUserLevel::OWNER);
 
 		try
@@ -291,14 +236,6 @@ class Quota implements IQuota
 	}
 
 	/**
-	 * @return IQuotaScope
-	 */
-	public function GetScope()
-	{
-		return $this->scope;
-	}
-
-	/**
 	 * @param int $resourceId
 	 * @return bool
 	 */
@@ -326,14 +263,6 @@ class Quota implements IQuota
 	}
 
 	/**
-	 * @return int
-	 */
-	public function Id()
-	{
-		return $this->quotaId;
-	}
-
-	/**
 	 * @return int|null
 	 */
 	public function ResourceId()
@@ -355,55 +284,6 @@ class Quota implements IQuota
 	public function ScheduleId()
 	{
 		return $this->scheduleId;
-	}
-
-	/**
-	 * @return null|Time
-	 */
-	public function EnforcedStartTime()
-	{
-		return $this->enforcedStartTime;
-	}
-
-	/**
-	 * @return null|Time
-	 */
-	public function EnforcedEndTime()
-	{
-		return $this->enforcedEndTime;
-	}
-
-	/**
-	 * @return array|int[]|string[]
-	 */
-	public function EnforcedDays()
-	{
-		return $this->enforcedDays;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function EnforcedAllDay()
-	{
-		return $this->enforcedStartTime == null || $this->enforcedEndTime == null;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function EnforcedEveryDay()
-	{
-		return empty($this->enforcedDays);
-	}
-
-	/**
-	 * @param int $weekday
-	 * @return bool
-	 */
-	private function EnforcedOnWeekday($weekday)
-	{
-		return in_array($weekday, $this->enforcedDays);
 	}
 
 	private function AddExisting(ReservationItemView $reservation, $timezone)
@@ -502,25 +382,6 @@ class Quota implements IQuota
 
 	private function _add(DateRange $dateRange)
 	{
-		if (!$this->EnforcedEveryDay() && !$this->EnforcedOnWeekday($dateRange->GetBegin()->Weekday()))
-		{
-			return;
-		}
-
-		if (!$this->EnforcedAllDay())
-		{
-			$enforcedStart = $dateRange->GetBegin()->SetTime($this->EnforcedStartTime());
-			$enforcedEnd = $dateRange->GetEnd()->SetTime($this->EnforcedEndTime());
-			$enforcedRange = new DateRange($enforcedStart, $enforcedEnd);
-			if (!$enforcedRange->Overlaps($dateRange))
-			{
-				return;
-			}
-			$newStart = $dateRange->GetBegin()->LessThan($enforcedStart) ? $dateRange->GetBegin() : $enforcedStart;
-			$newEnd = $dateRange->GetEnd()->LessThan($enforcedEnd) ? $dateRange->GetEnd() : $enforcedEnd;
-			$dateRange = new DateRange($newStart, $newEnd);
-
-		}
 		$durationKey = $this->duration->GetDurationKey($dateRange->GetBegin());
 
 		$this->limit->TryAdd($dateRange->GetBegin(), $dateRange->GetEnd(), $durationKey);
@@ -533,6 +394,7 @@ class QuotaUnit
 	const Hours = 'hours';
 	const Reservations = 'reservations';
 }
+
 
 interface IQuotaDuration
 {
@@ -988,18 +850,23 @@ class QuotaDurationYear extends QuotaDuration
 interface IQuotaLimit
 {
 	/**
+	 * @abstract
 	 * @param Date $start
 	 * @param Date $end
 	 * @param string $key
+	 * @return void
+	 * @throws QuotaExceededException
 	 */
 	public function TryAdd($start, $end, $key);
 
 	/**
+	 * @abstract
 	 * @return decimal
 	 */
 	public function Amount();
 
 	/**
+	 * @abstract
 	 * @return string|QuotaUnit
 	 */
 	public function Name();
@@ -1094,6 +961,7 @@ class QuotaLimitHours implements IQuotaLimit
 	 * @param Date $start
 	 * @param Date $end
 	 * @param string $key
+	 * @return void
 	 * @throws QuotaExceededException
 	 */
 	public function TryAdd($start, $end, $key)
@@ -1137,58 +1005,6 @@ class QuotaLimitHours implements IQuotaLimit
 	}
 }
 
-interface IQuotaScope
-{
-	/**
-	 * @return string|QuotaScope
-	 */
-	public function Name();
-
-	/**
-	 * @param Date $startDate
-	 * @return Date
-	 */
-	public function GetSearchStartDate($startDate);
-}
-
-abstract class QuotaScope implements IQuotaScope
-{
-	const IncludeCompleted = 'IncludeCompleted';
-	const ExcludeCompleted = 'ExcludeCompleted';
-
-	public function __toString()
-	{
-		return sprintf('QuotaScope Name=%s', $this->Name());
-	}
-}
-
-class QuotaScopeExcluded extends QuotaScope
-{
-
-	public function Name()
-	{
-		return QuotaScope::ExcludeCompleted;
-	}
-
-	public function GetSearchStartDate($startDate)
-	{
-		return Date::Now();
-	}
-}
-
-class QuotaScopeIncluded extends QuotaScope
-{
-	public function Name()
-	{
-		return QuotaScope::IncludeCompleted;
-	}
-
-	public function GetSearchStartDate($startDate)
-	{
-		return $startDate;
-	}
-}
-
 class QuotaExceededException extends Exception
 {
 	/**
@@ -1199,3 +1015,5 @@ class QuotaExceededException extends Exception
 		parent::__construct($message);
 	}
 }
+
+?>

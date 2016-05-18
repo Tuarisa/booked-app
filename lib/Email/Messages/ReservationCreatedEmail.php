@@ -29,3 +29,5 @@ class ReservationCreatedEmail extends ReservationEmailMessage
         return 'ReservationCreated.tpl';
     }
 }
+
+?>

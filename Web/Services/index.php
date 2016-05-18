@@ -84,6 +84,11 @@ $app->error(function (\Exception $e) use ($app)
 	$app->response()->write('Exception was logged.');
 });
 
+if (Configuration::Instance()->GetSectionKey(ConfigSection::API, ConfigKeys::API_ALLOW_CORS, new BooleanConverter()))
+{
+	$app->response()->header('Access-Control-Allow-Origin','*');
+}
+
 $app->run();
 
 function RegisterHelp(SlimWebServiceRegistry $registry, \Slim\Slim $app)
@@ -136,11 +141,9 @@ function RegisterResources(SlimServer $server, SlimWebServiceRegistry $registry)
 	$writeWebService = new ResourcesWriteWebService($server, new ResourceSaveController($resourceRepository, new ResourceRequestValidator($attributeService)));
 	$category = new SlimWebServiceRegistryCategory('Resources');
 	$category->AddSecureGet('/', array($webService, 'GetAll'), WebServices::AllResources);
-	$category->AddSecureGet('/Tree', array($webService, 'GetResourceGroupTree'), WebServices::GetResourceGroupTree);
-	$category->AddSecureGet('/Type/:resourceTypeName', array($webService, 'GetResourceGroupTreeByType'), WebServices::GetResourceGroupTreeByType);
-	$category->AddSecureGet('/Groups', array($webService, 'GetResourceGroups'), WebServices::GetResourceGroups);
 	$category->AddGet('/Status', array($webService, 'GetStatuses'), WebServices::GetStatuses);
 	$category->AddSecureGet('/Status/Reasons', array($webService, 'GetStatusReasons'), WebServices::GetStatusReasons);
+	$category->AddSecureGet('/Types', array($webService, 'GetTypes'), WebServices::GetAllResourceTypes);
 	$category->AddSecureGet('/Availability', array($webService, 'GetAvailability'), WebServices::AllAvailability);
 	$category->AddSecureGet('/:resourceId', array($webService, 'GetResource'), WebServices::GetResource);
 	$category->AddSecureGet('/:resourceId/Availability', array($webService, 'GetAvailability'), WebServices::GetResourceAvailability);
@@ -169,7 +172,6 @@ function RegisterUsers(SlimServer $server, SlimWebServiceRegistry $registry)
 	$category = new SlimWebServiceRegistryCategory('Users');
 	$category->AddSecureGet('/', array($webService, 'GetUsers'), WebServices::AllUsers);
 	$category->AddSecureGet('/:userId', array($webService, 'GetUser'), WebServices::GetUser);
-	$category->AddSecureGet('/ByEmail/:emailAddress', array($webService, 'GetUserByEmail'), WebServices::GetUserByEmail);
 	$category->AddAdminPost('/', array($writeWebService, 'Create'), WebServices::CreateUser);
 	$category->AddAdminPost('/:userId', array($writeWebService, 'Update'), WebServices::UpdateUser);
 	$category->AddAdminDelete('/:userId', array($writeWebService, 'Delete'), WebServices::DeleteUser);
@@ -182,6 +184,7 @@ function RegisterSchedules(SlimServer $server, SlimWebServiceRegistry $registry)
 	$category = new SlimWebServiceRegistryCategory('Schedules');
 	$category->AddSecureGet('/', array($webService, 'GetSchedules'), WebServices::AllSchedules);
 	$category->AddSecureGet('/:scheduleId', array($webService, 'GetSchedule'), WebServices::GetSchedule);
+	$category->AddSecureGet('/:scheduleId/Slots', array($webService, 'GetSlots'), WebServices::GetScheduleSlots);
 	$registry->AddCategory($category);
 }
 
@@ -197,6 +200,7 @@ function RegisterAttributes(SlimServer $server, SlimWebServiceRegistry $registry
 	$category->AddAdminPost('/:attributeId', array($writeWebService, 'Update'), WebServices::UpdateCustomAttribute);
 	$category->AddAdminDelete('/:attributeId', array($writeWebService, 'Delete'), WebServices::DeleteCustomAttribute);
 	$registry->AddCategory($category);
+
 }
 
 function RegisterGroups(SlimServer $server, SlimWebServiceRegistry $registry)

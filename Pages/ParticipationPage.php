@@ -75,7 +75,7 @@ interface IParticipationPage
 class ParticipationPage extends SecurePage implements IParticipationPage
 {
 	/**
-	 * @var \ParticipationPresenter
+	 * @var ParticipationPresenter
 	 */
 	private $presenter;
 
@@ -92,7 +92,7 @@ class ParticipationPage extends SecurePage implements IParticipationPage
 
 	public function DisplayParticipation()
 	{
-		$this->Display('MyAccount/participation.tpl');
+		$this->Display('participation.tpl');
 	}
 
 	public function DisplayResult($results)
@@ -138,4 +138,3 @@ class ParticipationPage extends SecurePage implements IParticipationPage
 		$this->Set('ActionResult', $result);
 	}
 }
-?>

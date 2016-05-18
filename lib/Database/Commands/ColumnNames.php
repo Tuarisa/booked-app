@@ -1,23 +1,23 @@
 <?php
-
 /**
- * Copyright 2012-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2012-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 class ColumnNames
 {
 	private function __construct()
@@ -112,9 +112,6 @@ class ColumnNames
 	const RESERVATION_START = 'start_date';
 	const RESERVATION_END = 'end_date';
 	const REFERENCE_NUMBER = 'reference_number';
-	const CHECKIN_DATE = 'checkin_date';
-	const CHECKOUT_DATE = 'checkout_date';
-	const PREVIOUS_END_DATE = 'previous_end_date';
 
 	// RESERVATION_USER //
 	const RESERVATION_USER_LEVEL = 'reservation_user_level';
@@ -144,9 +141,6 @@ class ColumnNames
 	const RESOURCE_ADMIN_GROUP_ID = 'admin_group_id';
 	const RESOURCE_SORT_ORDER = 'sort_order';
 	const RESOURCE_BUFFER_TIME = 'buffer_time';
-	const ENABLE_CHECK_IN = 'enable_check_in';
-	const AUTO_RELEASE_MINUTES = 'auto_release_minutes';
-	const RESOURCE_ALLOW_DISPLAY = 'allow_display';
 
 	// RESERVATION RESOURCES
 	const RESOURCE_LEVEL_ID = 'resource_level_id';
@@ -173,18 +167,11 @@ class ColumnNames
 	const QUOTA_LIMIT = 'quota_limit';
 	const QUOTA_UNIT = 'unit';
 	const QUOTA_DURATION = 'duration';
-	const ENFORCED_START_TIME = 'enforced_time_start';
-	const ENFORCED_END_TIME = 'enforced_time_end';
-	const ENFORCED_DAYS = 'enforced_days';
-	const QUOTA_SCOPE = 'scope';
 
 	// ACCESSORIES //
 	const ACCESSORY_ID = 'accessory_id';
 	const ACCESSORY_NAME = 'accessory_name';
 	const ACCESSORY_QUANTITY = 'accessory_quantity';
-	const ACCESSORY_RESOURCE_COUNT = 'num_resources';
-	const ACCESSORY_MINIMUM_QUANTITY = 'minimum_quantity';
-	const ACCESSORY_MAXIMUM_QUANTITY = 'maximum_quantity';
 
 	// RESERVATION ACCESSORY //
 	const QUANTITY = 'quantity';
@@ -199,7 +186,6 @@ class ColumnNames
 
 	// ATTRIBUTES //
 	const ATTRIBUTE_ID = 'custom_attribute_id';
-	const ATTRIBUTE_ADMIN_ONLY = 'admin_only';
 	const ATTRIBUTE_LABEL = 'display_label';
 	const ATTRIBUTE_TYPE = 'display_type';
 	const ATTRIBUTE_CATEGORY = 'attribute_category';
@@ -208,13 +194,8 @@ class ColumnNames
 	const ATTRIBUTE_POSSIBLE_VALUES = 'possible_values';
 	const ATTRIBUTE_VALUE = 'attribute_value';
 	const ATTRIBUTE_ENTITY_ID = 'entity_id';
-	const ATTRIBUTE_ENTITY_IDS = 'entity_ids';
-	const ATTRIBUTE_ENTITY_DESCRIPTIONS = 'entity_descriptions';
+	const ATTRIBUTE_ENTITY_DESCRIPTION = 'entity_description';
 	const ATTRIBUTE_SORT_ORDER = 'sort_order';
-	const ATTRIBUTE_SECONDARY_CATEGORY = 'secondary_category';
-	const ATTRIBUTE_SECONDARY_ENTITY_ID = 'secondary_entity_id';
-	const ATTRIBUTE_SECONDARY_ENTITY_DESCRIPTION = 'secondary_entity_description';
-	const ATTRIBUTE_IS_PRIVATE = 'is_private';
 
 	// RESERVATION FILES //
 	const FILE_ID = 'file_id';
@@ -249,34 +230,6 @@ class ColumnNames
 	const RESOURCE_TYPE_NAME = 'resource_type_name';
 	const RESOURCE_TYPE_DESCRIPTION = 'resource_type_description';
 
-	// DBVERSION //
-	const VERSION_NUMBER = 'version_number';
-	const VERSION_DATE = 'version_date';
-
-	// RESERVATION COLOR RULES //
-	const REQUIRED_VALUE = 'required_value';
-	const RESERVATION_COLOR = 'color';
-	const RESERVATION_COLOR_RULE_ID = 'reservation_color_rule_id';
-	const COLOR_ATTRIBUTE_TYPE = 'attribute_type';
-	const COMPARISON_TYPE = 'comparison_type';
-
-	// CURRENT_CREDITS //
-	const CREDIT_COUNT = 'credit_count';
-	const PEAK_CREDIT_COUNT = 'peak_credit_count';
-
-	// PEAK TIMES //
-	const PEAK_TIMES_ID = 'peak_times_id';
-	const PEAK_ALL_DAY = 'all_day';
-	const PEAK_START_TIME = 'start_time';
-	const PEAK_END_TIME = 'end_time';
-	const PEAK_EVERY_DAY = 'every_day';
-	const PEAK_DAYS = 'peak_days';
-	const PEAK_ALL_YEAR = 'all_year';
-	const PEAK_BEGIN_MONTH = 'begin_month';
-	const PEAK_BEGIN_DAY = 'begin_day';
-	const PEAK_END_MONTH = 'end_month';
-	const PEAK_END_DAY = 'end_day';
-
 	// dynamic
 	const TOTAL = 'total';
 	const TOTAL_TIME = 'totalTime';
@@ -296,17 +249,12 @@ class ColumnNames
 	const RESOURCE_ATTRIBUTE_LIST = 'resource_attribute_list';
 	const RESOURCE_TYPE_ATTRIBUTE_LIST = 'resource_type_attribute_list';
 	const USER_ATTRIBUTE_LIST = 'user_attribute_list';
-	const RESOURCE_ACCESSORY_LIST = 'resource_accessory_list';
-	const RESOURCE_GROUP_LIST = 'group_list';
 	const GROUP_LIST = 'owner_group_list';
 	const START_REMINDER_MINUTES_PRIOR = 'start_reminder_minutes';
 	const END_REMINDER_MINUTES_PRIOR = 'end_reminder_minutes';
 	const DURATION_ALIAS = 'duration';
-	const GROUP_IDS = 'group_ids';
-	const RESOURCE_IDS = 'resource_ids';
 
 	// shared
 	const ALLOW_CALENDAR_SUBSCRIPTION = 'allow_calendar_subscription';
 	const PUBLIC_ID = 'public_id';
-
 }

@@ -26,7 +26,6 @@ class AddReservationNotificationService extends ReservationNotificationService
 		$notifications[] = new AdminEmailApprovalNotification($userRepo,  $userRepo, $attributeRepo);
 		$notifications[] = new ParticipantAddedEmailNotification($userRepo, $attributeRepo);
 		$notifications[] = new InviteeAddedEmailNotification($userRepo, $attributeRepo);
-		$notifications[] = new GuestAddedEmailNotification($userRepo, $attributeRepo);
 
 		parent::__construct($notifications);
 	}

@@ -105,7 +105,7 @@ class SchedulesWebService
 		$permissionServiceFactory = new PermissionServiceFactory();
 		$scheduleRepository = new ScheduleRepository();
 		$userRepository = new UserRepository();
-		$resourceService = new ResourceService(new ResourceRepository(), $permissionServiceFactory->GetPermissionService(), new AttributeService(new AttributeRepository()), $userRepository, new AccessoryRepository());
+		$resourceService = new ResourceService(new ResourceRepository(), $permissionServiceFactory->GetPermissionService(), new AttributeService(new AttributeRepository()), $userRepository);
 		$builder = new ScheduleWebServicePageBuilder($startDate, $endDate, $resourceId);
 		$reservationService = new ReservationService(new ReservationViewRepository(), new ReservationListingFactory());
 		$dailyLayoutFactory = new DailyLayoutFactory();
@@ -167,7 +167,7 @@ class ScheduleWebServicePageBuilder extends SchedulePageBuilder
 		// no op
 	}
 
-	public function GetResourceId($scheduleId, ISchedulePage $page)
+	public function GetResourceIds($scheduleId, ISchedulePage $page)
 	{
 		return $this->resourceId;
 	}
@@ -260,14 +260,24 @@ class ScheduleWebServiceView implements ISchedulePage
 		$this->dates = $dates;
 	}
 
-	public function SetPreviousNextDates($previousDate, $nextDate)
+	public function SetSpecificDates($specificDates)
 	{
 		// no op
+	}
+
+	public function SetPreviousNextDates($previousDate, $nextDate)
+	{
+		// TODO: Implement SetPreviousNextDates() method.
 	}
 
 	public function GetSelectedDate()
 	{
 		return empty($this->startDate) ? null : $this->startDate->Format("Y-m-d");
+	}
+
+	public function GetSelectedDates()
+	{
+		return array();
 	}
 
 	public function ShowInaccessibleResources()
@@ -295,7 +305,7 @@ class ScheduleWebServiceView implements ISchedulePage
 	 */
 	public function GetLayoutDate()
 	{
-		// no op
+		// TODO: Implement GetLayoutDate() method.
 	}
 
 	public function GetScheduleStyle($scheduleId)
@@ -308,9 +318,22 @@ class ScheduleWebServiceView implements ISchedulePage
 		// no op
 	}
 
+	public function GetGroupId()
+	{
+		return null;
+	}
+
 	public function GetResourceId()
 	{
 		return null;
+	}
+
+	/**
+	 * @return int[]
+	 */
+	public function GetResourceIds()
+	{
+		return array();
 	}
 
 	public function SetResourceGroupTree(ResourceGroupTree $resourceGroupTree)
@@ -470,27 +493,5 @@ class ScheduleWebServiceView implements ISchedulePage
 		// no-op
 	}
 
-	/**
-	 * @return int[]
-	 */
-	public function GetResourceIds()
-	{
-		return array();
-	}
 
-	/**
-	 * @return Date[]
-	 */
-	public function GetSelectedDates()
-	{
-		// no op
-	}
-
-	/**
-	 * @param Date[] $specificDates
-	 */
-	public function SetSpecificDates($specificDates)
-	{
-		// no op
-	}
 }

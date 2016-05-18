@@ -73,14 +73,14 @@ class ManageReservationsService implements IManageReservationsService
 
 	/**
 	 * @param IReservationViewRepository $reservationViewRepository
-	 * @param IReservationAuthorization|null $authorization
-	 * @param IReservationHandler|null $reservationHandler
-	 * @param IUpdateReservationPersistenceService|null $persistenceService
+	 * @param IReservationAuthorization $authorization
+	 * @param IReservationHandler $reservationHandler
+	 * @param IUpdateReservationPersistenceService $persistenceService
 	 */
 	public function __construct(IReservationViewRepository $reservationViewRepository,
 								$authorization = null,
-								$reservationHandler= null,
-								$persistenceService= null)
+								$reservationHandler = null,
+								$persistenceService = null)
 	{
 		$this->reservationViewRepository = $reservationViewRepository;
 		$this->reservationAuthorization = $authorization == null ?  new ReservationAuthorization(PluginManager::Instance()->LoadAuthorization()) : $authorization;
@@ -167,37 +167,5 @@ class ManageReservationsUpdateAttributeResultCollector implements IReservationSa
 	public function SetWarnings($warnings)
 	{
 		$this->warnings = $warnings;
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param bool $canBeRetried
-	 */
-	public function SetCanBeRetried($canBeRetried)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		// no-op
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		// no-op
 	}
 }

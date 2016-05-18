@@ -42,14 +42,20 @@ class Report_Filter
 	private $groupId;
 
 	/**
+	 * @var bool|null
+	 */
+	private $includeDeleted;
+
+	/**
 	 * @param $resourceId int|null
 	 * @param $scheduleId int|null
 	 * @param $userId int|null
 	 * @param $groupId int|null
 	 * @param $accessoryId int|null
 	 * @param $participantId int|null
+	 * @param $includeDeleted bool|null
 	 */
-	public function __construct($resourceId, $scheduleId, $userId, $groupId, $accessoryId, $participantId)
+	public function __construct($resourceId, $scheduleId, $userId, $groupId, $accessoryId, $participantId, $includeDeleted)
 	{
 		$this->resourceId = $resourceId;
 		$this->scheduleId = $scheduleId;
@@ -57,6 +63,7 @@ class Report_Filter
 		$this->groupId = $groupId;
 		$this->accessoryId = $accessoryId;
 		$this->participantId = $participantId;
+		$this->includeDeleted = $includeDeleted;
 	}
 
 	public function Add(ReportCommandBuilder $builder)
@@ -84,6 +91,10 @@ class Report_Filter
 		if (!empty($this->accessoryId))
 		{
 			$builder->WithAccessoryId($this->accessoryId);
+		}
+		if ($this->includeDeleted)
+		{
+			$builder->WithDeleted();
 		}
 	}
 
@@ -133,7 +144,12 @@ class Report_Filter
 	{
 		return $this->accessoryId;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function IncludeDeleted()
+	{
+		return $this->includeDeleted === true;
+	}
 }
-
-
-?>

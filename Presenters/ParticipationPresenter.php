@@ -91,6 +91,7 @@ class ParticipationPresenter
 
 		$series = $this->reservationRepository->LoadByReferenceNumber($referenceNumber);
 
+
 		if ($invitationAction == InvitationAction::Join || $invitationAction == InvitationAction::CancelInstance)
 		{
 			$rules = array(new ReservationStartTimeRule(new ScheduleRepository()), new ResourceMinimumNoticeCurrentInstanceRule(), new ResourceMaximumNoticeCurrentInstanceRule());
@@ -103,11 +104,12 @@ class ParticipationPresenter
 		/** @var IReservationValidationRule $rule */
 		foreach ($rules as $rule)
 		{
-			$ruleResult = $rule->Validate($series, null);
+			$ruleResult = $rule->Validate($series);
 
 			if (!$ruleResult->IsValid())
 			{
 				return $ruleResult->ErrorMessage();
+				return Resources::GetInstance()->GetString('ParticipationNotAllowed');
 			}
 		}
 
@@ -176,7 +178,7 @@ class ParticipationPresenter
 			/** @var $instance Reservation */
 			foreach ($series->Instances() as $instance)
 			{
-				$numberOfParticipants = count($instance->Participants()) + count($instance->ParticipatingGuests());
+				$numberOfParticipants = count($instance->Participants());
 
 				if ($numberOfParticipants > $resource->GetMaxParticipants())
 				{

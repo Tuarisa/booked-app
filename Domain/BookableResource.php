@@ -1,23 +1,23 @@
 <?php
-
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 interface IResource extends IPermissibleResource
 {
 	/**
@@ -59,50 +59,7 @@ interface IPermissibleResource
 	public function GetResourceId();
 }
 
-interface IBookableResource extends IResource
-{
-	/**
-	 * @return TimeInterval
-	 */
-	public function GetMinimumLength();
-
-	/**
-	 * @return bool
-	 */
-	public function GetRequiresApproval();
-
-	/**
-	 * @return bool
-	 */
-	public function IsCheckInEnabled();
-
-	/**
-	 * @return bool
-	 */
-	public function IsAutoReleased();
-
-	/**
-	 * @return null|int
-	 */
-	public function GetAutoReleaseMinutes();
-
-	/**
-	 * @return int
-	 */
-	public function GetResourceTypeId();
-
-	/**
-	 * @return null|string
-	 */
-	public function GetColor();
-
-	/**
-	 * @return null|string
-	 */
-	public function GetTextColor();
-}
-
-class BookableResource implements IBookableResource
+class BookableResource implements IResource
 {
 	protected $_resourceId;
 	protected $_name;
@@ -142,18 +99,10 @@ class BookableResource implements IBookableResource
 	protected $_statusReasonId;
 	protected $_adminGroupId;
 	protected $_isCalendarSubscriptionAllowed = false;
-	protected $_isDisplayAllowed = false;
 	protected $_publicId;
 	protected $_scheduleAdminGroupId;
 	protected $_sortOrder;
 	protected $_resourceTypeId;
-	protected $_resourceGroupIds = array();
-	protected $_enableCheckIn = false;
-	protected $_autoReleaseMinutes = null;
-	protected $_color;
-	protected $_textColor;
-	protected $_creditsPerSlot;
-	protected $_peakCreditsPerSlot;
 
 	/**
 	 * @var array|AttributeValue[]
@@ -186,7 +135,7 @@ class BookableResource implements IBookableResource
 		$this->SetDescription($description);
 		$this->SetMinLength($minLength);
 		$this->SetMaxLength($maxLength);
-		$this->_autoAssign = $autoAssign;
+		$this->SetAutoAssign($autoAssign);
 		$this->SetRequiresApproval($requiresApproval);
 		$this->SetAllowMultiday($allowMultiday);
 		$this->SetMaxParticipants($maxParticipants);
@@ -254,39 +203,6 @@ class BookableResource implements IBookableResource
 		$resource->WithScheduleAdminGroupId($row[ColumnNames::SCHEDULE_ADMIN_GROUP_ID_ALIAS]);
 		$resource->SetResourceTypeId($row[ColumnNames::RESOURCE_TYPE_ID]);
 		$resource->SetBufferTime($row[ColumnNames::RESOURCE_BUFFER_TIME]);
-		$resource->SetColor($row[ColumnNames::RESERVATION_COLOR]);
-
-		if (isset($row[ColumnNames::ATTRIBUTE_LIST]))
-		{
-			$attributes = CustomAttributes::Parse($row[ColumnNames::ATTRIBUTE_LIST]);
-			foreach ($attributes->All() as $id => $value)
-			{
-				$resource->WithAttribute(new AttributeValue($id, $value));
-			}
-		}
-		if (isset($row[ColumnNames::RESOURCE_GROUP_LIST]))
-		{
-			$groupIds = explode('!sep!', $row[ColumnNames::RESOURCE_GROUP_LIST]);
-			for ($i = 0; $i < count($groupIds); $i++)
-			{
-				$resource->WithResourceGroupId($groupIds[$i]);
-			}
-		}
-		if (isset($row[ColumnNames::ENABLE_CHECK_IN]))
-		{
-			$resource->_enableCheckIn = intval($row[ColumnNames::ENABLE_CHECK_IN]);
-		}
-		if (isset($row[ColumnNames::AUTO_RELEASE_MINUTES]))
-		{
-			$resource->_autoReleaseMinutes = intval($row[ColumnNames::AUTO_RELEASE_MINUTES]);
-		}
-		if (isset($row[ColumnNames::RESOURCE_ALLOW_DISPLAY]))
-		{
-			$resource->_isDisplayAllowed = intval($row[ColumnNames::RESOURCE_ALLOW_DISPLAY]);
-		}
-
-		$resource->WithCreditsPerSlot($row[ColumnNames::CREDIT_COUNT]);
-		$resource->WithPeakCreditsPerSlot($row[ColumnNames::PEAK_CREDIT_COUNT]);
 
 		return $resource;
 	}
@@ -384,53 +300,12 @@ class BookableResource implements IBookableResource
 		return TimeInterval::Parse($this->_minLength);
 	}
 
-	public function GetMinimumLength()
-	{
-		return $this->GetMinLength();
-	}
-
 	/**
-	 * @param string|int|TimeInterval $value
+	 * @param string|int $value
 	 */
 	public function SetMinLength($value)
 	{
-		$this->_minLength = $this->GetIntervalValue($value);
-	}
-
-	/**
-	 * @param $resourceGroupIds int[]
-	 */
-	public function SetResourceGroupIds($resourceGroupIds)
-	{
-		$this->_resourceGroupIds = $resourceGroupIds;
-	}
-
-	/**
-	 * @param $resourceGroupId int
-	 */
-	public function WithResourceGroupId($resourceGroupId)
-	{
-		$this->_resourceGroupIds[] = $resourceGroupId;
-	}
-
-	/**
-	 * @return int[]
-	 */
-	public function GetResourceGroupIds()
-	{
-		return $this->_resourceGroupIds;
-	}
-
-	private function GetIntervalValue($value)
-	{
-		if (is_a($value, 'TimeInterval'))
-		{
-			return $value->TotalSeconds();
-		}
-		else
-		{
-			return TimeInterval::Parse($value)->TotalSeconds();
-		}
+		$this->_minLength = $value;
 	}
 
 	/**
@@ -450,11 +325,11 @@ class BookableResource implements IBookableResource
 	}
 
 	/**
-	 * @param string|int|TimeInterval $value
+	 * @param string|int $value
 	 */
 	public function SetMaxLength($value)
 	{
-		$this->_maxLength = $this->GetIntervalValue($value);
+		$this->_maxLength = $value;
 	}
 
 	/**
@@ -583,11 +458,11 @@ class BookableResource implements IBookableResource
 	}
 
 	/**
-	 * @param string|int|TimeInterval $value
+	 * @param string|int $value
 	 */
 	public function SetMinNotice($value)
 	{
-		$this->_minNotice = $this->GetIntervalValue($value);
+		$this->_minNotice = $value;
 	}
 
 	/**
@@ -607,11 +482,11 @@ class BookableResource implements IBookableResource
 	}
 
 	/**
-	 * @param string|int|TimeInterval $value
+	 * @param string|int $value
 	 */
 	public function SetMaxNotice($value)
 	{
-		$this->_maxNotice = $this->GetIntervalValue($value);
+		$this->_maxNotice = $value;
 	}
 
 	/**
@@ -764,22 +639,6 @@ class BookableResource implements IBookableResource
 	}
 
 	/**
-	 * @param bool $isAllowed
-	 */
-	protected function SetIsDisplayEnabled($isAllowed)
-	{
-		$this->_isDisplayAllowed = $isAllowed;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function GetIsDisplayEnabled()
-	{
-		return $this->_isDisplayAllowed;
-	}
-
-	/**
 	 * @param string $publicId
 	 */
 	protected function SetPublicId($publicId)
@@ -809,57 +668,9 @@ class BookableResource implements IBookableResource
 		$this->SetIsCalendarSubscriptionAllowed(false);
 	}
 
-	public function EnableDisplay()
-	{
-		$this->SetIsDisplayEnabled(true);
-		if (empty($this->_publicId))
-		{
-			$this->SetPublicId(uniqid());
-		}
-	}
-
 	public function WithAttribute(AttributeValue $attribute)
 	{
 		$this->_attributeValues[$attribute->AttributeId] = $attribute;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsCheckInEnabled()
-	{
-		return $this->_enableCheckIn;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsAutoReleased()
-	{
-		return !is_null($this->_autoReleaseMinutes);
-	}
-
-	/**
-	 * @return int|null
-	 */
-	public function GetAutoReleaseMinutes()
-	{
-		return $this->_autoReleaseMinutes;
-	}
-
-	/**
-	 * @param bool $enabled
-	 * @param int|null $autoReleaseMinutes
-	 */
-	public function SetCheckin($enabled, $autoReleaseMinutes = null)
-	{
-		if ($autoReleaseMinutes <= 0)
-		{
-			$autoReleaseMinutes = null;
-		}
-
-		$this->_enableCheckIn = $enabled;
-		$this->_autoReleaseMinutes = $enabled ? $autoReleaseMinutes : null;
 	}
 
 	/**
@@ -901,8 +712,8 @@ class BookableResource implements IBookableResource
 	}
 
 	/**
-	 * @param $attribute AttributeValue
-	 */
+	* @param $attribute AttributeValue
+	*/
 	public function ChangeAttribute($attribute)
 	{
 		$this->_removedAttributeValues[] = $attribute;
@@ -1044,7 +855,7 @@ class BookableResource implements IBookableResource
 	 */
 	public function SetBufferTime($bufferTime)
 	{
-		$this->_bufferTime = $this->GetIntervalValue($bufferTime);
+		$this->_bufferTime = $bufferTime;
 	}
 
 	/**
@@ -1062,96 +873,4 @@ class BookableResource implements IBookableResource
 	{
 		return $this->_autoAssignToggledOn;
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function HasColor()
-	{
-		return !empty($this->_color);
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function GetColor()
-	{
-		return $this->_color;
-	}
-
-	/**
-	 * @param string $color
-	 */
-	public function SetColor($color)
-	{
-		if (empty($color))
-		{
-			$this->_color = '';
-			$this->_textColor = '';
-			return;
-		}
-		if (!BookedStringHelper::StartsWith($color, '#'))
-		{
-			$color = '#' . $color;
-		}
-
-		$this->_color = $color;
-		$contrast = new ContrastingColor($color);
-		$this->_textColor = $contrast;
-	}
-
-	/**
-	 * @return null|string
-	 */
-	public function GetTextColor()
-	{
-		return $this->_textColor;
-	}
-
-	/**
-	 * @param $creditsPerSlot int
-	 */
-	protected function WithCreditsPerSlot($creditsPerSlot)
-	{
-		$this->_creditsPerSlot = $creditsPerSlot;
-	}
-
-	/**
-	 * @param $creditsPerSlot int
-	 */
-	protected function WithPeakCreditsPerSlot($creditsPerSlot)
-	{
-		$this->_peakCreditsPerSlot = $creditsPerSlot;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetCreditsPerSlot()
-	{
-		return empty($this->_creditsPerSlot) ? 0 : $this->_creditsPerSlot;
-	}
-
-	public function GetPeakCreditsPerSlot()
-	{
-		return empty($this->_peakCreditsPerSlot) ? 0 : $this->_peakCreditsPerSlot;
-	}
-
-	/**
-	 * @param $creditsPerSlot int
-	 */
-	public function SetCreditsPerSlot($creditsPerSlot)
-	{
-		Log::Debug('set cps to ' . $creditsPerSlot);
-		$this->_creditsPerSlot = $creditsPerSlot;
-	}
-
-	/**
-	 * @param $creditsPerSlot int
-	 */
-	public function SetPeakCreditsPerSlot($creditsPerSlot)
-	{
-		$this->_peakCreditsPerSlot = $creditsPerSlot;
-	}
-
 }

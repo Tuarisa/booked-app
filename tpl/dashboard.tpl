@@ -16,15 +16,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 *}
-{include file='globalheader.tpl' cssFiles='css/dashboard.css' Qtip=true}
+{include file='globalheader.tpl' cssFiles='css/dashboard.css,css/jquery.qtip.min.css'}
 
-<div id="page-dashboard">
-<ul id="dashboardList" class="list-unstyled">
+<ul id="dashboardList">
 {foreach from=$items item=dashboardItem}
     <li>{$dashboardItem->PageLoad()}</li>
 {/foreach}
 </ul>
 
+{jsfile src="js/jquery.qtip.min.js"}
 {jsfile src="dashboard.js"}
 {jsfile src="resourcePopup.js"}
 
@@ -41,6 +41,5 @@ $(document).ready(function() {
 	dashboard.init();
 });
 </script>
-</div>
 
 {include file='globalfooter.tpl'}

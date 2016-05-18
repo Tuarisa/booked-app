@@ -57,14 +57,14 @@ class ManageBlackoutsPresenter extends ActionPresenter
 		IManageBlackoutsPage $page,
 		IManageBlackoutsService $manageBlackoutsService,
 		IScheduleRepository $scheduleRepository,
-		IResourceRepository $resourceRepository)
+		IResourceRepository $resourceReservationRepository)
 	{
 		parent::__construct($page);
 
 		$this->page = $page;
 		$this->manageBlackoutsService = $manageBlackoutsService;
 		$this->scheduleRepository = $scheduleRepository;
-		$this->resourceRepository = $resourceRepository;
+		$this->resourceRepository = $resourceReservationRepository;
 
 		$this->AddAction(ManageBlackoutsActions::ADD, 'AddBlackout');
 		$this->AddAction(ManageBlackoutsActions::DELETE, 'DeleteBlackout');

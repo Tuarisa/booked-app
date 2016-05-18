@@ -4,35 +4,26 @@ function Approval(opts)
 
 	var elements = {
 		approveButton: $('#btnApprove'),
-		referenceNumber: $("#referenceNumber")
+		referenceNumber: $("#referenceNumber"),
+		indicator: $('#indicator')
 	};
 
-	function initReservation()
-	{
-		elements.approveButton.click(function ()
-		{
-			$('<span class="fa fa-spinner fa-spin fa-2x"/>').insertAfter(elements.approveButton);
+	Approval.prototype.initReservation = function() {
+		elements.approveButton.click(function() {
+			elements.indicator.insertAfter(elements.approveButton).show();
 			elements.approveButton.hide();
-			approve(elements.referenceNumber.val());
+            Approval.prototype.Approve(elements.referenceNumber.val());
 		});
-	}
+	};
 
-	function approve(referenceNumber)
-	{
+	Approval.prototype.Approve = function(referenceNumber) {
 		$.ajax({
 			url: options.url,
 			dataType: 'json',
 			data: {rn: referenceNumber, rs: options.responseType},
-			success: function (data)
-			{
+			success: function(data) {
 				window.location.reload();
 			}
 		});
-	}
-
-	return {
-		initReservation: initReservation,
-		Approve: approve
-	}
-
+	};
 }

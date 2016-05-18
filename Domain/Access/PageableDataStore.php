@@ -117,7 +117,7 @@ class PageInfo
 		$this->Total = $totalResults;
 		$this->CurrentPage = $pageNumber;
 		$this->PageSize = $pageSize;
-		$this->TotalPages = ceil($totalResults/max($pageSize, 1));
+		$this->TotalPages = ceil($totalResults/max($pageSize,1));
         $this->ResultsStart = ($pageNumber-1) * $pageSize + 1;
         $this->ResultsEnd = min(($pageNumber * $pageSize), $totalResults);
 	}
@@ -144,3 +144,6 @@ class PageInfoAll extends PageInfo
 		$this->ResultsEnd = $totalResults;
 	}
 }
+
+
+?>

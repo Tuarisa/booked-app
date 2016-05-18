@@ -183,7 +183,18 @@ class ReservationFilter
 		if ($surroundFilter != null || $startFilter != null || $endFilter != null)
 		{
 			$dateFilter = new SqlFilterNull(true);
-			$dateFilter->_Or($surroundFilter)->_Or($startFilter)->_Or($endFilter);
+			if ($surroundFilter != null)
+			{
+				$dateFilter = $dateFilter->_Or($surroundFilter);
+			}
+			if ($startFilter != null)
+			{
+				$dateFilter = $dateFilter->_Or($startFilter);
+			}
+			if ($endFilter != null)
+			{
+				$dateFilter = $dateFilter->_Or($endFilter);
+			}
 			$filter->_And($dateFilter);
 		}
 

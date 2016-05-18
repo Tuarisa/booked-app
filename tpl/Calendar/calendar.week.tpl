@@ -16,28 +16,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 *}
-{include file='globalheader.tpl' Select2=true Qtip=true Fullcalendar=true}
-<div class="page-calendar-week">
-	{include file='Calendar/calendar.filter.tpl'}
+{include file='globalheader.tpl' cssFiles='css/calendar.css,css/jquery.qtip.min.css,scripts/css/fullcalendar.css,css/schedule.css,scripts/css/jqtree.css' printCssFiles='scripts/css/fullcalendar.print.css'}
 
-	<div class="calendarHeading">
+{include file='Calendar/calendar.filter.tpl'}
 
-		<div style="float:left;">
-			<a href="{$PrevLink}"><img src="img/arrow_large_left.png" alt="Back"/></a>
-			{$MonthName} {$DisplayDate->Day()}, {$DisplayDate->Year()} ({translate key=Week})
-			<a href="{$NextLink}"><img src="img/arrow_large_right.png" alt="Forward"/></a>
-		</div>
+<div class="calendarHeading">
 
-		<div style="float:right;">
-			<a href="{CalendarUrl::Create($Today, CalendarTypes::Day)}" alt="Today" title="Today">{translate key=Today} {html_image src="calendar-day.png"}</a>
-			<a href="{CalendarUrl::Create($DisplayDate, CalendarTypes::Month)}" alt="View Month"
-			   title="View Month">{translate key=Month} {html_image src="calendar-select-month.png"}</a>
-		</div>
-
-		<div class="clear">&nbsp;</div>
-
+	<div style="float:left;">
+		<a href="{$PrevLink}"><img src="img/arrow_large_left.png" alt="Back" /></a>
+		{$MonthName} {$DisplayDate->Day()}, {$DisplayDate->Year()} ({translate key=Week})
+		<a href="{$NextLink}"><img src="img/arrow_large_right.png" alt="Forward" /></a>
 	</div>
 
-	{include file='Calendar/calendar.common.tpl' view='agendaWeek'}
+	<div style="float:right;">
+		<a href="{CalendarUrl::Create($Today, CalendarTypes::Day)}" alt="Today" title="Today">{translate key=Today} {html_image src="calendar-day.png"}</a>
+		<a href="{CalendarUrl::Create($DisplayDate, CalendarTypes::Month)}" alt="View Month" title="View Month">{translate key=Month} {html_image src="calendar-select-month.png"}</a>
+	</div>
+
+	<div class="clear">&nbsp;</div>
+
 </div>
+
+{include file='Calendar/calendar.common.tpl' view='agendaWeek'}
+
 {include file='globalfooter.tpl'}

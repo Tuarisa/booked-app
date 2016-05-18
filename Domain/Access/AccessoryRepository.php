@@ -23,29 +23,28 @@ require_once(ROOT_DIR . 'Domain/Accessory.php');
 interface IAccessoryRepository
 {
 	/**
+	 * @abstract
 	 * @param int $accessoryId
 	 * @return Accessory
 	 */
 	public function LoadById($accessoryId);
 
 	/**
-	 * @return Accessory[]
-	 */
-	public function LoadAll();
-
-	/**
+	 * @abstract
 	 * @param Accessory $accessory
      * @return int
 	 */
 	public function Add(Accessory $accessory);
 
 	/**
+	 * @abstract
 	 * @param Accessory $accessory
 	 * @return void
 	 */
 	public function Update(Accessory $accessory);
 
 	/**
+	 * @abstract
 	 * @param int $accessoryId
 	 * @return void
 	 */
@@ -64,15 +63,7 @@ class AccessoryRepository implements IAccessoryRepository
 
 		if ($row = $reader->GetRow())
 		{
-			$accessory = new Accessory($row[ColumnNames::ACCESSORY_ID], $row[ColumnNames::ACCESSORY_NAME], $row[ColumnNames::ACCESSORY_QUANTITY]);
-			$arReader = ServiceLocator::GetDatabase()->Query(new GetAccessoryResources($accessoryId));
-
-			while ($row = $arReader->GetRow())
-			{
-				$accessory->AddResource($row[ColumnNames::RESOURCE_ID], $row[ColumnNames::ACCESSORY_MINIMUM_QUANTITY], $row[ColumnNames::ACCESSORY_MAXIMUM_QUANTITY]);
-			}
-
-			return $accessory;
+			return new Accessory($row[ColumnNames::ACCESSORY_ID], $row[ColumnNames::ACCESSORY_NAME], $row[ColumnNames::ACCESSORY_QUANTITY]);
 		}
 
 		return null;
@@ -94,11 +85,6 @@ class AccessoryRepository implements IAccessoryRepository
 	public function Update(Accessory $accessory)
 	{
 		ServiceLocator::GetDatabase()->Execute(new UpdateAccessoryCommand($accessory->GetId(), $accessory->GetName(), $accessory->GetQuantityAvailable()));
-		ServiceLocator::GetDatabase()->Execute(new DeleteAcccessoryResourcesCommand($accessory->GetId()));
-		foreach ($accessory->Resources() as $resource)
-		{
-			ServiceLocator::GetDatabase()->Execute(new AddAccessoryResourceCommand($accessory->GetId(), $resource->ResourceId, $resource->MinQuantity, $resource->MaxQuantity));
-		}
 	}
 
 	/**
@@ -110,33 +96,5 @@ class AccessoryRepository implements IAccessoryRepository
 		ServiceLocator::GetDatabase()->Execute(new DeleteAccessoryCommand($accessoryId));
 	}
 
-	/**
-	 * @return Accessory[]
-	 */
-	public function LoadAll()
-	{
-		$reader = ServiceLocator::GetDatabase()->Query(new GetAllAccessoriesCommand());
-		$accessories = array();
-
-		while ($row = $reader->GetRow())
-		{
-			$accessory = new Accessory($row[ColumnNames::ACCESSORY_ID], $row[ColumnNames::ACCESSORY_NAME], $row[ColumnNames::ACCESSORY_QUANTITY]);
-
-			$resourceList = $row[ColumnNames::RESOURCE_ACCESSORY_LIST];
-			if (!empty($resourceList))
-			{
-				$pairs = explode('!sep!', $resourceList);
-
-				foreach ($pairs as $pair)
-				{
-					$nv = explode(',', $pair);
-					$accessory->AddResource($nv[0], $nv[1], $nv[2]);
-				}
-			}
-
-			$accessories[] = $accessory;
-		}
-
-		return $accessories;
-	}
 }
+?>

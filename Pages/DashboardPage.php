@@ -49,3 +49,4 @@ interface IDashboardPage
 {
 	function AddItem(DashboardItem $item);
 }
+?>

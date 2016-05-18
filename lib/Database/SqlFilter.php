@@ -201,8 +201,7 @@ class SqlFilterFreeForm extends BaseSqlFilter
 	/**
 	 * @var Criteria[]
 	 */
-	private $_criteria = array();
-	private $sql = '';
+	private $_criteria;
 
 	public function __construct($sql)
 	{

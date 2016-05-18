@@ -24,3 +24,5 @@ require_once(ROOT_DIR . 'Pages/Export/AtomSubscriptionPage.php');
 
 $page = new AtomSubscriptionPage();
 $page->PageLoad();
+
+?>

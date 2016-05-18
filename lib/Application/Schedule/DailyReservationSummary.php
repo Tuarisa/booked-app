@@ -16,17 +16,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 class DailyReservationSummary
 {
-	/**
-	 * @var ReservationListItem
-	 */
 	private $_first = null;
-
 	private $_count = 0;
-
-	/**
-	 * @var ReservationListItem[]
-	 */
-	private $_reservations = array();
 
 	/**
 	 * @return int
@@ -41,22 +32,17 @@ class DailyReservationSummary
 	 */
 	public function FirstReservation()
 	{
-		return $this->_first;
+		return $this->_first;;
 	}
 
-	public function Reservations()
-	{
-		return $this->_reservations;
-	}
-
-	public function AddReservation(ReservationListItem $item)
-	{
+	public function AddReservation(ReservationListItem $item) {
 		if ($this->_first == null)
 		{
 			$this->_first = $item;
 		}
 
 		$this->_count++;
-		$this->_reservations[] = $item;
 	}
 }
+
+?>

@@ -31,3 +31,5 @@ class ReservationDeletedEmail extends ReservationEmailMessage
        return 'ReservationDeleted.tpl';
     }
 }
+
+?>

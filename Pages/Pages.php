@@ -28,11 +28,8 @@ class Pages
 	const CALENDAR_SUBSCRIBE = 'ical-subscribe.php';
 	const CALENDAR_SUBSCRIBE_ATOM = 'atom-subscribe.php';
 	const DASHBOARD = 'dashboard.php';
-	const DISPLAY_RESOURCE = 'resource-display.php';
 	const DEFAULT_LOGIN = 'dashboard.php';
-	const GUEST_INVITATION_RESPONSES = 'guest-participation.php';
 	const FORGOT_PASSWORD = 'forgot.php';
-	const GUEST_RESERVATION = 'guest-reservation.php';
 	const INVITATION_RESPONSES = 'participation.php';
 	const LOGIN = 'index.php';
 	const MANAGE_RESERVATIONS = 'manage_reservations.php';
@@ -55,7 +52,7 @@ class Pages
 
 	private static $_pages = array(
 		1 => array('url' => Pages::DASHBOARD, 'name' => 'MyDashboard'),
-		2 => array('url' => Pages::SCHEDULE, 'name' => 'Schedule'),
+		2 => array('url' => Pages::SCHEDULE, 'name' => 'Bookings'),
 		3 => array('url' => Pages::MY_CALENDAR, 'name' => 'MyCalendar'),
 		4 => array('url' => Pages::CALENDAR, 'name' => 'ResourceCalendar')
 	);
@@ -74,3 +71,5 @@ class Pages
 		return self::$_pages;
 	}
 }
+
+?>

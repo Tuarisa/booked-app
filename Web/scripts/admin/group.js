@@ -3,14 +3,13 @@ function GroupManagement(opts) {
 
 	var elements = {
 		activeId: $('#activeId'),
-		groupList: $('#groupList'),
+		groupList: $('table.list'),
 
 		autocompleteSearch: $('#groupSearch'),
 		userSearch: $('#userSearch'),
 
 		groupUserList: $('#groupUserList'),
 		membersDialog: $('#membersDialog'),
-		allUsersList: $('#allUsersList'),
 		permissionsDialog: $('#permissionsDialog'),
 		deleteDialog: $('#deleteDialog'),
 		renameDialog: $('#renameDialog'),
@@ -33,6 +32,14 @@ function GroupManagement(opts) {
 
 	GroupManagement.prototype.init = function() {
 
+		ConfigureAdminDialog(elements.membersDialog, 420, 500);
+		ConfigureAdminDialog(elements.permissionsDialog, 400, 300);
+		ConfigureAdminDialog(elements.deleteDialog,  400, 300);
+		ConfigureAdminDialog(elements.renameDialog, 500, 100);
+		ConfigureAdminDialog(elements.browseUserDialog, 500, 100);
+		ConfigureAdminDialog(elements.rolesDialog, 500, 300);
+		ConfigureAdminDialog(elements.groupAdminDialog, 500, 100);
+
 		elements.groupList.delegate('a.update', 'click', function(e) {
 			setActiveId($(this));
 			e.preventDefault();
@@ -48,7 +55,6 @@ function GroupManagement(opts) {
 
 		elements.groupList.delegate('.members', 'click', function() {
 			changeMembers();
-			elements.membersDialog.modal('show');
 		});
 
 		elements.groupList.delegate('.delete', 'click', function() {
@@ -73,33 +79,8 @@ function GroupManagement(opts) {
 			removeUserFromGroup($(this), userId);
 		});
 
-		elements.autocompleteSearch.autocomplete({
-			source: function(request, response) {
-				$.ajax({
-					url: options.groupAutocompleteUrl,
-					dataType: "json",
-					data: {
-						term: request.term
-					},
-					success: function(data) {
-						response($.map(data, function(item) {
-							return {
-								label: item.Name,
-								value: item.Id
-							}
-						}));
-					}
-				});
-			},
-			focus: function(event, ui) {
-				elements.autocompleteSearch.val(ui.item.label);
-				return false;
-			},
-			select: function(event, ui) {
-				elements.autocompleteSearch.val(ui.item.label);
-				window.location.href = options.selectGroupUrl + ui.item.value
-				return false;
-			}
+		elements.autocompleteSearch.groupAutoComplete(options.groupAutocompleteUrl, function(ui){
+			window.location.href = options.selectGroupUrl + ui.item.value
 		});
 
 		elements.userSearch.userAutoComplete(options.userAutocompleteUrl, function(ui) {
@@ -116,11 +97,11 @@ function GroupManagement(opts) {
 		});
 
 		$(".cancel").click(function() {
-			$(this).closest('.dialog').modal("hide");
+			$(this).closest('.dialog').dialog("close");
 		});
 
 		var hidePermissionsDialog = function() {
-			elements.permissionsDialog.modal('hide');
+			elements.permissionsDialog.dialog('close');
 		};
 
 		var error = function(errorText) {
@@ -131,19 +112,18 @@ function GroupManagement(opts) {
 			showAllUsersToAdd();
 		});
 
-		ConfigureAsyncForm(elements.addUserForm, getSubmitCallback(options.actions.addUser), changeMembers, error);
-		ConfigureAsyncForm(elements.removeUserForm, getSubmitCallback(options.actions.removeUser), changeMembers, error);
-		ConfigureAsyncForm(elements.permissionsForm, getSubmitCallback(options.actions.permissions), hidePermissionsDialog, error);
-		ConfigureAsyncForm(elements.renameGroupForm, getSubmitCallback(options.actions.renameGroup), null, error);
-		ConfigureAsyncForm(elements.deleteGroupForm, getSubmitCallback(options.actions.deleteGroup), null, error);
-		ConfigureAsyncForm(elements.addForm, getSubmitCallback(options.actions.addGroup), null, error);
-		ConfigureAsyncForm(elements.rolesForm, getSubmitCallback(options.actions.roles), null, error);
-		ConfigureAsyncForm(elements.groupAdminForm, getSubmitCallback(options.actions.groupAdmin), null, error);
+		ConfigureAdminForm(elements.addUserForm, getSubmitCallback(options.actions.addUser), changeMembers, error);
+		ConfigureAdminForm(elements.removeUserForm, getSubmitCallback(options.actions.removeUser), changeMembers, error);
+		ConfigureAdminForm(elements.permissionsForm, getSubmitCallback(options.actions.permissions), hidePermissionsDialog, error);
+		ConfigureAdminForm(elements.renameGroupForm, getSubmitCallback(options.actions.renameGroup), null, error);
+		ConfigureAdminForm(elements.deleteGroupForm, getSubmitCallback(options.actions.deleteGroup), null, error);
+		ConfigureAdminForm(elements.addForm, getSubmitCallback(options.actions.addGroup), null, error);
+		ConfigureAdminForm(elements.rolesForm, getSubmitCallback(options.actions.roles), null, error);
+		ConfigureAdminForm(elements.groupAdminForm, getSubmitCallback(options.actions.groupAdmin), null, error);
 	};
 
 	var showAllUsersToAdd = function() {
-		elements.membersDialog.modal('hide');
-		elements.allUsersList.empty();
+		elements.browseUserDialog.empty();
 
 		if (allUserList == null) {
 			$.ajax({
@@ -161,16 +141,17 @@ function GroupManagement(opts) {
 		{
 			$.map(allUserList, function(item) {
 				if (elements.groupUserList.data('userIds')[item.Id] == undefined) {
-					items.push('<div><a href="#" class="add"><img src="../img/plus-button.png" alt="Add To Group" /></a> ' + item.DisplayName + '<input type="hidden" class="id" value="' + item.Id + '"/></div>');
+					items.push('<li><a href="#" class="add"><img src="../img/plus-button.png" alt="Add To Group" /></a> ' + item.DisplayName + '<input type="hidden" class="id" value="' + item.Id + '"/></li></li>');
 				}
 				else {
-					items.push('<div><img src="../img/tick-white.png" alt="Group Member" /> <span>' + item.DisplayName + '</span></div>');
+					items.push('<li><img src="../img/tick-white.png" alt="Group Member" /> <span>' + item.DisplayName + '</span></li>');
 				}
 			});
 		}
 
-		$('<div/>', {'class': '', html: items.join('')}).appendTo(elements.allUsersList);
-		elements.browseUserDialog.modal('show');
+		$('<ul/>', {'class': '', html: items.join('')}).appendTo(elements.browseUserDialog);
+
+		elements.browseUserDialog.dialog('open');
 	};
 
 	var getSubmitCallback = function(action) {
@@ -180,7 +161,7 @@ function GroupManagement(opts) {
 	};
 
 	function setActiveId(activeElement) {
-		var id = activeElement.closest('tr').attr('data-group-id');
+		var id = activeElement.parents('td').siblings('td.id').find(':hidden').val();
 		elements.activeId.val(id);
 	}
 
@@ -189,7 +170,7 @@ function GroupManagement(opts) {
 	}
 
 	var renameGroup = function() {
-		elements.renameDialog.modal('show');
+		elements.renameDialog.dialog('open');
 	};
 
 	var changeMembers = function() {
@@ -202,7 +183,7 @@ function GroupManagement(opts) {
 			if (data.Users != null)
 			{
 				$.map(data.Users, function(item) {
-					items.push('<div><a href="#" class="delete"><img src="../img/cross-button.png" /></a> ' + item.DisplayName + '<input type="hidden" class="id" value="' + item.Id + '"/></div>');
+					items.push('<li><a href="#" class="delete"><img src="../img/cross-button.png" /></a> ' + item.DisplayName + '<input type="hidden" class="id" value="' + item.Id + '"/></li>');
 					userIds[item.Id] = item.Id;
 				});
 			}
@@ -210,7 +191,8 @@ function GroupManagement(opts) {
 			elements.groupUserList.empty();
 			elements.groupUserList.data('userIds', userIds);
 
-			$('<div/>', {'class': '', html: items.join('')}).appendTo(elements.groupUserList);
+			$('<ul/>', {'class': '', html: items.join('')}).appendTo(elements.groupUserList);
+			elements.membersDialog.dialog('open');
 		});
 	};
 
@@ -231,15 +213,15 @@ function GroupManagement(opts) {
 		$.get(opts.permissionsUrl, data, function(resourceIds) {
 			elements.permissionsForm.find(':checkbox').attr('checked', false);
 			$.each(resourceIds, function(index, value) {
-				elements.permissionsForm.find(':checkbox[value="' + value + '"]').prop('checked', true);
+				elements.permissionsForm.find(':checkbox[value="' + value + '"]').attr('checked', true);
 			});
 
-			elements.permissionsDialog.modal('show');
+			elements.permissionsDialog.dialog('open');
 		});
 	};
 
 	var deleteGroup = function() {
-		elements.deleteDialog.modal('show');
+		elements.deleteDialog.dialog('open');
 	};
 
 	var changeRoles = function() {
@@ -249,10 +231,10 @@ function GroupManagement(opts) {
 		$.get(opts.rolesUrl, data, function(roleIds) {
 			elements.rolesForm.find(':checkbox').attr('checked', false);
 			$.each(roleIds, function(index, value) {
-				elements.rolesForm.find(':checkbox[value="' + value + '"]').prop('checked', true);
+				elements.rolesForm.find(':checkbox[value="' + value + '"]').attr('checked', true);
 			});
 
-			elements.rolesDialog.modal('show');
+			elements.rolesDialog.dialog('open');
 		});
 	};
 
@@ -261,6 +243,6 @@ function GroupManagement(opts) {
 
 		elements.groupAdminForm.find('select').val('');
 		
-		elements.groupAdminDialog.modal('show');
+		elements.groupAdminDialog.dialog('open');
 	};
 }

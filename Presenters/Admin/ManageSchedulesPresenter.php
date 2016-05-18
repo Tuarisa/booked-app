@@ -28,15 +28,13 @@ class ManageSchedules
 {
 	const ActionAdd = 'add';
 	const ActionChangeLayout = 'changeLayout';
-	const ActionChangeStartDay = 'startDay';
-	const ActionChangeDaysVisible = 'daysVisible';
+	const ActionChangeSettings = 'settings';
 	const ActionMakeDefault = 'makeDefault';
 	const ActionRename = 'rename';
 	const ActionDelete = 'delete';
 	const ActionEnableSubscription = 'enableSubscription';
 	const ActionDisableSubscription = 'disableSubscription';
 	const ChangeAdminGroup = 'changeAdminGroup';
-	const ActionChangePeakTimes = 'ActionChangePeakTimes';
 }
 
 class ManageScheduleService
@@ -117,22 +115,15 @@ class ManageScheduleService
 
 	/**
 	 * @param int $scheduleId
-	 * @param int|null $startDay
-	 * @param int|null $daysVisible
+	 * @param int $startDay
+	 * @param int $daysVisible
 	 */
 	public function ChangeSettings($scheduleId, $startDay, $daysVisible)
 	{
 		Log::Debug('Changing scheduleId %s, WeekdayStart: %s, DaysVisible %s', $scheduleId, $startDay, $daysVisible);
 		$schedule = $this->scheduleRepository->LoadById($scheduleId);
-		if (!is_null($startDay))
-		{
-			$schedule->SetWeekdayStart($startDay);
-		}
-
-		if (!is_null($daysVisible))
-		{
-			$schedule->SetDaysVisible($daysVisible);
-		}
+		$schedule->SetWeekdayStart($startDay);
+		$schedule->SetDaysVisible($daysVisible);
 
 		$this->scheduleRepository->Update($schedule);
 	}
@@ -229,29 +220,6 @@ class ManageScheduleService
 	{
 		return $this->scheduleRepository->GetList($pageNumber, $pageSize);
 	}
-
-	/**
-	 * @param int $scheduleId
-	 * @param PeakTimes $peakTimes
-	 * @return IScheduleLayout
-	 */
-	public function ChangePeakTimes($scheduleId, PeakTimes $peakTimes)
-	{
-		$layout = $this->scheduleRepository->GetLayout($scheduleId, new ScheduleLayoutFactory(null));
-		$layout->ChangePeakTimes($peakTimes);
-		$this->scheduleRepository->UpdatePeakTimes($scheduleId, $layout);
-
-		return $layout;
-	}
-
-	public function DeletePeakTimes($scheduleId)
-	{
-		$layout = $this->scheduleRepository->GetLayout($scheduleId, new ScheduleLayoutFactory(null));
-		$layout->RemovePeakTimes();
-		$this->scheduleRepository->UpdatePeakTimes($scheduleId, $layout);
-
-		return $layout;
-	}
 }
 
 class ManageSchedulesPresenter extends ActionPresenter
@@ -281,15 +249,13 @@ class ManageSchedulesPresenter extends ActionPresenter
 
 		$this->AddAction(ManageSchedules::ActionAdd, 'Add');
 		$this->AddAction(ManageSchedules::ActionChangeLayout, 'ChangeLayout');
-		$this->AddAction(ManageSchedules::ActionChangeStartDay, 'ChangeStartDay');
-		$this->AddAction(ManageSchedules::ActionChangeDaysVisible, 'ChangeDaysVisible');
+		$this->AddAction(ManageSchedules::ActionChangeSettings, 'ChangeSettings');
 		$this->AddAction(ManageSchedules::ActionMakeDefault, 'MakeDefault');
 		$this->AddAction(ManageSchedules::ActionRename, 'Rename');
 		$this->AddAction(ManageSchedules::ActionDelete, 'Delete');
 		$this->AddAction(ManageSchedules::ActionEnableSubscription, 'EnableSubscription');
 		$this->AddAction(ManageSchedules::ActionDisableSubscription, 'DisableSubscription');
 		$this->AddAction(ManageSchedules::ChangeAdminGroup, 'ChangeAdminGroup');
-		$this->AddAction(ManageSchedules::ActionChangePeakTimes, 'ChangePeakTimes');
 	}
 
 	public function PageLoad()
@@ -349,23 +315,16 @@ class ManageSchedulesPresenter extends ActionPresenter
 	 */
 	public function Rename()
 	{
-		$this->manageSchedulesService->Rename($this->page->GetScheduleId(), $this->page->GetValue());
+		$this->manageSchedulesService->Rename($this->page->GetScheduleId(), $this->page->GetScheduleName());
 	}
 
 	/**
 	 * @internal should only be used for testing
 	 */
-	public function ChangeStartDay()
+	public function ChangeSettings()
 	{
-		$this->manageSchedulesService->ChangeSettings($this->page->GetScheduleId(), $this->page->GetValue(), null);
-	}
-
-	/**
-	 * @internal should only be used for testing
-	 */
-	public function ChangeDaysVisible()
-	{
-		$this->manageSchedulesService->ChangeSettings($this->page->GetScheduleId(), null, $this->page->GetValue());
+		$this->manageSchedulesService->ChangeSettings($this->page->GetScheduleId(), $this->page->GetStartDay(),
+													  $this->page->GetDaysVisible());
 	}
 
 	/**
@@ -398,7 +357,7 @@ class ManageSchedulesPresenter extends ActionPresenter
 	 */
 	public function ChangeAdminGroup()
 	{
-		$this->manageSchedulesService->ChangeAdminGroup($this->page->GetScheduleId(), $this->page->GetValue());
+		$this->manageSchedulesService->ChangeAdminGroup($this->page->GetScheduleId(), $this->page->GetAdminGroupId());
 	}
 
 	/**
@@ -427,37 +386,6 @@ class ManageSchedulesPresenter extends ActionPresenter
 		$this->manageSchedulesService->DisableSubscription($this->page->GetScheduleId());
 	}
 
-	public function ChangePeakTimes()
-	{
-		$scheduleId = $this->page->GetScheduleId();
-		$deletePeak = $this->page->GetDeletePeakTimes();
-
-		if ($deletePeak)
-		{
-			$layout = $this->manageSchedulesService->DeletePeakTimes($scheduleId);
-		}
-		else
-		{
-			$allDay = $this->page->GetPeakAllDay();
-			$beginTime = $this->page->GetPeakBeginTime();
-			$endTime = $this->page->GetPeakEndTime();
-
-			$everyDay = $this->page->GetPeakEveryDay();
-			$peakDays = $this->page->GetPeakWeekdays();
-
-			$allYear = $this->page->GetPeakAllYear();
-			$beginDay = $this->page->GetPeakBeginDay();
-			$beginMonth = $this->page->GetPeakBeginMonth();
-			$endDay = $this->page->GetPeakEndDay();
-			$endMonth = $this->page->GetPeakEndDMonth();
-
-
-			$peakTimes = new PeakTimes($allDay, $beginTime, $endTime, $everyDay, $peakDays, $allYear, $beginDay, $beginMonth, $endDay, $endMonth);
-			$layout = $this->manageSchedulesService->ChangePeakTimes($scheduleId, $peakTimes);
-		}
-		$this->page->DisplayPeakTimes($layout);
-	}
-
 	protected function LoadValidators($action)
 	{
 		if ($action == ManageSchedules::ActionChangeLayout)
@@ -477,5 +405,4 @@ class ManageSchedulesPresenter extends ActionPresenter
 										   new LayoutValidator($reservableSlots, $blockedSlots, $validateSingle));
 		}
 	}
-
 }

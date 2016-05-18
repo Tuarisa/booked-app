@@ -34,9 +34,12 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 {csrf_token}
 
+{jsfile src="js/jquery.qtip.min.js"}
 {jsfile src="reservationPopup.js"}
 {jsfile src="calendar.js"}
-{jsfile src="ajax-helpers.js"}
+{jsfile src="js/fullcalendar.min.js"}
+{jsfile src="admin/edit.js"}
+{jsfile src="js/tree.jquery.js"}
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -45,7 +48,7 @@ $(document).ready(function() {
 	{foreach from=$Calendar->Reservations() item=reservation}
 		reservations.push({
 			id: '{$reservation->ReferenceNumber}',
-			title: '{$reservation->ResourceName|escape:javascript} {$reservation->Title|escape:javascript}',
+			title: '{$reservation->DisplayTitle|escape:javascript}',
 			start: '{format_date date=$reservation->StartDate key=fullcalendar}',
 			end: '{format_date date=$reservation->EndDate key=fullcalendar}',
 			url: 'reservation.php?rn={$reservation->ReferenceNumber}',

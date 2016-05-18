@@ -19,24 +19,25 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once(ROOT_DIR . 'Domain/Access/namespace.php');
-require_once(ROOT_DIR . 'lib/Application/Authorization/namespace.php');
 
 class AnnouncementPresenter
 {
 	private $_control;
 	private $_announcements;
-	private $_permissionService;
 
 	/**
 	 * @param IAnnouncementsControl $control the control to populate
 	 * @param IAnnouncementRepository $announcements Announcements domain object
-	 * @param IPermissionService $permissionService
 	 */
-	public function __construct(IAnnouncementsControl $control, IAnnouncementRepository $announcements, IPermissionService $permissionService)
+	public function __construct(IAnnouncementsControl $control, $announcements = null)
 	{
 		$this->_control = $control;
+
 		$this->_announcements = $announcements;
-		$this->_permissionService = $permissionService;
+		if (is_null($announcements))
+		{
+			$this->_announcements = new AnnouncementRepository();
+		}
 	}
 
 	public function PageLoad()
@@ -46,17 +47,6 @@ class AnnouncementPresenter
 
 	private function PopulateAnnouncements()
 	{
-		$announcements = $this->_announcements->GetFuture();
-		$user = ServiceLocator::GetServer()->GetUserSession();
-
-		$userAnnouncement = array();
-		foreach ($announcements as $announcement)
-		{
-			if ($announcement->AppliesToUser($user, $this->_permissionService))
-			{
-				$userAnnouncement[] = $announcement;
-			}
-		}
-		$this->_control->SetAnnouncements($userAnnouncement);
+		$this->_control->SetAnnouncements($this->_announcements->GetFuture());
 	}
 }

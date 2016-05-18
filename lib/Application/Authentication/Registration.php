@@ -23,48 +23,26 @@ class Registration implements IRegistration
 	/**
 	 * @var PasswordEncryption
 	 */
-	private $passwordEncryption;
+	private $_passwordEncryption;
 
 	/**
 	 * @var IUserRepository
 	 */
-	private $userRepository;
+	private $_userRepository;
 
-	/**
-	 * @var IRegistrationNotificationStrategy
-	 */
-	private $notificationStrategy;
-
-	/**
-	 * @var IRegistrationPermissionStrategy
-	 */
-	private $permissionAssignmentStrategy;
-
-	public function __construct($passwordEncryption = null, $userRepository = null, $notificationStrategy = null, $permissionAssignmentStrategy = null)
+	public function __construct($passwordEncryption = null, $userRepository = null)
 	{
-		$this->passwordEncryption = $passwordEncryption;
-		$this->userRepository = $userRepository;
-		$this->notificationStrategy = $notificationStrategy;
-		$this->permissionAssignmentStrategy = $permissionAssignmentStrategy;
+		$this->_passwordEncryption = $passwordEncryption;
+		$this->_userRepository = $userRepository;
 
 		if ($passwordEncryption == null)
 		{
-			$this->passwordEncryption = new PasswordEncryption();
+			$this->_passwordEncryption = new PasswordEncryption();
 		}
 
 		if ($userRepository == null)
 		{
-			$this->userRepository = new UserRepository();
-		}
-
-		if ($notificationStrategy == null)
-		{
-			$this->notificationStrategy = new RegistrationNotificationStrategy();
-		}
-
-		if ($permissionAssignmentStrategy == null)
-		{
-			$this->permissionAssignmentStrategy = new RegistrationPermissionStrategy();
+			$this->_userRepository = new UserRepository();
 		}
 	}
 
@@ -72,8 +50,7 @@ class Registration implements IRegistration
 							 $homepageId, $additionalFields = array(), $attributeValues = array(), $groups = null)
 	{
 		$homepageId = empty($homepageId) ? Pages::DEFAULT_HOMEPAGE_ID : $homepageId;
-		$encryptedPassword = $this->passwordEncryption->EncryptPassword($password);
-		$timezone = empty($timezone) ? Configuration::Instance()->GetKey(ConfigKeys::DEFAULT_TIMEZONE) : $timezone;
+		$encryptedPassword = $this->_passwordEncryption->EncryptPassword($password);
 
 		$attributes = new UserAttribute($additionalFields);
 
@@ -101,13 +78,13 @@ class Registration implements IRegistration
 			}
 		}
 
-		$userId = $this->userRepository->Add($user);
-		if ($user->Id() != $userId)
+		$userId = $this->_userRepository->Add($user);
+		$this->AutoAssignPermissions($userId);
+
+		if (Configuration::Instance()->GetKey(ConfigKeys::REGISTRATION_NOTIFY, new BooleanConverter()))
 		{
-			$user->WithId($userId);
+			ServiceLocator::GetEmailService()->Send(new AccountCreationEmail($user, ServiceLocator::GetServer()->GetUserSession()));
 		}
-		$this->permissionAssignmentStrategy->AddAccount($user);
-		$this->notificationStrategy->NotifyAccountCreated($user, $password);
 
 		return $user;
 	}
@@ -122,7 +99,7 @@ class Registration implements IRegistration
 
 	public function UserExists($loginName, $emailAddress)
 	{
-		$userId = $this->userRepository->UserExists($emailAddress, $loginName);
+		$userId = $this->_userRepository->UserExists($emailAddress, $loginName);
 
 		return !empty($userId);
 	}
@@ -136,15 +113,15 @@ class Registration implements IRegistration
 				return;
 			}
 
-			$encryptedPassword = $this->passwordEncryption->EncryptPassword($user->Password());
+			$encryptedPassword = $this->_passwordEncryption->EncryptPassword($user->Password());
 			$command = new UpdateUserFromLdapCommand($user->UserName(), $user->Email(), $user->FirstName(), $user->LastName(), $encryptedPassword->EncryptedPassword(), $encryptedPassword->Salt(), $user->Phone(), $user->Organization(), $user->Title());
 			ServiceLocator::GetDatabase()->Execute($command);
 
 			if ($user->GetGroups() != null)
 			{
-				$updatedUser = $this->userRepository->LoadByUsername($user->Username());
+				$updatedUser = $this->_userRepository->LoadByUsername($user->Username());
 				$updatedUser->ChangeGroups($user->GetGroups());
-				$this->userRepository->Update($updatedUser);
+				$this->_userRepository->Update($updatedUser);
 			}
 		}
 		else
@@ -160,17 +137,15 @@ class Registration implements IRegistration
 							$user->GetGroups());
 		}
 	}
-}
 
-class AdminRegistration extends Registration
-{
-	protected function CreatePending()
+	private function AutoAssignPermissions($userId)
 	{
-		return false;
+		$autoAssignCommand = new AutoAssignPermissionsCommand($userId);
+		ServiceLocator::GetDatabase()->Execute($autoAssignCommand);
 	}
 }
 
-class GuestRegistration extends Registration
+class AdminRegistration extends Registration
 {
 	protected function CreatePending()
 	{

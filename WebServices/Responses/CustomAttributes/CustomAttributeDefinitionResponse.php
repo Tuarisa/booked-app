@@ -59,19 +59,9 @@ class CustomAttributeDefinitionResponse extends RestResponse
 	public $sortOrder;
 
 	/**
-	 * @var int[]
+	 * @var int
 	 */
-	public $appliesToIds = array();
-
-	/**
-	 * @var bool
-	 */
-	public $adminOnly;
-
-	/**
-	 * @var bool
-	 */
-	public $isPrivate;
+	public $appliesToId;
 
 	public function __construct(IRestServer $server, CustomAttribute $attribute)
 	{
@@ -83,8 +73,7 @@ class CustomAttributeDefinitionResponse extends RestResponse
 		$this->required = $attribute->Required();
 		$this->type = $attribute->Type();
 		$this->sortOrder = $attribute->SortOrder();
-		$this->appliesToIds = $attribute->EntityIds();
-		$this->isPrivate = $attribute->IsPrivate();
+		$this->appliesToId = $attribute->EntityId();
 
 		$this->AddService($server, WebServices::AllCustomAttributes, array(WebServiceParams::AttributeCategoryId => $this->categoryId));
 		$this->AddService($server, WebServices::GetCustomAttribute, array(WebServiceParams::AttributeId => $this->id));
@@ -119,8 +108,6 @@ class ExampleCustomAttributeDefinitionResponse extends CustomAttributeDefinition
 		$this->regex = 'validation regex';
 		$this->required = true;
 		$this->sortOrder = 100;
-		$this->appliesToIds = array(10);
-		$this->adminOnly = true;
-		$this->isPrivate = true;
+		$this->appliesToId = 10;
 	}
 }

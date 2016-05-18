@@ -30,4 +30,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{/foreach}
 	</div>
 </div>
+{else}
+	Unauthorized
 {/if}

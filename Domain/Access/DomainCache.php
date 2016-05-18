@@ -48,17 +48,11 @@ class DomainCache
 	/**
 	 * @param mixed $key
 	 * @param mixed $object
+	 * @return void
 	 */
 	public function Add($key, $object)
 	{
 		$this->_cache[$key] = $object;
 	}
-
-	/**
-	 * @param mixed $key
-	 */
-	public function Remove($key)
-	{
-		unset($this->_cache[$key]);
-	}
 }
+?>

@@ -29,7 +29,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 	<div id="calendar"></div>
 
-	<div id="dayDialog" class="default-box-shadow">
+	<div id="dayDialog" class="dialog">
 		<a href="#" id="dayDialogCreate">{html_image src="tick.png"}{translate key=CreateReservation}</a>
 		<a href="#" id="dayDialogView">{html_image src="search.png"}{translate key=ViewDay}</a>
 		<a href="#" id="dayDialogCancel">{html_image src="slash.png"}{translate key=Cancel}</a>
@@ -41,8 +41,11 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 {csrf_token}
 
+{jsfile src="js/jquery.qtip.min.js"}
 {jsfile src="reservationPopup.js"}
 {jsfile src="calendar.js"}
+{jsfile src="js/fullcalendar.min.js"}
+{jsfile src="js/tree.jquery.js"}
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -81,7 +84,6 @@ $(document).ready(function() {
 
 	var calendar = new Calendar(options, reservations);
 	calendar.init();
-
 	calendar.bindResourceGroups({$ResourceGroupsAsJson}, {$SelectedGroupNode|default:0});
 });
 </script>

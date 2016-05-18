@@ -78,9 +78,6 @@ class ReservationApprovalPresenter implements IReservationApprovalPresenter
 			$series->Approve($this->userSession);
 			$this->handler->Handle($series, $this->page);
 		}
-		else {
-			$this->page->SetErrors('error');
-		}
 	}
 }
 
@@ -117,14 +114,7 @@ class ReservationViewAdapter extends ReservationView
 
 		foreach($series->AllResources() as $resource)
 		{
-			$this->Resources[] = new ReservationResourceView($resource->GetId(),
-															 $resource->GetName(),
-															 $resource->GetAdminGroupId(),
-															 $resource->GetScheduleId(),
-															 $resource->GetScheduleAdminGroupId(),
-															 $resource->GetStatusId(),
-															 $resource->IsCheckInEnabled(),
-															 $resource->GetAutoReleaseMinutes());
+			$this->Resources[] = new ReservationResourceView($resource->GetId(), $resource->GetName(), $resource->GetAdminGroupId(), $resource->GetScheduleId(), $resource->GetScheduleAdminGroupId(), $resource->GetStatusId());
 		}
 
 		$this->ScheduleId = $series->ScheduleId();

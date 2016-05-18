@@ -15,12 +15,13 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once(ROOT_DIR . 'Domain/namespace.php');
-require_once(ROOT_DIR . 'Pages/Reservation/NewReservationPage.php');
+require_once(ROOT_DIR . 'Pages/NewReservationPage.php');
 
 class NewReservationPreconditionService implements INewReservationPreconditionService
 {
 	public function CheckAll(INewReservationPage $page, UserSession $user)
 	{
+		// no op
 	}
 }
 

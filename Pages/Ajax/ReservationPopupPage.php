@@ -164,8 +164,7 @@ class ReservationPopupPage extends Page implements IReservationPopupPage
 		$this->_presenter = new ReservationPopupPresenter($this,
 														  new ReservationViewRepository(),
 														  new ReservationAuthorization(PluginManager::Instance()->LoadAuthorization()),
-														  new AttributeService(new AttributeRepository()),
-														  new UserRepository());
+														  new AttributeService(new AttributeRepository()));
 	}
 
 	public function IsAuthenticated()
@@ -293,22 +292,15 @@ class ReservationPopupPresenter
 	 */
 	private $attributeService;
 
-	/**
-	 * @var IUserRepository
-	 */
-	private $_userRepository;
-
 	public function __construct(IReservationPopupPage $page,
 								IReservationViewRepository $reservationRepository,
 								IReservationAuthorization $reservationAuthorization,
-								IAttributeService $attributeService,
-								IUserRepository $userRepository)
+								IAttributeService $attributeService)
 	{
 		$this->_page = $page;
 		$this->_reservationRepository = $reservationRepository;
 		$this->_reservationAuthorization = $reservationAuthorization;
 		$this->attributeService = $attributeService;
-		$this->_userRepository = $userRepository;
 	}
 
 	public function PageLoad()
@@ -350,22 +342,6 @@ class ReservationPopupPresenter
 		$this->_page->SetAccessories($reservation->Accessories);
 
 		$this->_page->SetDates($startDate, $endDate);
-
-		$user = $this->_userRepository->LoadById(ServiceLocator::GetServer()->GetUserSession()->UserId);
-		$owner = $this->_userRepository->LoadById($reservation->OwnerId);
-
-		$canViewAdminAttributes = $user->IsAdminFor($owner);
-
-		if (!$canViewAdminAttributes)
-		{
-			foreach ($reservation->Resources as $resource)
-			{
-				if ($user->IsResourceAdminFor($resource)){
-					$canViewAdminAttributes = true;
-					break;
-				}
-			}
-		}
 
 		$attributeValues = $this->attributeService->GetReservationAttributes($userSession, $reservation);
 

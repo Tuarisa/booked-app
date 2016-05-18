@@ -1,17 +1,17 @@
 <?php
 /**
- * Copyright 2013-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2013-2015 Nick Korbel
+
+This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Domain/Access/namespace.php');
@@ -34,16 +34,16 @@ interface IManageUsersService
 	 * @return User
 	 */
 	public function AddUser(
-			$username,
-			$email,
-			$firstName,
-			$lastName,
-			$password,
-			$timezone,
-			$language,
-			$homePageId,
-			$extraAttributes,
-			$customAttributes);
+		$username,
+		$email,
+		$firstName,
+		$lastName,
+		$password,
+		$timezone,
+		$language,
+		$homePageId,
+		$extraAttributes,
+		$customAttributes);
 
 	/**
 	 * @param $userId int
@@ -59,9 +59,9 @@ interface IManageUsersService
 
 	/**
 	 * @param $userId int
-	 * @param $attribute AttributeValue
+	 * @param $attributes AttributeValue[]|array
 	 */
-	public function ChangeAttributes($userId, $attribute);
+	public function ChangeAttributes($userId, $attributes);
 
 	/**
 	 * @param $userId int
@@ -97,8 +97,7 @@ class ManageUsersService implements IManageUsersService
 	 */
 	private $userViewRepository;
 
-	public function __construct(IRegistration $registration, IUserRepository $userRepository, IGroupRepository $groupRepository,
-								IUserViewRepository $userViewRepository)
+	public function __construct(IRegistration $registration, IUserRepository $userRepository, IGroupRepository $groupRepository, IUserViewRepository $userViewRepository)
 	{
 		$this->registration = $registration;
 		$this->userRepository = $userRepository;
@@ -107,16 +106,16 @@ class ManageUsersService implements IManageUsersService
 	}
 
 	public function AddUser(
-			$username,
-			$email,
-			$firstName,
-			$lastName,
-			$password,
-			$timezone,
-			$language,
-			$homePageId,
-			$extraAttributes,
-			$customAttributes)
+		$username,
+		$email,
+		$firstName,
+		$lastName,
+		$password,
+		$timezone,
+		$language,
+		$homePageId,
+		$extraAttributes,
+		$customAttributes)
 	{
 		$user = $this->registration->Register($username,
 											  $email,
@@ -132,10 +131,10 @@ class ManageUsersService implements IManageUsersService
 		return $user;
 	}
 
-	public function ChangeAttributes($userId, $attribute)
+	public function ChangeAttributes($userId, $attributes)
 	{
 		$user = $this->userRepository->LoadById($userId);
-		$user->ChangeCustomAttribute($attribute);
+		$user->ChangeCustomAttributes($attributes);
 		$this->userRepository->Update($user);
 	}
 
@@ -203,7 +202,7 @@ class ManageUsersService implements IManageUsersService
 			}
 		}
 
-		foreach ($existingGroupIds as $existingId)
+		foreach($existingGroupIds as $existingId)
 		{
 			if (!in_array($existingId, $groupIds))
 			{

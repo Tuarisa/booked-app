@@ -22,5 +22,6 @@ define('ROOT_DIR', '../../');
 
 require_once(ROOT_DIR . 'Pages/Admin/ManageAnnouncementsPage.php');
 
-$page = new RoleRestrictedPageDecorator(new ManageAnnouncementsPage());
+$page = new AdminPageDecorator(new ManageAnnouncementsPage());
 $page->PageLoad();
+?>

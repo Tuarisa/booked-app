@@ -1,22 +1,22 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
- */
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 require_once(ROOT_DIR . 'Pages/Admin/AdminPage.php');
 require_once(ROOT_DIR . 'Presenters/Admin/ManageAccessoriesPresenter.php');
@@ -24,11 +24,13 @@ require_once(ROOT_DIR . 'Presenters/Admin/ManageAccessoriesPresenter.php');
 interface IManageAccessoriesPage extends IActionPage
 {
 	/**
+	 * @abstract
 	 * @return int
 	 */
 	public function GetAccessoryId();
 
 	/**
+	 * @abstract
 	 * @return string
 	 */
 	public function GetAccessoryName();
@@ -39,34 +41,11 @@ interface IManageAccessoriesPage extends IActionPage
 	public function GetQuantityAvailable();
 
 	/**
+	 * @abstract
 	 * @param $accessories AccessoryDto[]
+	 * @return void
 	 */
 	public function BindAccessories($accessories);
-
-	/**
-	 * @param BookableResource[] $resources
-	 */
-	public function BindResources($resources);
-
-	/**
-	 * @param ResourceAccessory[] $resources
-	 */
-	public function SetAccessoryResources($resources);
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResources();
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResourcesMinimums();
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResourcesMaximums();
 }
 
 class ManageAccessoriesPage extends ActionPage implements IManageAccessoriesPage
@@ -125,64 +104,8 @@ class ManageAccessoriesPage extends ActionPage implements IManageAccessoriesPage
 
 	public function ProcessDataRequest($dataRequest)
 	{
-		$this->presenter->ProcessDataRequest($dataRequest);
-	}
-
-	/**
-	 * @param BookableResource[] $resources
-	 */
-	public function BindResources($resources)
-	{
-		$this->Set('resources', $resources);
-	}
-
-	/**
-	 * @param ResourceAccessory[] $resources
-	 */
-	public function SetAccessoryResources($resources)
-	{
-		$this->SetJson($resources);
-	}
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResources()
-	{
-		$r = $this->GetForm(FormKeys::ACCESSORY_RESOURCE);
-		if (empty($r))
-		{
-			return array();
-		}
-
-		return $r;
-	}
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResourcesMinimums()
-	{
-		$r = $this->GetForm(FormKeys::ACCESSORY_MIN_QUANTITY);
-		if (empty($r))
-		{
-			return array();
-		}
-
-		return $r;
-	}
-
-	/**
-	 * @return string[]
-	 */
-	public function GetAccessoryResourcesMaximums()
-	{
-		$r = $this->GetForm(FormKeys::ACCESSORY_MAX_QUANTITY);
-		if (empty($r))
-		{
-			return array();
-		}
-
-		return $r;
+		// no-op
 	}
 }
+
+?>

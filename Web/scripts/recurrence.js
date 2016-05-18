@@ -16,7 +16,6 @@
  You should have received a copy of the GNU General Public License
  along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 function Recurrence(recurOptions, recurElements, prefix) {
 	prefix = prefix || '';
 	var e = {
@@ -44,53 +43,45 @@ function Recurrence(recurOptions, recurElements, prefix) {
 		InitializeRepeatOptions();
 	};
 
-	var show = function(element) {
-		element.removeClass('no-show').addClass('inline');
-	};
-
-	var hide = function(element) {
-		element.removeClass('inline').addClass('no-show');
-	};
-
 	var ChangeRepeatOptions = function () {
 		var repeatDropDown = elements.repeatOptions;
 		if (repeatDropDown.val() != 'none') {
-			show($('#' + prefix + 'repeatUntilDiv'));
+			$('#' + prefix + 'repeatUntilDiv').show();
 		}
 		else {
-			hide($('.recur-toggle', elements.repeatDiv));
+			$('div[id!=' + prefix + 'repeatOptions]', elements.repeatDiv).hide();
 		}
 
 		if (repeatDropDown.val() == 'daily') {
-			hide($('.weeks', elements.repeatDiv));
-			hide($('.months', elements.repeatDiv));
-			hide($('.years', elements.repeatDiv));
+			$('.weeks', elements.repeatDiv).hide();
+			$('.months', elements.repeatDiv).hide();
+			$('.years', elements.repeatDiv).hide();
 
-			show($('.days', elements.repeatDiv));
+			$('.days', elements.repeatDiv).show();
 		}
 
 		if (repeatDropDown.val() == 'weekly') {
-			hide($('.days', elements.repeatDiv));
-			hide($('.months', elements.repeatDiv));
-			hide($('.years', elements.repeatDiv));
+			$('.days', elements.repeatDiv).hide();
+			$('.months', elements.repeatDiv).hide();
+			$('.years', elements.repeatDiv).hide();
 
-			show($('.weeks', elements.repeatDiv));
+			$('.weeks', elements.repeatDiv).show();
 		}
 
 		if (repeatDropDown.val() == 'monthly') {
-			hide($('.days', elements.repeatDiv));
-			hide($('.weeks', elements.repeatDiv));
-			hide($('.years', elements.repeatDiv));
+			$('.days', elements.repeatDiv).hide();
+			$('.weeks', elements.repeatDiv).hide();
+			$('.years', elements.repeatDiv).hide();
 
-			show($('.months', elements.repeatDiv));
+			$('.months', elements.repeatDiv).show();
 		}
 
 		if (repeatDropDown.val() == 'yearly') {
-			hide($('.days', elements.repeatDiv));
-			hide($('.weeks', elements.repeatDiv));
-			hide($('.months', elements.repeatDiv));
+			$('.days', elements.repeatDiv).hide();
+			$('.weeks', elements.repeatDiv).hide();
+			$('.months', elements.repeatDiv).hide();
 
-			show($('.years', elements.repeatDiv));
+			$('.years', elements.repeatDiv).show();
 		}
 	};
 
@@ -137,10 +128,10 @@ function Recurrence(recurOptions, recurElements, prefix) {
 			elements.repeatInterval.val(options.repeatInterval);
 			for (var i = 0; i < options.repeatWeekdays.length; i++) {
 				var id = '#' + prefix + 'repeatDay' + options.repeatWeekdays[i];
-				$(id).closest('label').button('toggle');
+				$(id).attr('checked', true);
 			}
 
-			$("#" + prefix + "repeatOnMonthlyDiv :radio[value='" + options.repeatMonthlyType + "']").prop('checked', true);
+			$("#" + prefix + "repeatOnMonthlyDiv :radio[value='" + options.repeatMonthlyType + "']").attr('checked', true);
 
 			ChangeRepeatOptions();
 		}
@@ -151,7 +142,7 @@ function Recurrence(recurOptions, recurElements, prefix) {
 			elements.repeatOptions.val(value);
 			elements.repeatOptions.trigger('change');
 			if (disabled) {
-				$('select, input', elements.repeatDiv).prop("disabled", 'disabled');
+				$('select, input', elements.repeatDiv).attr("disabled", 'disabled');
 			}
 			else {
 				$('select, input', elements.repeatDiv).removeAttr("disabled");

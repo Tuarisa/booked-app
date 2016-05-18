@@ -39,22 +39,11 @@ interface IPostReservationFactory
      * @return IReservationNotificationService
      */
     public function CreatePostApproveService(UserSession $userSession);
-
-    /**
-     * @param UserSession $userSession
-     * @return IReservationNotificationService
-     */
-    public function CreatePostCheckinService(UserSession $userSession);
-
-    /**
-     * @param UserSession $userSession
-     * @return IReservationNotificationService
-     */
-    public function CreatePostCheckoutService(UserSession $userSession);
 }
 
 class PostReservationFactory implements IPostReservationFactory
 {
+
     /**
      * @param UserSession $userSession
      * @return IReservationNotificationService
@@ -89,23 +78,5 @@ class PostReservationFactory implements IPostReservationFactory
     public function CreatePostApproveService(UserSession $userSession)
     {
         return new ApproveReservationNotificationService(new UserRepository(), new ResourceRepository(), new AttributeRepository());
-    }
-
-    /**
-     * @param UserSession $userSession
-     * @return IReservationNotificationService
-     */
-    public function CreatePostCheckinService(UserSession $userSession)
-    {
-        return new NullReservationNotificationService();
-    }
-
-    /**
-     * @param UserSession $userSession
-     * @return IReservationNotificationService
-     */
-    public function CreatePostCheckoutService(UserSession $userSession)
-    {
-        return new NullReservationNotificationService();
     }
 }

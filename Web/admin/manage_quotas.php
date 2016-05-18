@@ -25,3 +25,4 @@ require_once(ROOT_DIR . 'Pages/Ajax/AutoCompletePage.php');
 
 $page = new AdminPageDecorator(new ManageQuotasPage());
 $page->PageLoad();
+?>

@@ -16,18 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 *}
+	</div><!-- close content-->
+	</div><!-- close doc-->
+	<div class="push">&nbsp;</div>
+	</div><!-- close wrapper-->
 
-	</div><!-- close main-->
-
-	<footer class="footer navbar">
-		&copy; 2016 <a href="http://www.twinkletoessoftware.com">Twinkle Toes Software</a> <br/><a href="http://www.bookedscheduler.com">Booked Scheduler v{$Version}</a>
-	</footer>
-
-	<script type="text/javascript">
-		init();
-		$.blockUI.defaults.css.border = 'none';
-		$.blockUI.defaults.css.top = '25%';
-	</script>
+    	<div class="page-footer">
+			&copy; 2016 <a href="http://www.twinkletoessoftware.com">Twinkle Toes Software</a> <br/><a href="http://www.bookedscheduler.com">Booked Scheduler v{$Version}</a>
+    	</div>
 
 	{if !empty($GoogleAnalyticsTrackingId)}
 		{literal}

@@ -143,19 +143,10 @@ class Log
 		{
 			$args = func_get_args();
 			$log = vsprintf(array_shift($args), array_values($args));
-			$log = '[User='.ServiceLocator::GetServer()->GetUserSession() . '] ' . $log;
 			self::GetInstance()->sqlLogger->debug($log);
 		} catch (Exception $ex)
 		{
 		}
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function DebugEnabled()
-	{
-		return self::GetInstance()->logger->isDebugEnabled();
 	}
 }
 

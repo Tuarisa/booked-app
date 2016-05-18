@@ -1,28 +1,29 @@
 <?php
-
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 interface ISchedulePageBuilder
 {
 	/**
 	 * @param ISchedulePage $page
-	 * @param array [int]ISchedule $schedules
+	 * @param array[int]ISchedule $schedules
 	 * @param ISchedule $currentSchedule
 	 */
 	public function BindSchedules(ISchedulePage $page, $schedules, $currentSchedule);
@@ -61,7 +62,7 @@ interface ISchedulePageBuilder
 
 	/**
 	 * @param ISchedulePage $page
-	 * @param array [int]ResourceDto $resources
+	 * @param array[int]ResourceDto $resources
 	 * @param IDailyLayout $dailyLayout
 	 */
 	public function BindReservations(ISchedulePage $page, $resources, IDailyLayout $dailyLayout);
@@ -88,7 +89,7 @@ interface ISchedulePageBuilder
 	/**
 	 * @param int $scheduleId
 	 * @param ISchedulePage $page
-	 * @return int[]
+	 * @return int
 	 */
 	public function GetResourceIds($scheduleId, ISchedulePage $page);
 
@@ -113,7 +114,7 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 {
 	/**
 	 * @param ISchedulePage $page
-	 * @param array [int]ISchedule $schedules
+	 * @param array[int]ISchedule $schedules
 	 * @param ISchedule $currentSchedule
 	 */
 	public function BindSchedules(ISchedulePage $page, $schedules, $currentSchedule)
@@ -160,23 +161,27 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 		return $schedule;
 	}
 
+	/**
+	 * @see ISchedulePageBuilder::GetScheduleDates()
+	 */
 	public function GetScheduleDates(UserSession $user, ISchedule $schedule, ISchedulePage $page)
 	{
 		$userTimezone = $user->Timezone;
 		$providedDate = $page->GetSelectedDate();
 		$selectedDates = $page->GetSelectedDates();
+
 		if (!empty($selectedDates))
 		{
 			$numberOfDatesSelected = count($selectedDates);
 			$first = $selectedDates[0];
-			$last = $numberOfDatesSelected > 1 ? $selectedDates[$numberOfDatesSelected - 1] : $first;
+			$last = $numberOfDatesSelected > 1 ? $selectedDates[$numberOfDatesSelected-1] : $first;
 			return new DateRange($first->GetDate(), $last->AddDays(1)->GetDate());
 		}
 
 		$date = empty($providedDate) ? Date::Now() : new Date($providedDate, $userTimezone);
 		$selectedDate = $date
-				->ToTimezone($userTimezone)
-				->GetDate();
+						->ToTimezone($userTimezone)
+						->GetDate();
 		$selectedWeekday = $selectedDate->Weekday();
 
 		$scheduleLength = $schedule->GetDaysVisible();
@@ -340,19 +345,32 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 
 	public function GetResourceIds($scheduleId, ISchedulePage $page)
 	{
-		$resourceIds = $page->GetResourceIds();
+		$resourceId = $page->GetResourceIds();
 
-		if (!empty($resourceIds))
+		if (!empty($resourceId))
 		{
-			return $resourceIds;
+			return $resourceId;
 		}
 
 		return array();
+		$cookie = $this->getTreeCookie($scheduleId);
+
+		if (!empty($cookie))
+		{
+			if (strpos($cookie, '-') !== false)
+			{
+				$parts = explode('-', $cookie);
+				return $parts[2];
+			}
+		}
+
+		return null;
 	}
 
 	private function getTreeCookie($scheduleId)
 	{
-		$cookie = ServiceLocator::GetServer()->GetCookie('tree' . $scheduleId);
+		$cookie = ServiceLocator::GetServer()
+				  ->GetCookie('tree' . $scheduleId);
 		if (!empty($cookie))
 		{
 			$val = json_decode($cookie, true);
@@ -382,11 +400,13 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 												 $page->GetMaxParticipants(),
 												 $this->AsAttributeValues($page->GetResourceAttributes()),
 												 $this->AsAttributeValues($page->GetResourceTypeAttributes()),
-												 $page->GetResourceIds());
+												 $this->GetResourceIds($scheduleId, $page)
+												 );
 		}
 		else
 		{
-			$cookie = ServiceLocator::GetServer()->GetCookie('resource_filter' . $scheduleId);
+			$cookie = ServiceLocator::GetServer()
+					  ->GetCookie('resource_filter' . $scheduleId);
 			if (!empty($cookie))
 			{
 				$val = json_decode($cookie);
@@ -395,7 +415,7 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 		}
 
 		$filter->ScheduleId = $scheduleId;
-
+		$filter->GroupId = $this->GetGroupId($scheduleId, $page);
 		return $filter;
 	}
 
@@ -422,7 +442,8 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 		$page->SetResourceTypeCustomAttributes($resourceTypeCustomAttributes);
 
 		ServiceLocator::GetServer()
-					  ->SetCookie(new Cookie('resource_filter' . $filter->ScheduleId, json_encode($filter)));
+		->SetCookie(new Cookie('resource_filter' . $filter->ScheduleId, json_encode($filter)));
+
 		$page->SetFilter($filter);
 	}
 
@@ -447,8 +468,7 @@ class SchedulePageBuilder implements ISchedulePageBuilder
 	 * @param AttributeValue $attributeFilter
 	 * @param Attribute[] $attributes
 	 */
-	private function SetAttributeValue($attributeFilter, $attributes)
-	{
+	private function SetAttributeValue($attributeFilter, $attributes) {
 
 		foreach ($attributes as $attribute)
 		{

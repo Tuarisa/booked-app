@@ -48,6 +48,7 @@ class ResourcePermissionStore implements IResourcePermissionStore
 		$user = $this->_scheduleUserRepository->GetUser($userId);
 
 		$resources = $user->GetAllResources();
+
 		foreach ($resources as $resource)
 		{
 			$permittedResourceIds[] = $resource->Id();

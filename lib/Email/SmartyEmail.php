@@ -31,7 +31,7 @@ class SmartyEmail extends Smarty
 
 	public function __construct($languageCode = null)
 	{
-		$resources = Resources::GetInstance();
+		$this->Resources = new Resources();
 		if (!empty($languageCode))
 		{
 			$this->Resources->SetLanguage($languageCode);

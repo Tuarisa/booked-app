@@ -91,12 +91,12 @@ class AuthenticatedUser
 		$this->fname = $fname;
 		$this->lname = $lname;
 		$this->password = $password;
-		$this->languageCode = empty($languageCode) ? Configuration::Instance()->GetKey(ConfigKeys::LANGUAGE) : $languageCode;
+		$this->languageCode = $languageCode;
 		$this->timezoneName = $timezoneName;
 		$this->phone = $phone;
 		$this->organization = $organization;
 		$this->title = $title;
-		$this->groups = is_null($groups) ? array() : $groups;;
+		$this->groups = $groups;
 	}
 
 	/**

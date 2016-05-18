@@ -28,7 +28,7 @@ class ManageUsersActions
 {
 	const Activate = 'activate';
 	const AddUser = 'addUser';
-	const ChangeAttribute = 'changeAttribute';
+	const ChangeAttributes = 'changeAttributes';
 	const Deactivate = 'deactivate';
 	const DeleteUser = 'deleteUser';
 	const Password = 'password';
@@ -36,7 +36,6 @@ class ManageUsersActions
 	const UpdateUser = 'updateUser';
 	const ChangeColor = 'changeColor';
 	const ImportUsers = 'importUsers';
-	const ChangeCredits = 'changeCredits';
 }
 
 interface IManageUsersPresenter
@@ -173,10 +172,9 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		$this->AddAction(ManageUsersActions::Password, 'ResetPassword');
 		$this->AddAction(ManageUsersActions::Permissions, 'ChangePermissions');
 		$this->AddAction(ManageUsersActions::UpdateUser, 'UpdateUser');
-		$this->AddAction(ManageUsersActions::ChangeAttribute, 'ChangeAttribute');
+		$this->AddAction(ManageUsersActions::ChangeAttributes, 'ChangeAttributes');
 		$this->AddAction(ManageUsersActions::ChangeColor, 'ChangeColor');
 		$this->AddAction(ManageUsersActions::ImportUsers, 'ImportUsers');
-		$this->AddAction(ManageUsersActions::ChangeCredits, 'ChangeCredits');
 	}
 
 	public function PageLoad()
@@ -212,7 +210,6 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		$user = $this->userRepository->LoadById($this->page->GetUserId());
 		$user->Deactivate();
 		$this->userRepository->Update($user);
-		$this->page->SetJsonResponse(Resources::GetInstance()->GetString('Inactive'));
 	}
 
 	public function Activate()
@@ -220,7 +217,6 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		$user = $this->userRepository->LoadById($this->page->GetUserId());
 		$user->Activate();
 		$this->userRepository->Update($user);
-		$this->page->SetJsonResponse(Resources::GetInstance()->GetString('Active'));
 	}
 
 	public function AddUser()
@@ -312,9 +308,9 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		$this->userRepository->Update($user);
 	}
 
-	public function ChangeAttribute()
+	public function ChangeAttributes()
 	{
-		$this->manageUsersService->ChangeAttributes($this->page->GetUserId(), $this->GetInlineAttributeValue());
+		$this->manageUsersService->ChangeAttributes($this->page->GetUserId(), $this->GetAttributeValues());
 	}
 
 	public function ProcessDataRequest($dataRequest)
@@ -360,18 +356,6 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		return $attributes;
 	}
 
-	private function GetInlineAttributeValue()
-	{
-		$value = $this->page->GetValue();
-		if (is_array($value))
-		{
-			$value = $value[0];
-		}
-		$id = str_replace(FormKeys::ATTRIBUTE_PREFIX, '', $this->page->GetName());
-
-		return new AttributeValue($id, $value);
-	}
-
 	protected function LoadValidators($action)
 	{
 		Log::Debug('Loading validators for %s', $action);
@@ -393,16 +377,13 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 			$this->page->RegisterValidator('addUserUsername',
 										   new UniqueUserNameValidator($this->userRepository, $this->page->GetUserName()));
 			$this->page->RegisterValidator('addAttributeValidator',
-										   new AttributeValidator($this->attributeService, CustomAttributeCategory::USER,
-																  $this->GetAttributeValues(), null, true, true));
+										   new AttributeValidator($this->attributeService, CustomAttributeCategory::USER, $this->GetAttributeValues()));
 		}
 
-		if ($action == ManageUsersActions::ChangeAttribute)
+		if ($action == ManageUsersActions::ChangeAttributes)
 		{
 			$this->page->RegisterValidator('attributeValidator',
-										   new AttributeValidatorInline($this->attributeService, CustomAttributeCategory::USER,
-																		$this->GetInlineAttributeValue(), $this->page->GetUserId(),
-												   true, true));
+										   new AttributeValidator($this->attributeService, CustomAttributeCategory::USER, $this->GetAttributeValues(), $this->page->GetUserId()));
 		}
 
 		if ($action == ManageUsersActions::ImportUsers)
@@ -440,19 +421,100 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		$user->ChangePreference(UserPreferences::RESERVATION_COLOR, $color);
 
 		$this->userRepository->Update($user);
+
 	}
 
-	public function ChangeCredits()
+	public function ImportUsers()
 	{
-		$userId = $this->page->GetUserId();
-		$creditCount = $this->page->GetValue();
+		set_time_limit(300);
+		$groupsList = $this->groupViewRepository->GetList();
+		/** @var GroupItemView[] $groups */
+		$groups = $groupsList->Results();
+		$groupsIndexed = array();
+		foreach ($groups as $group)
+		{
+			$groupsIndexed[$group->Name()] = $group->Id();
+		}
 
-		Log::Debug('Changing credit count for userId: %s to %s', $userId, $creditCount);
+		$importFile = $this->page->GetImportFile();
+		$csv = new UserImportCsv($importFile);
 
-		$user = $this->userRepository->LoadById($userId);
-		$user->ChangeCurrentCredits($creditCount);
-		$this->userRepository->Update($user);
+		$importCount = 0;
+		$messages = array();
 
+		$rows = $csv->GetRows();
+
+		if (count($rows) == 0)
+		{
+			$this->page->SetImportResult(new CsvImportResult(0, array(), 'Empty file or missing header row'));
+			return;
+		}
+
+		for ($i = 0; $i < count($rows); $i++)
+		{
+			$row = $rows[$i];
+			try
+			{
+				$emailValidator = new EmailValidator($row->email);
+				$uniqueEmailValidator = new UniqueEmailValidator($this->userRepository, $row->email);
+				$uniqueUsernameValidator = new UniqueUserNameValidator($this->userRepository, $row->username);
+
+				$emailValidator->Validate();
+				$uniqueEmailValidator->Validate();
+				$uniqueUsernameValidator->Validate();
+
+				if (!$emailValidator->IsValid())
+				{
+					$evMsgs = $emailValidator->Messages();
+					$messages[] = $evMsgs[0] . " ({$row->email})";
+					continue;
+				}
+				if (!$uniqueEmailValidator->IsValid())
+				{
+					$uevMsgs = $uniqueEmailValidator->Messages();
+					$messages[] = $uevMsgs[0]. " ({$row->email})";
+					continue;
+				}
+				if (!$uniqueUsernameValidator->IsValid())
+				{
+					$uuvMsgs = $uniqueUsernameValidator->Messages();
+					$messages[] = $uuvMsgs[0]. " ({$row->username})";
+					continue;
+				}
+
+				$timezone = empty($row->timezone) ? Configuration::Instance()->GetKey(ConfigKeys::DEFAULT_TIMEZONE) : $row->timezone;
+				$password = empty($row->password) ? 'password' : $row->password;
+				$language = empty($row->language) ? 'en_us' : $row->language;
+
+				$user = $this->manageUsersService->AddUser($row->username, $row->email, $row->firstName, $row->lastName, $password, $timezone, $language,
+												   Configuration::Instance()->GetKey(ConfigKeys::DEFAULT_HOMEPAGE),
+												   array(UserAttribute::Phone => $row->phone, UserAttribute::Organization => $row->organization, UserAttribute::Position => $row->position),
+												   array());
+
+				$userGroups = array();
+				foreach ($row->groups as $groupName)
+				{
+					if (array_key_exists($groupName, $groupsIndexed))
+					{
+						Log::Debug('Importing user %s with group %s', $row->username, $groupName);
+						$userGroups[] = new UserGroup($groupsIndexed[$groupName], $groupName);
+					}
+				}
+
+				if (count($userGroups) > 0)
+				{
+					$user->ChangeGroups($userGroups);
+					$this->userRepository->Update($user);
+				}
+
+				$importCount++;
+			} catch (Exception $ex)
+			{
+				Log::Error('Error importing users. %s', $ex);
+			}
+		}
+
+		$this->page->SetImportResult(new CsvImportResult($importCount, $csv->GetSkippedRowNumbers(), $messages));
 	}
 
 	/**
@@ -472,100 +534,7 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 		}
 		return $resources;
 	}
-
-	public function ImportUsers()
-		{
-			$groupsList = $this->groupViewRepository->GetList();
-			/** @var GroupItemView[] $groups */
-			$groups = $groupsList->Results();
-			$groupsIndexed = array();
-			foreach ($groups as $group)
-			{
-				$groupsIndexed[$group->Name()] = $group->Id();
-			}
-
-			$importFile = $this->page->GetImportFile();
-			$csv = new UserImportCsv($importFile);
-
-			$importCount = 0;
-			$messages = array();
-
-			$rows = $csv->GetRows();
-
-			if (count($rows) == 0)
-			{
-				$this->page->SetImportResult(new CsvImportResult(0, array(), 'Empty file or missing header row'));
-				return;
-			}
-
-			for ($i = 0; $i < count($rows); $i++)
-			{
-				$row = $rows[$i];
-				try
-				{
-					$emailValidator = new EmailValidator($row->email);
-					$uniqueEmailValidator = new UniqueEmailValidator($this->userRepository, $row->email);
-					$uniqueUsernameValidator = new UniqueUserNameValidator($this->userRepository, $row->username);
-
-					$emailValidator->Validate();
-					$uniqueEmailValidator->Validate();
-					$uniqueUsernameValidator->Validate();
-
-					if (!$emailValidator->IsValid())
-					{
-						$evMsgs = $emailValidator->Messages();
-						$messages[] = $evMsgs[0] . " ({$row->email})";
-						continue;
-					}
-					if (!$uniqueEmailValidator->IsValid())
-					{
-						$uevMsgs = $uniqueEmailValidator->Messages();
-						$messages[] = $uevMsgs[0]. " ({$row->email})";
-						continue;
-					}
-					if (!$uniqueUsernameValidator->IsValid())
-					{
-						$uuvMsgs = $uniqueUsernameValidator->Messages();
-						$messages[] = $uuvMsgs[0]. " ({$row->username})";
-						continue;
-					}
-
-					$timezone = empty($row->timezone) ? Configuration::Instance()->GetKey(ConfigKeys::DEFAULT_TIMEZONE) : $row->timezone;
-					$password = empty($row->password) ? 'password' : $row->password;
-					$language = empty($row->language) ? 'en_us' : $row->language;
-
-					$user = $this->manageUsersService->AddUser($row->username, $row->email, $row->firstName, $row->lastName, $password, $timezone, $language,
-													   Configuration::Instance()->GetKey(ConfigKeys::DEFAULT_HOMEPAGE),
-													   array(UserAttribute::Phone => $row->phone, UserAttribute::Organization => $row->organization, UserAttribute::Position => $row->position),
-													   array());
-
-					$userGroups = array();
-					foreach ($row->groups as $groupName)
-					{
-						if (array_key_exists($groupName, $groupsIndexed))
-						{
-							Log::Debug('Importing user %s with group %s', $row->username, $groupName);
-							$userGroups[] = new UserGroup($groupsIndexed[$groupName], $groupName);
-						}
-					}
-
-					if (count($userGroups) > 0)
-					{
-						$user->ChangeGroups($userGroups);
-						$this->userRepository->Update($user);
-					}
-
-					$importCount++;
-				} catch (Exception $ex)
-				{
-					Log::Error('Error importing users. %s', $ex);
-				}
-			}
-
-			$this->page->SetImportResult(new CsvImportResult($importCount, $csv->GetSkippedRowNumbers(), $messages));
-		}
 }
-
 
 class CsvImportResult
 {

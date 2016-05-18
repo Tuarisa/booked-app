@@ -29,9 +29,19 @@ abstract class EmailMessage implements IEmailMessage
 	 */
 	private $attachmentFileName;
 
+	/**
+	 * @var string[]|EmailAddress[]
+	 */
+	private $bcc = array();
+
+	/**
+	 * @var string[]|EmailAddress[]
+	 */
+	private $cc = array();
+
 	protected function __construct($languageCode = null)
 	{
-		$resources = Resources::GetInstance();
+		$resources = new Resources();
 		if (!empty($languageCode))
 		{
 			$resources->SetLanguage($languageCode);
@@ -76,12 +86,12 @@ abstract class EmailMessage implements IEmailMessage
 
 	public function CC()
 	{
-		return array();
+		return $this->cc;
 	}
 
 	public function BCC()
 	{
-		return array();
+		return $this->bcc;
 	}
 
 	public function Charset()
@@ -110,6 +120,34 @@ abstract class EmailMessage implements IEmailMessage
 		return $this->attachmentFileName;
 	}
 
-}
+	/**
+	 * @param string|EmailAddress $email
+	 */
+	public function AddCC($email)
+	{
+		if (is_string($email))
+		{
+			$this->cc[] = new EmailAddress($email);
+		}
+		else
+		{
+			$this->cc[] = new EmailAddress($email);
+		}
+	}
 
-?>
+	/**
+	 * @param string|EmailAddress $email
+	 */
+	public function AddBCC($email)
+	{
+		if (is_string($email))
+		{
+			$this->bcc[] = new EmailAddress($email);
+		}
+		else
+		{
+			$this->bcc[] = new EmailAddress($email);
+		}
+	}
+
+}

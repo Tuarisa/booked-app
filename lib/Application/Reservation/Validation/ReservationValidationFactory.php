@@ -23,12 +23,10 @@ class ReservationValidationFactory implements IReservationValidationFactory
 
     public function __construct()
     {
-        $this->creationStrategies[ReservationAction::Approve] = 'CreateApprovalService';
+        //$this->creationStrategies[ReservationAction::Approve] = 'CreateUpdateService';
         $this->creationStrategies[ReservationAction::Create] = 'CreateAddService';
         $this->creationStrategies[ReservationAction::Delete] = 'CreateDeleteService';
         $this->creationStrategies[ReservationAction::Update] = 'CreateUpdateService';
-        $this->creationStrategies[ReservationAction::Checkin] = 'CreateCheckinService';
-        $this->creationStrategies[ReservationAction::Checkout] = 'CreateCheckoutService';
     }
 
     public function Create($reservationAction, $userSession)
@@ -59,41 +57,15 @@ class ReservationValidationFactory implements IReservationValidationFactory
         $factory = PluginManager::Instance()->LoadPreReservation();
         return $factory->CreatePreDeleteService($userSession);
     }
-
-	private function CreateApprovalService(UserSession $userSession)
-    {
-        $factory = PluginManager::Instance()->LoadPreReservation();
-		if (method_exists($factory,'CreatePreApprovalService'))
-		{
-			return $factory->CreatePreApprovalService($userSession);
-		}
-		return new NullReservationValidationService();
-    }
-
-    private function CreateCheckinService(UserSession $userSession)
-    {
-        $factory = PluginManager::Instance()->LoadPreReservation();
-		if (method_exists($factory,'CreatePreCheckinService'))
-		{
-			return $factory->CreatePreCheckinService($userSession);
-		}
-		return new NullReservationValidationService();
-    }
-
-    private function CreateCheckoutService(UserSession $userSession)
-    {
-        $factory = PluginManager::Instance()->LoadPreReservation();
-		if (method_exists($factory,'CreatePreCheckoutService'))
-		{
-			return $factory->CreatePreCheckoutService($userSession);
-		}
-		return new NullReservationValidationService();
-    }
 }
 
 class NullReservationValidationService implements IReservationValidationService
 {
-    function Validate($reservation, $retryParameters = null)
+    /**
+     * @param ReservationSeries $reservation
+     * @return IReservationValidationResult
+     */
+    function Validate($reservation)
     {
         return new ReservationValidationResult();
     }

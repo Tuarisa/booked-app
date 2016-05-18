@@ -15,7 +15,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once(ROOT_DIR . 'lib/Application/Reservation/ReservationInitializerBase.php');
-require_once(ROOT_DIR . 'Pages/Reservation/ExistingReservationPage.php');
+require_once(ROOT_DIR . 'Pages/ExistingReservationPage.php');
 
 class ExistingReservationInitializer extends ReservationInitializerBase implements IReservationComponentInitializer
 {
@@ -40,6 +40,7 @@ class ExistingReservationInitializer extends ReservationInitializerBase implemen
 	 * @param IReservationComponentBinder $dateBinder
 	 * @param IReservationComponentBinder $resourceBinder
 	 * @param IReservationComponentBinder $reservationBinder
+	 * @param IReservationComponentBinder $attributeBinder
 	 * @param ReservationView $reservationView
 	 * @param UserSession $userSession
 	 */
@@ -49,6 +50,7 @@ class ExistingReservationInitializer extends ReservationInitializerBase implemen
 		IReservationComponentBinder $dateBinder,
 		IReservationComponentBinder $resourceBinder,
 		IReservationComponentBinder $reservationBinder,
+		IReservationComponentBinder $attributeBinder,
 		ReservationView $reservationView,
 		UserSession $userSession
 		)
@@ -62,6 +64,7 @@ class ExistingReservationInitializer extends ReservationInitializerBase implemen
 						$userBinder,
 						$dateBinder,
 						$resourceBinder,
+						$attributeBinder,
 						$userSession);
 	}
 
@@ -69,7 +72,7 @@ class ExistingReservationInitializer extends ReservationInitializerBase implemen
 	{
 		parent::Initialize();
 
-		$this->reservationBinder->Bind($this);
+		$this->reservationBinder->Bind($this, $this->page, $this->reservationView);
 	}
 
 	protected function SetSelectedDates(Date $startDate, Date $endDate, $startPeriods, $endPeriods)

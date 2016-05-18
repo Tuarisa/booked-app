@@ -1,21 +1,21 @@
 <?php
 /**
- * Copyright 2012-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2012-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'lib/Application/Reporting/ChartColumnDefinition.php');
@@ -68,7 +68,7 @@ class ReportDefinition implements IReportDefinition
 
 	public function __construct(IReport $report, $timezone)
 	{
-		$dateFormat = Resources::GetInstance()->ShortDateTimeFormat();
+		$dateFormat = Resources::GetInstance()->GeneralDateTimeFormat();
 		$orderedColumns = array(
 				ColumnNames::ACCESSORY_NAME => new ReportStringColumn('Accessory',
 																	  ChartColumnDefinition::Label(ColumnNames::ACCESSORY_ID, ChartGroup::Accessory)),
@@ -82,13 +82,12 @@ class ReportDefinition implements IReportDefinition
 				ColumnNames::RESERVATION_DESCRIPTION => new ReportStringColumn('Description', ChartColumnDefinition::Null()),
 				ColumnNames::REFERENCE_NUMBER => new ReportStringColumn('ReferenceNumber', ChartColumnDefinition::Null()),
 				ColumnNames::OWNER_FULL_NAME_ALIAS => new ReportStringColumn('User', ChartColumnDefinition::Label(ColumnNames::OWNER_USER_ID)),
+				ColumnNames::PARTICIPANT_LIST => new ReportStringColumn('Participants', ChartColumnDefinition::Null()),
 				ColumnNames::GROUP_NAME_ALIAS => new ReportStringColumn('Group', ChartColumnDefinition::Label(ColumnNames::GROUP_ID)),
 				ColumnNames::SCHEDULE_NAME_ALIAS => new ReportStringColumn('Schedule', ChartColumnDefinition::Label(ColumnNames::SCHEDULE_ID)),
 				ColumnNames::RESERVATION_CREATED => new ReportDateColumn('Created', $timezone, $dateFormat, ChartColumnDefinition::Null()),
 				ColumnNames::RESERVATION_MODIFIED => new ReportDateColumn('LastModified', $timezone, $dateFormat, ChartColumnDefinition::Null()),
-				ColumnNames::CHECKIN_DATE => new ReportDateColumn('CheckInTime', $timezone, $dateFormat, ChartColumnDefinition::Null()),
-				ColumnNames::CHECKOUT_DATE => new ReportDateColumn('CheckOutTime', $timezone, $dateFormat, ChartColumnDefinition::Null()),
-				ColumnNames::PREVIOUS_END_DATE => new ReportDateColumn('OriginalEndDate', $timezone, $dateFormat, ChartColumnDefinition::Null()),
+				ColumnNames::RESERVATION_STATUS => new ReportStatusColumn('Status', ChartColumnDefinition::Null()),
 				ColumnNames::TOTAL => new ReportStringColumn('Total', ChartColumnDefinition::Total()),
 				ColumnNames::TOTAL_TIME => new ReportTimeColumn('Total', ChartColumnDefinition::Total()),
 		);
@@ -167,7 +166,7 @@ class ReportDefinition implements IReportDefinition
 	}
 
 	/**
-	 * @param CustomAttributeCategory|string $category
+	 * @param CustomAttributeCategory $category
 	 * @param CustomAttributes|null $attributes
 	 * @param array $formattedRow
 	 * @param string $key

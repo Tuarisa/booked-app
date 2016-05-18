@@ -156,17 +156,20 @@ interface IManageResourcesPage extends IUpdateResourcePage, IActionPage, IPageab
 	public function AllSchedules($schedules);
 
 	/**
+	 * @abstract
 	 * @param $adminGroups GroupItemView[]|array
 	 * @return void
 	 */
 	public function BindAdminGroups($adminGroups);
 
 	/**
-	 * @param $attributeList CustomAttribute[]
+	 * @abstract
+	 * @param $attributeList IEntityAttributeList
 	 */
 	public function BindAttributeList($attributeList);
 
 	/**
+	 * @abstract
 	 * @return AttributeFormElement[]|array
 	 */
 	public function GetAttributes();
@@ -265,81 +268,6 @@ interface IManageResourcesPage extends IUpdateResourcePage, IActionPage, IPageab
 	 * @return int
 	 */
 	public function GetPermissionGroupId();
-
-	/**
-	 * @return string
-	 */
-	public function GetValue();
-
-	/**
-	 * @return string
-	 */
-	public function GetName();
-
-	/**
-	 * @return string
-	 */
-	public function GetAttributeId();
-
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedDuration($resource);
-
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedCapacity($resource);
-
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedAccess($resource);
-
-	/**
-	 * @param BookableResource $resource
-	 * @param ResourceGroup[] $groupList
-	 */
-	public function BindUpdatedResourceGroups($resource, $groupList);
-
-	public function SetAttributeValueAsJson($attributeValue);
-
-	/**
-	 * @param ResourceGroupTree $resourceGroups
-	 */
-	public function BindResourceGroups(ResourceGroupTree $resourceGroups);
-
-	/**
-	 * @return int[]
-	 */
-	public function GetResourceGroupIds();
-
-	/**
-	 * @return string
-	 */
-	public function GetColor();
-
-	/**
-	 * @return bool
-	 */
-	public function GetEnableCheckin();
-
-	/**
-	 * @return string
-	 */
-	public function GetAutoReleaseMinutes();
-
-	/**
-	 * @return int
-	 */
-	public function GetCredits();
-
-	/**
-	 * @return int
-	 */
-	public function GetPeakCredits();
-
-	public function BindUpdatedResourceCredits(BookableResource $resource);
 }
 
 class ManageResourcesPage extends ActionPage implements IManageResourcesPage
@@ -348,7 +276,6 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	 * @var ManageResourcesPresenter
 	 */
 	protected $presenter;
-	protected $pageablePage;
 
 	public function __construct()
 	{
@@ -365,17 +292,12 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 
 		$this->pageablePage = new PageablePage($this);
 		$this->Set('YesNoOptions',
-				   array('' => '-',
-						   '1' => Resources::GetInstance()->GetString('Yes'),
-						   '0' => Resources::GetInstance()->GetString('No'))
-		);
+				   array('' => '-', '1' => Resources::GetInstance()->GetString('Yes'), '0' => Resources::GetInstance()
+																									   ->GetString('No')));
 		$this->Set('YesNoUnchangedOptions',
-				   array('-1' => Resources::GetInstance()->GetString('Unchanged'),
-						   '1' => Resources::GetInstance()->GetString('Yes'),
-						   '0' => Resources::GetInstance()->GetString('No'))
-		);
-
-		$this->Set('CreditsEnabled', Configuration::Instance()->GetSectionKey(ConfigSection::CREDITS, ConfigKeys::CREDITS_ENABLED, new BooleanConverter()));
+				   array('-1' => Resources::GetInstance()->GetString('Unchanged'), '1' => Resources::GetInstance()
+																								   ->GetString('Yes'), '0' => Resources::GetInstance()
+																																	   ->GetString('No')));
 	}
 
 	public function ProcessPageLoad()
@@ -438,28 +360,12 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 
 	public function GetResourceId()
 	{
-		$id = $this->GetQuerystring(QueryStringKeys::RESOURCE_ID);
-		if (empty($id))
-		{
-			$id = $this->GetForm(FormKeys::PK);
-		}
-
-		return $id;
+		return $this->GetQuerystring(QueryStringKeys::RESOURCE_ID);
 	}
 
 	public function GetScheduleId()
 	{
 		return $this->GetForm(FormKeys::SCHEDULE_ID);
-	}
-
-	public function GetValue()
-	{
-		return $this->GetForm(FormKeys::VALUE);
-	}
-
-	public function GetName()
-	{
-		return $this->GetForm(FormKeys::NAME);
 	}
 
 	public function GetResourceName()
@@ -521,7 +427,7 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	 */
 	public function GetAllowMultiday()
 	{
-		return $this->GetCheckbox(FormKeys::ALLOW_MULTIDAY);
+		return $this->GetForm(FormKeys::ALLOW_MULTIDAY);
 	}
 
 	/**
@@ -529,7 +435,7 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	 */
 	public function GetRequiresApproval()
 	{
-		return $this->GetCheckbox(FormKeys::REQUIRES_APPROVAL);
+		return $this->GetForm(FormKeys::REQUIRES_APPROVAL);
 	}
 
 	/**
@@ -537,7 +443,7 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	 */
 	public function GetAutoAssign()
 	{
-		return $this->GetCheckbox(FormKeys::AUTO_ASSIGN);
+		return $this->GetForm(FormKeys::AUTO_ASSIGN);
 	}
 
 	/**
@@ -601,7 +507,7 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	}
 
 	/**
-	 * @param $attributeList CustomAttribute[]
+	 * @param $attributeList IEntityAttributeList
 	 */
 	public function BindAttributeList($attributeList)
 	{
@@ -761,57 +667,6 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 		return $this->GetForm(FormKeys::MAX_NOTICE_NONE);
 	}
 
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedDuration($resource)
-	{
-		$this->Set('resource', $resource);
-		$this->Display('Admin/Resources/manage_resources_duration.tpl');
-	}
-
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedCapacity($resource)
-	{
-		$this->Set('resource', $resource);
-		$this->Display('Admin/Resources/manage_resources_capacity.tpl');
-	}
-
-	/**
-	 * @param BookableResource $resource
-	 */
-	public function BindUpdatedAccess($resource)
-	{
-		$this->Set('resource', $resource);
-		$this->Display('Admin/Resources/manage_resources_access.tpl');
-	}
-
-	/**
-	 * @param BookableResource $resource
-	 * @param ResourceGroup[] $groupList
-	 */
-	public function BindUpdatedResourceGroups($resource, $groupList)
-	{
-		$this->Set('resource', $resource);
-		$this->Set('ResourceGroupList', $groupList);
-		$this->Display('Admin/Resources/manage_resources_groups.tpl');
-	}
-
-	/**
-	 * @return string
-	 */
-	public function GetAttributeId()
-	{
-		return $this->GetQuerystring(QueryStringKeys::ATTRIBUTE_ID);
-	}
-
-	public function SetAttributeValueAsJson($attributeValue)
-	{
-		$this->SetJson($attributeValue);
-	}
-
 	public function GetPermissionUserId()
 	{
 		return $this->GetForm(FormKeys::USER_ID);
@@ -820,58 +675,6 @@ class ManageResourcesPage extends ActionPage implements IManageResourcesPage
 	public function GetPermissionGroupId()
 	{
 		return $this->GetForm(FormKeys::GROUP_ID);
-	}
-
-	/**
-	 * @param ResourceGroupTree $resourceGroups
-	 */
-	public function BindResourceGroups(ResourceGroupTree $resourceGroups)
-	{
-		$this->Set('ResourceGroups', json_encode($resourceGroups->GetGroups(false)));
-		$groupList = $resourceGroups->GetGroupList(false);
-		$this->Set('ResourceGroupList', $groupList);
-	}
-
-	public function GetResourceGroupIds()
-	{
-		$groupIds = $this->GetForm(FormKeys::GROUP_ID);
-		if (empty($groupIds))
-		{
-			return array();
-		}
-
-		return $groupIds;
-	}
-
-	public function GetColor()
-	{
-		return $this->GetForm(FormKeys::RESERVATION_COLOR);
-	}
-
-	public function GetEnableCheckin()
-	{
-		return $this->GetCheckbox(FormKeys::ENABLE_CHECK_IN);
-	}
-
-	public function GetAutoReleaseMinutes()
-	{
-		return $this->GetForm(FormKeys::AUTO_RELEASE_MINUTES);
-	}
-
-	public function GetCredits()
-	{
-		return $this->GetForm(FormKeys::CREDITS);
-	}
-
-	public function GetPeakCredits()
-	{
-		return $this->GetForm(FormKeys::PEAK_CREDITS);
-	}
-
-	public function BindUpdatedResourceCredits(BookableResource $resource)
-	{
-		$this->Set('resource', $resource);
-		$this->Display('Admin/Resources/manage_resources_credits.tpl');
 	}
 }
 

@@ -38,95 +38,80 @@ class ReservationSavePresenter implements IReservationSavePresenter
 	/**
 	 * @var IReservationSavePage
 	 */
-	private $page;
+	private $_page;
 
 	/**
 	 * @var IReservationPersistenceService
 	 */
-	private $persistenceService;
+	private $_persistenceService;
 
 	/**
 	 * @var IReservationHandler
 	 */
-	private $handler;
+	private $_handler;
 
 	/**
 	 * @var IResourceRepository
 	 */
-	private $resourceRepository;
-
-	/**
-	 * @var UserSession
-	 */
-	private $userSession;
-	/**
-	 * @var IScheduleRepository
-	 */
-	private $scheduleRepository;
+	private $_resourceRepository;
 
 	public function __construct(
 		IReservationSavePage $page,
 		IReservationPersistenceService $persistenceService,
 		IReservationHandler $handler,
 		IResourceRepository $resourceRepository,
-		IScheduleRepository $scheduleRepository,
 		UserSession $userSession)
 	{
-		$this->page = $page;
-		$this->persistenceService = $persistenceService;
-		$this->handler = $handler;
-		$this->resourceRepository = $resourceRepository;
-		$this->scheduleRepository = $scheduleRepository;
+		$this->_page = $page;
+		$this->_persistenceService = $persistenceService;
+		$this->_handler = $handler;
+		$this->_resourceRepository = $resourceRepository;
 		$this->userSession = $userSession;
 	}
 
 	public function BuildReservation()
 	{
-		$userId = $this->page->GetUserId();
-		$primaryResourceId = $this->page->GetResourceId();
-		$resource = $this->resourceRepository->LoadById($primaryResourceId);
-		$title = $this->page->GetTitle();
-		$description = $this->page->GetDescription();
+		$userId = $this->_page->GetUserId();
+		$primaryResourceId = $this->_page->GetResourceId();
+		$resource = $this->_resourceRepository->LoadById($primaryResourceId);
+		$title = $this->_page->GetTitle();
+		$description = $this->_page->GetDescription();
 		$roFactory = new RepeatOptionsFactory();
-		$repeatOptions = $roFactory->CreateFromComposite($this->page, $this->userSession->Timezone);
+		$repeatOptions = $roFactory->CreateFromComposite($this->_page, $this->userSession->Timezone);
 		$duration = $this->GetReservationDuration();
 
 		$reservationSeries = ReservationSeries::Create($userId, $resource, $title, $description, $duration, $repeatOptions, $this->userSession);
 
-		$resourceIds = $this->page->GetResources();
+		$resourceIds = $this->_page->GetResources();
 		foreach ($resourceIds as $resourceId)
 		{
 			if ($primaryResourceId != $resourceId)
 			{
-				$reservationSeries->AddResource($this->resourceRepository->LoadById($resourceId));
+				$reservationSeries->AddResource($this->_resourceRepository->LoadById($resourceId));
 			}
 		}
 
-		$accessories = $this->page->GetAccessories();
+		$accessories = $this->_page->GetAccessories();
 		foreach ($accessories as $accessory)
 		{
 			$reservationSeries->AddAccessory(new ReservationAccessory($accessory->Id, $accessory->Quantity, $accessory->Name));
 		}
 
-		$attributes = $this->page->GetAttributes();
+		$attributes = $this->_page->GetAttributes();
 		foreach ($attributes as $attribute)
 		{
 			$reservationSeries->AddAttributeValue(new AttributeValue($attribute->Id, $attribute->Value));
 		}
 
-		$participantIds = $this->page->GetParticipants();
+		$participantIds = $this->_page->GetParticipants();
 		$reservationSeries->ChangeParticipants($participantIds);
 
-		$inviteeIds = $this->page->GetInvitees();
+		$inviteeIds = $this->_page->GetInvitees();
 		$reservationSeries->ChangeInvitees($inviteeIds);
 
-		$invitedGuests = $this->page->GetInvitedGuests();
-		$participatingGuests = $this->page->GetParticipatingGuests();
-		$reservationSeries->ChangeGuests($invitedGuests, $participatingGuests);
+		$reservationSeries->AllowParticipation($this->_page->GetAllowParticipation());
 
-		$reservationSeries->AllowParticipation($this->page->GetAllowParticipation());
-
-		$attachments = $this->page->GetAttachments();
+		$attachments = $this->_page->GetAttachments();
 
 		foreach($attachments as $attachment)
 		{
@@ -144,20 +129,14 @@ class ReservationSavePresenter implements IReservationSavePresenter
 			}
 		}
 
-		if ($this->page->HasStartReminder())
+		if ($this->_page->HasStartReminder())
 		{
-			$reservationSeries->AddStartReminder(new ReservationReminder($this->page->GetStartReminderValue(), $this->page->GetStartReminderInterval()));
+			$reservationSeries->AddStartReminder(new ReservationReminder($this->_page->GetStartReminderValue(), $this->_page->GetStartReminderInterval()));
 		}
 
-		if ($this->page->HasEndReminder())
+		if ($this->_page->HasEndReminder())
 		{
-			$reservationSeries->AddEndReminder(new ReservationReminder($this->page->GetEndReminderValue(), $this->page->GetEndReminderInterval()));
-		}
-
-		if (Configuration::Instance()->GetSectionKey(ConfigSection::CREDITS, ConfigKeys::CREDITS_ENABLED, new BooleanConverter()))
-		{
-			$layout = $this->scheduleRepository->GetLayout($reservationSeries->ScheduleId(), new ScheduleLayoutFactory($this->userSession->Timezone));
-			$reservationSeries->CalculateCredits($layout);
+			$reservationSeries->AddEndReminder(new ReservationReminder($this->_page->GetEndReminderValue(), $this->_page->GetEndReminderInterval()));
 		}
 
 		return $reservationSeries;
@@ -168,15 +147,15 @@ class ReservationSavePresenter implements IReservationSavePresenter
 	 */
 	public function HandleReservation($reservationSeries)
 	{
-		$successfullySaved = $this->handler->Handle(
+		$successfullySaved = $this->_handler->Handle(
 					$reservationSeries,
-					$this->page);
+					$this->_page);
 
 
 		if ($successfullySaved)
 		{
-			$this->page->SetRequiresApproval($reservationSeries->RequiresApproval());
-			$this->page->SetReferenceNumber($reservationSeries->CurrentInstance()->ReferenceNumber());
+			$this->_page->SetRequiresApproval($reservationSeries->RequiresApproval());
+			$this->_page->SetReferenceNumber($reservationSeries->CurrentInstance()->ReferenceNumber());
 		}
 	}
 
@@ -185,10 +164,10 @@ class ReservationSavePresenter implements IReservationSavePresenter
 	 */
 	private function GetReservationDuration()
 	{
-		$startDate = $this->page->GetStartDate();
-		$startTime = $this->page->GetStartTime();
-		$endDate = $this->page->GetEndDate();
-		$endTime = $this->page->GetEndTime();
+		$startDate = $this->_page->GetStartDate();
+		$startTime = $this->_page->GetStartTime();
+		$endDate = $this->_page->GetEndDate();
+		$endTime = $this->_page->GetEndTime();
 
 		$timezone = $this->userSession->Timezone;
 		return DateRange::Create($startDate . ' ' . $startTime, $endDate . ' ' . $endTime, $timezone);

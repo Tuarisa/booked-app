@@ -24,12 +24,13 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 This script must be executed every minute for to enable Reservation Reminders functionality
 
-* * * * * php /home/mydomain/public_html/booked/Jobs/sendreminders.php
-* * * * * /path/to/php /home/mydomain/public_html/booked/Jobs/sendreminders.php
+* * * * * php -f /home/mydomain/public_html/booked/Jobs/sendreminders.php
+* * * * * /path/to/php -f /home/mydomain/public_html/booked/Jobs/sendreminders.php
 
 */
 
 define('ROOT_DIR', dirname(__FILE__) . '/../');
+//define('ROOT_DIR', __DIR__ . '/../');
 require_once(ROOT_DIR . 'Domain/Access/namespace.php');
 require_once(ROOT_DIR . 'Domain/Reminder.php');
 require_once(ROOT_DIR . 'lib/Email/Messages/ReminderEmail.php');

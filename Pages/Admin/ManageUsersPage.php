@@ -136,16 +136,6 @@ interface IManageUsersPage extends IPageable, IActionPage
 	 */
 	public function GetReservationColor();
 
-	/**
-	 * @return string
-	 */
-	public function GetValue();
-
-	/**
-	 * @return string
-	 */
-	public function GetName();
-
 	public function ShowTemplateCSV();
 
 	/**
@@ -158,7 +148,6 @@ interface IManageUsersPage extends IPageable, IActionPage
 	 */
 	public function SetImportResult($importResult);
 }
-
 
 class ManageUsersPage extends ActionPage implements IManageUsersPage
 {
@@ -207,7 +196,6 @@ class ManageUsersPage extends ActionPage implements IManageUsersPage
 		$this->Set('ManageReservationsUrl', Pages::MANAGE_RESERVATIONS);
 		$this->Set('FilterStatusId', $this->GetFilterStatusId());
 		$this->Set('PerUserColors', $config->GetSectionKey(ConfigSection::SCHEDULE, ConfigKeys::SCHEDULE_PER_USER_COLORS, new BooleanConverter()));
-		$this->Set('CreditsEnabled', $config->GetSectionKey(ConfigSection::CREDITS, ConfigKeys::CREDITS_ENABLED, new BooleanConverter()));
 
 		$this->RenderTemplate();
 	}
@@ -252,13 +240,7 @@ class ManageUsersPage extends ActionPage implements IManageUsersPage
 	 */
 	public function GetUserId()
 	{
-		$id = $this->GetQuerystring(QueryStringKeys::USER_ID);
-		if (empty($id))
-		{
-			$id = $this->GetForm(FormKeys::PK);
-		}
-
-		return $id;
+		return $this->GetQuerystring(QueryStringKeys::USER_ID);
 	}
 
 	/**
@@ -388,17 +370,6 @@ class ManageUsersPage extends ActionPage implements IManageUsersPage
 	{
 		return $this->GetForm(FormKeys::RESERVATION_COLOR);
 	}
-
-	public function GetValue()
-	{
-		return $this->GetForm(FormKeys::VALUE);
-	}
-
-	public function GetName()
-	{
-		return $this->GetForm(FormKeys::NAME);
-	}
-
 
 	public function ShowTemplateCSV()
 	{

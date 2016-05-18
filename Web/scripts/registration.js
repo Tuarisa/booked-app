@@ -1,20 +1,21 @@
 function Registration()
 {
 	var elements = {
-		form:$('#form-register')
+		form:$('#frmRegister')
 	};
 
 	Registration.prototype.init = function ()
 	{
+
 		$("#btnUpdate").click(function (e)
 		{
 			e.preventDefault();
-			elements.form.submit();
+			$('#frmRegister').submit();
 		});
 
 		elements.form.bind('onValidationFailed', onValidationFailed);
 
-		ConfigureAsyncForm(elements.form, defaultSubmitCallback, successHandler, null, {onBeforeSubmit:onBeforeSubmit});
+		ConfigureAdminForm(elements.form, defaultSubmitCallback, successHandler, null, {onBeforeSubmit:onBeforeAddSubmit});
 	};
 
 	var defaultSubmitCallback = function (form)
@@ -24,7 +25,6 @@ function Registration()
 
 	function onValidationFailed(event, data)
 	{
-		elements.form.find('button').removeAttr('disabled');
 		refreshCaptcha();
 		hideModal();
 	}
@@ -38,29 +38,25 @@ function Registration()
 		else
 		{
 			onValidationFailed();
-			$('#registrationError').removeClass('hidden');
+			$('#registrationError').show();
 		}
 	}
 
-	function onBeforeSubmit(formData, jqForm, opts)
+	function onBeforeAddSubmit(formData, jqForm, opts)
 	{
-		var bv = jqForm.data('bootstrapValidator');
-
-		if (!bv.isValid())
-		{
-			return false;
-		}
-
 		$('#profileUpdatedMessage').hide();
+		$('#registrationError').hide();
 
-		$.blockUI({ message: $('#modalDiv') });
+		$.colorbox({inline:true, href:"#modalDiv", transition:"none", width:"75%", height:"75%", overlayClose:false});
+		$('#modalDiv').show();
 
 		return true;
 	}
 
 	function hideModal()
 	{
-		$.unblockUI();
+		$('#modalDiv').hide();
+		$.colorbox.close();
 
 		var top = $("#registrationbox").scrollTop();
 		$('html, body').animate({scrollTop:top}, 'slow');

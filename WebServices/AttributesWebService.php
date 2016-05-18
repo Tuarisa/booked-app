@@ -43,7 +43,7 @@ class AttributesWebService
 	/**
 	 * @name GetCategoryAttributes
 	 * @description Gets all custom attribute definitions for the requested category
-	 * Categories are RESERVATION = 1, USER = 2, RESOURCE = 4
+	 * Categories are RESERVATION = 1, USER = 2, RESOURCE = 4, RESOURCE_TYPE = 5
 	 * @response CustomAttributesResponse
 	 * @return void
 	 * @param int $categoryId
@@ -76,5 +76,3 @@ class AttributesWebService
 		}
 	}
 }
-
-?>

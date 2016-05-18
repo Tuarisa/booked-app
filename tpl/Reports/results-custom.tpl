@@ -18,14 +18,11 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 *}
 {if $Report->ResultCount() > 0}
 	<div id="report-actions">
-		<a href="#" id="btnChart"><span class="fa fa-bar-chart"></span> {translate key=ViewAsChart}</a> |
-		{if !$HideSave}
-			<a href="#" id="btnSaveReportPrompt"><span class="fa fa-save"></span> {translate key=SaveThisReport}</a> |
-		{/if}
-
-		<a href="#" id="btnCsv"><span class="fa fa-download"></span> {translate key=ExportToCSV}</a> |
-		<a href="#" id="btnPrint"><span class="fa fa-print"></span> {translate key=Print}</a> |
-		<a href="#" id="btnCustomizeColumns"><span class="fa fa-filter"></span> {translate key=Columns}</a>
+		<a href="#" id="btnChart">{html_image src="chart.png"}{translate key=ViewAsChart}</a>
+		{if !$HideSave}<a href="#" id="btnSaveReportPrompt">{html_image src="disk-black.png"}{translate key=SaveThisReport}</a> | {/if}
+		<a href="#" id="btnCsv">{html_image src="table-export.png"}{translate key=ExportToCSV}</a> |
+		<a href="#" id="btnPrint">{html_image src="printer.png"}{translate key=Print}</a> |
+		<a href="#" id="btnCustomizeColumns">{html_image src="funnel.png"}Columns</a>
 	</div>
 	<div id="customize-columns"></div>
 	<table width="100%" id="report-results" chart-type="{$Definition->GetChartType()}">
@@ -57,7 +54,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {/if}
 
 <script type="text/javascript">
-	$(document).ready(function () {
+	$(document).ready(function ()
+	{
 		$('#report-no-data, #report-results').trigger('loaded');
 	});
 </script>

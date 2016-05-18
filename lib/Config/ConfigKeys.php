@@ -20,9 +20,8 @@ class ConfigKeys
     const ADMIN_EMAIL = 'admin.email';
     const ADMIN_EMAIL_NAME = 'admin.email.name';
     const ALLOW_REGISTRATION = 'allow.self.registration';
-	const CREDITS_ENABLED = 'enabled';
 	const CSS_EXTENSION_FILE = 'css.extension.file';
-	const DEFAULT_HOMEPAGE = 'default.homepage';
+    const DEFAULT_HOMEPAGE = 'default.homepage';
     const DEFAULT_PAGE_SIZE = 'default.page.size';
     const DISABLE_PASSWORD_RESET = 'disable.password.reset';
     const ENABLE_EMAIL = 'enable.email';
@@ -62,7 +61,6 @@ class ConfigKeys
     const RESERVATION_PREVENT_PARTICIPATION = 'prevent.participation';
     const RESERVATION_PREVENT_RECURRENCE = 'prevent.recurrence';
     const RESERVATION_REMINDERS_ENABLED = 'enable.reminders';
-	const RESERVATION_ALLOW_GUESTS = 'allow.guest.participation';
 
     const IMAGE_UPLOAD_DIRECTORY = 'image.upload.directory';
     const IMAGE_UPLOAD_URL = 'image.upload.url';
@@ -79,7 +77,6 @@ class ConfigKeys
     const PRIVACY_HIDE_RESERVATION_DETAILS = 'hide.reservation.details';
     const PRIVACY_VIEW_RESERVATIONS = 'view.reservations';
     const PRIVACY_VIEW_SCHEDULES = 'view.schedules';
-    const PRIVACY_ALLOW_GUEST_BOOKING = 'allow.guest.reservations';
 
     const NOTIFY_CREATE_RESOURCE_ADMINS = 'resource.admin.add';
     const NOTIFY_CREATE_APPLICATION_ADMINS = 'application.admin.add';
@@ -94,8 +91,10 @@ class ConfigKeys
     const NOTIFY_DELETE_GROUP_ADMINS = 'group.admin.delete';
 
 	const NOTIFY_APPROVAL_RESOURCE_ADMINS = 'resource.admin.approval';
-	const NOTIFY_APPROVAL_APPLICATION_ADMINS = 'application.admin.approval';
-	const NOTIFY_APPROVAL_GROUP_ADMINS = 'group.admin.approval';
+    const NOTIFY_APPROVAL_APPLICATION_ADMINS = 'application.admin.approval';
+    const NOTIFY_APPROVAL_GROUP_ADMINS = 'group.admin.approval';
+
+	const NOTIFY_DELETE_ALL_USERS = 'all.users.delete';
 
 	const UPLOAD_ENABLE_RESERVATION_ATTACHMENTS = 'enable.reservation.attachments';
 	const UPLOAD_RESERVATION_ATTACHMENTS = 'reservation.attachment.path';
@@ -104,6 +103,7 @@ class ConfigKeys
 	const PAGES_ENABLE_CONFIGURATION = 'enable.configuration';
 
 	const API_ENABLED = 'enabled';
+	const API_ALLOW_CORS = 'allow.cors';
 	const RECAPTCHA_ENABLED = 'enabled';
 	const RECAPTCHA_PUBLIC_KEY = 'public.key';
 	const RECAPTCHA_PRIVATE_KEY = 'private.key';
@@ -127,7 +127,7 @@ class ConfigKeys
 	const RESERVATION_LABELS_MY_CALENDAR = 'my.calendar';
 	const RESERVATION_LABELS_RESOURCE_CALENDAR = 'resource.calendar';
 	const RESERVATION_LABELS_RESERVATION_POPUP = 'reservation.popup';
-	
+
     const SECURITY_HEADERS = 'security.headers';
     const SECURITY_STRICT_TRANSPORT = 'security.strict-transport';
     const SECURITY_X_FRAME = 'security.x-frame';
@@ -136,15 +136,11 @@ class ConfigKeys
     const SECURITY_CONTENT_SECURITY_POLICY = 'security.content-security-policy';
 
     const GOOGLE_ANALYTICS_TRACKING_ID = 'tracking.id';
-
-    const AUTHENTICATION_ALLOW_SOCIAL = 'allow.social.login';
 }
 
 class ConfigSection
 {
     const API = 'api';
-    const AUTHENTICATION = 'authentication';
-	const CREDITS = 'credits';
     const DATABASE = 'database';
 	const EMAIL = 'email';
     const ICS = 'ics';
@@ -157,9 +153,9 @@ class ConfigSection
 	const RESERVATION_LABELS = 'reservation.labels';
     const RESERVATION_NOTIFY = 'reservation.notify';
     const SCHEDULE = 'schedule';
-	const SECURITY = 'security';
 	const UPLOADS = 'uploads';
 	const RECAPTCHA = 'recaptcha';
 	const USERS = 'users';
+    const SECURITY = 'security';
     const GOOGLE_ANALYTICS = 'google.analytics';
 }

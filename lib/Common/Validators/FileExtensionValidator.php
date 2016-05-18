@@ -63,6 +63,6 @@ class FileExtensionValidator extends ValidatorBase implements IValidator
 
 	public function Messages()
 	{
-		return array(Resources::GetInstance()->GetString('InvalidAttachmentExtension', implode(',', $this->validExtensions)));
+		return array(Resources::GetInstance()->GetString('InvalidAttachmentExtension', $this->validExtensions));
 	}
 }

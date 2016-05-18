@@ -95,6 +95,10 @@ class ResourceRequest extends JsonRequest
 	 * @var int|null
 	 */
 	public $statusReasonId;
+	/**
+	 * @var int|null
+	 */
+	public $resourceTypeId;
 
 	/**
 	 * @return ExampleResourceRequest
@@ -139,7 +143,6 @@ class ExampleResourceRequest extends ResourceRequest
 		$this->sortOrder = 1;
 		$this->statusId = ResourceStatus::AVAILABLE;
 		$this->statusReasonId = 2;
+		$this->resourceTypeId = 1;
 	}
 }
-
-?>

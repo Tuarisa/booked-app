@@ -1,21 +1,21 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Domain/Values/DayOfWeek.php');
@@ -43,25 +43,11 @@ interface IScheduleLayout extends ILayoutTimezone, IDailyScheduleLayout
 	public function GetLayout(Date $layoutDate, $hideBlockedPeriods = false);
 
 	/**
+	 * @abstract
 	 * @param Date $date
 	 * @return SchedulePeriod|null period which occurs at this datetime. Includes start time, excludes end time. null if no match is found
 	 */
 	public function GetPeriod(Date $date);
-
-	/**
-	 * @param Date $startDate
-	 * @param Date $endDate
-	 * @param Date $testDate
-	 * @return SlotCount
-	 */
-	public function GetSlotCount(Date $startDate, Date $endDate, Date $testDate);
-
-	/**
-	 * @param PeakTimes $peakTimes
-	 */
-	public function ChangePeakTimes(PeakTimes $peakTimes);
-
-	public function RemovePeakTimes();
 }
 
 interface ILayoutCreation extends ILayoutTimezone, IDailyScheduleLayout
@@ -97,11 +83,6 @@ interface ILayoutCreation extends ILayoutTimezone, IDailyScheduleLayout
 
 class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 {
-	/**
-	 * @var PeakTimes
-	 */
-	protected $peakTimes;
-
 	/**
 	 * @var array|LayoutPeriod[]
 	 */
@@ -140,7 +121,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	public function __construct($targetTimezone = null)
 	{
 		$this->targetTimezone = $targetTimezone;
-		if (empty($targetTimezone))
+		if ($targetTimezone == null)
 		{
 			$this->targetTimezone = Configuration::Instance()->GetDefaultTimezone();
 		}
@@ -200,8 +181,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		$this->AppendGenericPeriod($startTime, $endTime, PeriodTypes::NONRESERVABLE, $label, $dayOfWeek);
 	}
 
-	protected function AppendGenericPeriod(Time $startTime, Time $endTime, $periodType, $label = null,
-										   $dayOfWeek = null)
+	protected function AppendGenericPeriod(Time $startTime, Time $endTime, $periodType, $label = null, $dayOfWeek = null)
 	{
 		if ($this->StartTimeCanBeAdded($startTime, $dayOfWeek))
 		{
@@ -233,6 +213,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 	 * @param Date $layoutDate
 	 * @param bool $hideBlockedPeriods
 	 * @return array|SchedulePeriod[]
+	 * @throws Exception
 	 */
 	public function GetLayout(Date $layoutDate, $hideBlockedPeriods = false)
 	{
@@ -295,7 +276,7 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 				$periodEnd = $layoutDate->SetTime($endTime, true);
 			}
 
-			if ($this->SpansMidnight($periodStart, $periodEnd))
+			if ($this->SpansMidnight($periodStart, $periodEnd, $layoutDate))
 			{
 				if ($periodStart->LessThan($midnight))
 				{
@@ -452,14 +433,6 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		return $this->targetTimezone;
 	}
 
-	/**
-	 * @return PeakTimes
-	 */
-	public function GetPeakTimes()
-	{
-		return $this->peakTimes;
-	}
-
 	protected function AddPeriod(SchedulePeriod $period)
 	{
 		$this->_periods[] = $period;
@@ -589,312 +562,6 @@ class ScheduleLayout implements IScheduleLayout, ILayoutCreation
 		$this->startTimes[$day][$startTime->ToString()] = $startTime->ToString();
 		return true;
 	}
-
-	/**
-	 * @param Date $startDate
-	 * @param Date $endDate
-	 * @param Date $testDate
-	 * @return SlotCount
-	 */
-	public function GetSlotCount(Date $startDate, Date $endDate, Date $testDate)
-	{
-		$slots = 0;
-		$peakSlots = 0;
-		$start = $startDate->ToTimezone($this->layoutTimezone);
-		$end = $endDate->ToTimezone($this->layoutTimezone);
-		$testDate = $testDate->ToTimezone($this->layoutTimezone);
-
-		Log::Debug('s %s e %s t %s', $start, $end, $testDate);
-
-		$periods = $this->getPeriods($startDate);
-
-		/** var LayoutPeriod $period */
-		foreach ($periods as $period)
-		{
-			if (!$period->IsReservable())
-			{
-				continue;
-			}
-
-			if ($start->Compare($testDate->SetTime($period->Start)) <= 0 && $end->Compare($testDate->SetTime($period->End, true)) >= 0)
-			{
-				Log::Debug($period->Start);
-				Log::Debug($period->End);
-
-				$isPeak = $this->HasPeakTimesDefined() && $this->peakTimes->IsWithinPeak($testDate->SetTime($period->Start));
-				if ($isPeak)
-				{
-					$peakSlots++;
-				}
-				else
-				{
-					$slots++;
-				}
-			}
-		}
-
-		return new SlotCount($slots, $peakSlots);
-	}
-
-	public function HasPeakTimesDefined()
-	{
-		return $this->peakTimes != null;
-	}
-
-	public function ChangePeakTimes(PeakTimes $peakTimes)
-	{
-		$peakTimes->InTimezone($this->layoutTimezone);
-		$this->peakTimes = $peakTimes;
-	}
-
-	public function RemovePeakTimes()
-	{
-		$this->peakTimes = null;
-	}
-}
-
-class SlotCount
-{
-	public $OffPeak = 0;
-	public $Peak = 0;
-
-	public function __construct($offPeak, $peak)
-	{
-		$this->OffPeak = $offPeak;
-		$this->Peak = $peak;
-	}
-}
-
-class PeakTimes
-{
-	/**
-	 * @return bool
-	 */
-	public function IsAllDay()
-	{
-		return $this->allDay;
-	}
-
-	/**
-	 * @return Time|null
-	 */
-	public function GetBeginTime()
-	{
-		return $this->beginTime;
-	}
-
-	/**
-	 * @return Time|null
-	 */
-	public function GetEndTime()
-	{
-		return $this->endTime;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsEveryDay()
-	{
-		return $this->everyDay;
-	}
-
-	/**
-	 * @return int[]
-	 */
-	public function GetWeekdays()
-	{
-		return $this->weekdays;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsAllYear()
-	{
-		return $this->allYear;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetBeginDay()
-	{
-		return $this->beginDay;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetBeginMonth()
-	{
-		return $this->beginMonth;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetEndDay()
-	{
-		return $this->endDay;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetEndMonth()
-	{
-		return $this->endMonth;
-	}
-
-	private $allDay = false;
-	private $beginTime = null;
-	private $endTime = null;
-	private $everyDay = false;
-	private $weekdays = array();
-	private $allYear = false;
-	private $beginDay = 0;
-	private $beginMonth = 0;
-	private $endDay = 0;
-	private $endMonth = 0;
-
-	/**
-	 * @param bool $allDay
-	 * @param string|Time $beginTime
-	 * @param string|Time $endTime
-	 * @param bool $everyDay
-	 * @param int[] $weekdays
-	 * @param bool $allYear
-	 * @param int $beginDay
-	 * @param int $beginMonth
-	 * @param int $endDay
-	 * @param int $endMonth
-	 */
-	public function __construct($allDay, $beginTime, $endTime, $everyDay, $weekdays, $allYear, $beginDay, $beginMonth, $endDay, $endMonth)
-	{
-		$this->allDay = $allDay;
-
-		$this->beginTime = new NullTime();
-		$this->endTime = new NullTime();
-		if (!$this->allDay)
-		{
-			$this->beginTime = is_a($beginTime, 'Time') ? $beginTime : (!empty($beginTime) ? Time::Parse($beginTime) : new NullTime());
-			$this->endTime = is_a($endTime, 'Time') ? $endTime : (!empty($endTime) ? Time::Parse($endTime) : new NullTime());
-		}
-
-		$this->everyDay = $everyDay;
-		if (!$this->everyDay)
-		{
-			$this->weekdays = $weekdays;
-		}
-
-		$this->allYear = $allYear;
-
-		if (!$allYear)
-		{
-			$this->beginDay = $beginDay;
-			$this->beginMonth = $beginMonth;
-			$this->endDay = $endDay;
-			$this->endMonth = $endMonth;
-		}
-	}
-
-	public static function FromRow($row)
-	{
-		$allDay = intval($row[ColumnNames::PEAK_ALL_DAY]);
-
-		$beginTime = !empty($row[ColumnNames::PEAK_START_TIME]) ? Time::Parse($row[ColumnNames::PEAK_START_TIME]) : null;
-		$endTime = !empty($row[ColumnNames::PEAK_END_TIME]) ? Time::Parse($row[ColumnNames::PEAK_END_TIME]) : null;
-
-		$everyDay = intval($row[ColumnNames::PEAK_EVERY_DAY]);
-
-		$weekdays = !empty($row[ColumnNames::PEAK_DAYS]) ? explode(',', $row[ColumnNames::PEAK_DAYS]) : array();
-
-
-		$allYear = intval($row[ColumnNames::PEAK_ALL_YEAR]);
-
-		$beginDay = $row[ColumnNames::PEAK_BEGIN_DAY];
-		$beginMonth = $row[ColumnNames::PEAK_BEGIN_MONTH];
-		$endDay = $row[ColumnNames::PEAK_END_DAY];
-		$endMonth = $row[ColumnNames::PEAK_END_MONTH];
-
-		return new PeakTimes($allDay, $beginTime, $endTime, $everyDay, $weekdays, $allYear, $beginDay, $beginMonth, $endDay, $endMonth);
-	}
-
-	public function IsWithinPeak(Date $date)
-	{
-		$year = $date->Year();
-		$endYear = $year;
-
-		$startMonth = $this->GetBeginMonth();
-		$startDay = $this->GetBeginDay();
-		$endMonth = $this->GetEndMonth();
-		$endDay = $this->GetEndDay();
-		$startTime = $this->GetBeginTime();
-		$endTime = $this->GetEndTime();
-		$weekdays = $this->GetWeekdays();
-
-		if ($this->IsAllDay())
-		{
-			$startTime = new Time(0, 0, 0, $date->Timezone());
-			$endTime = new Time(0, 0, 0, $date->Timezone());
-		}
-
-		if ($this->IsAllYear())
-		{
-			$startMonth = 1;
-			$endMonth = 1;
-			$startDay = 1;
-			$endDay = 1;
-		}
-
-		if ($this->IsEveryDay() || empty($weekdays) || !is_array($weekdays))
-		{
-			$weekdays = null;
-		}
-
-		if ($endMonth <= $startMonth)
-		{
-			$endYear = $year + 1;
-		}
-
-		if ($endTime->Compare($startTime) <= 0)
-		{
-			$endDay = $endDay + 1;
-		}
-
-		$peakStart = Date::Create($year, $startMonth, $startDay, $startTime->Hour(), $startTime->Minute(), 0, $date->Timezone());
-		$peakEnd = Date::Create($endYear, $endMonth, $endDay, $endTime->Hour(), $endTime->Minute(), 0, $date->Timezone());
-
-		if ($date->Compare($peakStart) >= 0 && $date->Compare($peakEnd) <= 0)
-		{
-			$isPeakHour = $this->IsAllDay() || ($date->CompareTimes($startTime) >= 0 && $date->CompareTimes($endTime) < 0);
-			$isPeakWeekday = true;
-
-			if ($weekdays != null)
-			{
-				$isPeakWeekday = in_array($date->Weekday(), $weekdays);
-			}
-
-			if ($isPeakHour && $isPeakWeekday)
-			{
-				Log::Debug('Date %s is within peak start %s end %s', $date, $peakStart, $peakEnd);
-				return true;
-			}
-		}
-
-		Log::Debug('Date %s is not within peak %s end %s', $date, $peakStart, $peakEnd);
-		return false;
-	}
-
-	public function InTimezone($timezone)
-	{
-		if (!$this->IsAllDay())
-		{
-			$this->beginTime = new Time($this->beginTime->Hour(), $this->beginTime->Minute(), 0, $timezone);
-			$this->endTime = new Time($this->endTime->Hour(), $this->endTime->Minute(), 0, $timezone);
-		}
-	}
 }
 
 class LayoutParser
@@ -944,7 +611,7 @@ class LayoutParser
 
 	private function ParseSlots($allSlots, $dayOfWeek, $callback)
 	{
-		$lines = preg_split("/[\n]/", $allSlots, -1, PREG_SPLIT_NO_EMPTY);
+		$lines = preg_split("/[\n]/", trim($allSlots), -1, PREG_SPLIT_NO_EMPTY);
 
 		foreach ($lines as $slotLine)
 		{

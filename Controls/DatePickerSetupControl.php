@@ -85,3 +85,4 @@ class DatePickerSetupControl extends Control
 		return "['" . implode("','", $values) . "']";
 	}
 }
+?>

@@ -18,3 +18,4 @@ interface IReservationInitializer
 {
 	public function Initialize();
 }
+?>

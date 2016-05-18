@@ -31,7 +31,7 @@ class ResourceAdminManageReservationsService extends ManageReservationsService i
 	 * @param IUserRepository $userRepository
 	 * @param IReservationAuthorization $authorization
 	 * @param IReservationHandler|null $reservationHandler
-	 * @param IUpdateReservationPersistenceService|null $persistenceService
+	 * @param IUpdateReservationPersistenceService|$persistenceService
 	 */
 	public function __construct(IReservationViewRepository $reservationViewRepository,
 								IUserRepository $userRepository,

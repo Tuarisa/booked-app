@@ -69,13 +69,13 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 	{capture "accessories"}
 	{if !$hideDetails}
-	<div class="accessories">
-	{translate key="Accessories"} ({$accessories|@count}):
-	{foreach from=$accessories item=accessory name=accessory_loop}
-		{$accessory->Name} ({$accessory->QuantityReserved})
-		{if !$smarty.foreach.accessory_loop.last}, {/if}
-	{/foreach}
-	</div>
+		<div class="accessories">
+		{translate key="Accessories"} ({$accessories|@count}):
+		{foreach from=$accessories item=accessory name=accessory_loop}
+			{$accessory->Name} ({$accessory->QuantityReserved})
+			{if !$smarty.foreach.accessory_loop.last}, {/if}
+		{/foreach}
+		</div>
 	{/if}
 	{/capture}
 	{$formatter->Add('accessories', $smarty.capture.accessories)}

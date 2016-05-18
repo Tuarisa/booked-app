@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2016 Nick Korbel
  *
@@ -24,56 +23,61 @@ require_once(ROOT_DIR . 'Domain/namespace.php');
 
 class AnnouncementEmail extends EmailMessage
 {
-    /**
-     * @var string
-     */
-    private $announcement;
+	/**
+	 * @var string
+	 */
+	private $announcement;
+	/**
+	 * @var UserSession
+	 */
+	private $sentBy;
 
-    /**
-     * @var UserSession
-     */
-    private $sentBy;
+	/**
+	 * @var
+	 */
+	private $toEmail;
+	/**
+	 * @var
+	 */
+	private $toName;
 
-    /**
-     * @var UserItemView
-     */
-    private $to;
+	/**
+	 * @param string $announcement
+	 * @param UserSession $sentBy
+	 * @param string $toEmail
+	 * @param string $toName
+	 */
+	public function __construct($announcement, $sentBy, $toEmail, $toName)
+	{
+		parent::__construct('en_us');
+		$this->announcement = $announcement;
+		$this->sentBy = $sentBy;
+		$this->toEmail = $toEmail;
+		$this->toName = $toName;
+	}
 
-    /**
-     * @param string $announcement
-     * @param UserSession $sentBy
-     * @param UserItemView $to
-     */
-    public function __construct($announcement, $sentBy, $to)
-    {
-        parent::__construct($to->Language);
-        $this->announcement = $announcement;
-        $this->sentBy = $sentBy;
-        $this->to = $to;
-    }
+	/**
+	 * @return array|EmailAddress[]|EmailAddress
+	 */
+	public function To()
+	{
+		return new EmailAddress($this->toEmail, $this->toName);
+	}
 
-    /**
-     * @return array|EmailAddress[]|EmailAddress
-     */
-    public function To()
-    {
-        return new EmailAddress($this->to->Email, new FullName($this->to->First, $this->to->Last));
-    }
+	/**
+	 * @return string
+	 */
+	public function Subject()
+	{
+		return $this->Translate('AnnouncementSubject', new FullName($this->sentBy->FirstName, $this->sentBy->LastName));
+	}
 
-    /**
-     * @return string
-     */
-    public function Subject()
-    {
-        return $this->Translate('AnnouncementSubject', new FullName($this->sentBy->FirstName, $this->sentBy->LastName));
-    }
-
-    /**
-     * @return string
-     */
-    public function Body()
-    {
-        $this->Set('AnnouncementText', $this->announcement);
-        return $this->FetchTemplate('AnnouncementEmail.tpl');
-    }
+	/**
+	 * @return string
+	 */
+	public function Body()
+	{
+		$this->Set('AnnouncementText', $this->announcement);
+		return $this->FetchTemplate('AnnouncementEmail.tpl');
+	}
 }

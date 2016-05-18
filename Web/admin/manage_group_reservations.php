@@ -36,6 +36,7 @@ class GroupAdminManageReservationsPage extends ManageReservationsPage
 					new UserPreferenceRepository());
 
 		$this->SetCanUpdateResourceStatus(false);
+		$this->SetPageId('manage-reservations-group-admin');
     }
 }
 

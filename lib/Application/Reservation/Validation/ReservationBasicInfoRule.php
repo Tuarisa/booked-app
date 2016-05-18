@@ -16,8 +16,11 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 class ReservationBasicInfoRule implements IReservationValidationRule
 {
-
-	public function Validate($reservationSeries, $retryParameters)
+	/**
+	 * @param ReservationSeries $reservationSeries
+	 * @return ReservationRuleResult
+	 */
+	public function Validate($reservationSeries)
 	{
 		$userId = $reservationSeries->UserId();
 		$resourceId = $reservationSeries->ResourceId();
@@ -27,3 +30,5 @@ class ReservationBasicInfoRule implements IReservationValidationRule
 		return new ReservationRuleResult($isOk, Resources::GetInstance()->GetString('InvalidReservationData'));
 	}
 }
+
+?>

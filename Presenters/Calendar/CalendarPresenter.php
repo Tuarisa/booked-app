@@ -148,7 +148,7 @@ class CalendarPresenter
 									   $reservations,
 									   $resources,
 									   $userSession,
-									   $this->privacyFilter));
+									   true));
 		$this->page->BindCalendar($calendar);
 
 
@@ -169,7 +169,7 @@ class CalendarPresenter
 	 */
 	private function GetDefaultSchedule($schedules)
 	{
-		$default = null;
+		$default = $schedules[0];
 		$scheduleId = $this->page->GetScheduleId();
 
 		/** @var $schedule Schedule */

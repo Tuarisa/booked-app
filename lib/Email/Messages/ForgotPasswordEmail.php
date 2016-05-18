@@ -63,3 +63,5 @@ class ForgotPasswordEmail extends EmailMessage
 		return $this->FetchTemplate('ResetPassword.tpl');
 	}
 }
+
+?>

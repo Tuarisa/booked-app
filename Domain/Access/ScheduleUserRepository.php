@@ -275,3 +275,4 @@ class NullScheduleResource extends ScheduleResource
 		return null;
 	}
 }
+?>

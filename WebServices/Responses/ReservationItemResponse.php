@@ -42,7 +42,7 @@ class ReservationItemResponse extends RestResponse
 	public $statusId;
 	public $participants = array();
 	public $invitees = array();
-	
+
 	public function __construct(ReservationItemView $reservationItemView, IRestServer $server, $showUser, $showDetails)
 	{
 		$this->referenceNumber = $reservationItemView->ReferenceNumber;

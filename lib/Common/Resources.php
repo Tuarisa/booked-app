@@ -1,26 +1,24 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- *
- * This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
- */
+Copyright 2011-2015 Nick Korbel
 
+This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 require_once(ROOT_DIR . 'lang/AvailableLanguages.php');
 
 interface IResourceLocalization
 {
 	/**
-	 * @abstract
 	 * @param $key
 	 * @param array|string $args
 	 * @return void
@@ -42,7 +40,6 @@ class ResourceKeys
 {
 	const DATE_GENERAL = 'general_date';
 	const DATETIME_GENERAL = 'general_datetime';
-	const DATETIME_SHORT = 'short_datetime';
 	const DATETIME_SYSTEM = 'system_datetime';
 }
 
@@ -86,7 +83,7 @@ class Resources implements IResourceLocalization
 	 */
 	private $_lang;
 
-	protected function __construct()
+	public function __construct()
 	{
 		$this->LanguageDirectory = dirname(__FILE__) . '/../../lang/';
 
@@ -145,8 +142,8 @@ class Resources implements IResourceLocalization
 	public function IsLanguageSupported($languageCode)
 	{
 		return !empty($languageCode) &&
-		(array_key_exists($languageCode, $this->AvailableLanguages) &&
-				file_exists($this->LanguageDirectory . $this->AvailableLanguages[$languageCode]->LanguageFile));
+			(array_key_exists($languageCode, $this->AvailableLanguages) &&
+			file_exists($this->LanguageDirectory . $this->AvailableLanguages[$languageCode]->LanguageFile));
 	}
 
 	public function GetString($key, $args = array())
@@ -208,11 +205,6 @@ class Resources implements IResourceLocalization
 	public function GeneralDateTimeFormat()
 	{
 		return $this->GetDateFormat(ResourceKeys::DATETIME_GENERAL);
-	}
-
-	public function ShortDateTimeFormat()
-	{
-		return $this->GetDateFormat(ResourceKeys::DATETIME_SHORT);
 	}
 
 	public function SystemDateTimeFormat()

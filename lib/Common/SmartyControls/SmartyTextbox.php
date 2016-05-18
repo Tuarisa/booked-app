@@ -18,16 +18,14 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 class SmartyTextbox
 {
 	private $name;
-	private $type;
     private $id;
 	private $attributes;
 	private $smartyVariable;
 	private $smarty;
 
-	public function __construct($formKey, $type, $id, $smartyVariable, $attributes, &$smarty)
+	public function __construct($formKey, $id, $smartyVariable, $attributes, &$smarty)
 	{
 		$this->name = $this->GetName($formKey);
-		$this->type = empty($type) ? 'text' : $type;
         $this->id = empty($id) ? $this->GetName($formKey) : $id;
 		$this->attributes = $attributes;
 		$this->smartyVariable = $smartyVariable;
@@ -44,7 +42,7 @@ class SmartyTextbox
 
 	protected function GetInputType()
 	{
-		return $this->type;
+		return 'text';
 	}
 
 	private function GetName($formKey)

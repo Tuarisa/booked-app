@@ -58,17 +58,9 @@ class AuthenticationWebService
 		{
 			Log::Debug('WebService Authenticate, user %s was authenticated', $username);
 
-			$version = 0;
-			$reader = ServiceLocator::GetDatabase()->Query(new GetVersionCommand());
-			if ($row = $reader->GetRow())
-			{
-				$version = $row[ColumnNames::VERSION_NUMBER];
-			}
-			$reader->Free();
-			
 			$session = $this->authentication->Login($username);
 			Log::Debug('SessionToken=%s', $session->SessionToken);
-			$this->server->WriteResponse(AuthenticationResponse::Success($this->server, $session, $version));
+			$this->server->WriteResponse(AuthenticationResponse::Success($this->server, $session));
 		}
 		else
 		{

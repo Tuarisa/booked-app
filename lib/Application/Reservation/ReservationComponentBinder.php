@@ -110,7 +110,6 @@ class ReservationUserBinder implements IReservationComponentBinder
 															 new BooleanConverter());
 
 		$initializer->ShowUserDetails(!$hideUser || $currentUser->IsAdmin);
-		$initializer->ShowReservationDetails(true);
 		$initializer->SetShowParticipation(!$hideUser || $currentUser->IsAdmin || $currentUser->IsGroupAdmin);
 	}
 }
@@ -179,6 +178,58 @@ class ReservationResourceBinder implements IReservationComponentBinder
 	}
 }
 
+class ReservationCustomAttributeBinder implements IReservationComponentBinder
+{
+	/**
+	 * @var IAttributeRepository
+	 */
+	private $repository;
+
+	public function __construct(IAttributeRepository $repository)
+	{
+		$this->repository = $repository;
+	}
+
+	public function Bind(IReservationComponentInitializer $initializer)
+	{
+		$attributes = $this->repository->GetByCategory(CustomAttributeCategory::RESERVATION);
+
+		foreach ($attributes as $attribute)
+		{
+			$initializer->AddAttribute($attribute, null);
+		}
+	}
+}
+
+class ReservationCustomAttributeValueBinder implements IReservationComponentBinder
+{
+	/**
+	 * @var IAttributeRepository
+	 */
+	private $repository;
+
+	/**
+	 * @var ReservationView
+	 */
+	private $reservationView;
+
+	public function __construct(IAttributeRepository $repository, ReservationView $reservationView)
+	{
+		$this->repository = $repository;
+		$this->reservationView = $reservationView;
+	}
+
+	public function Bind(IReservationComponentInitializer $initializer)
+	{
+		$attributes = $this->repository->GetByCategory(CustomAttributeCategory::RESERVATION);
+
+		foreach ($attributes as $attribute)
+		{
+			$initializer->AddAttribute($attribute, $this->reservationView->GetAttributeValue($attribute->Id()));
+		}
+	}
+}
+
 class ReservationDetailsBinder implements IReservationComponentBinder
 {
 	/**
@@ -217,7 +268,6 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 		$this->page->SetDescription($this->reservationView->Description);
 		$this->page->SetReferenceNumber($this->reservationView->ReferenceNumber);
 		$this->page->SetReservationId($this->reservationView->ReservationId);
-		$this->page->SetSeriesId($this->reservationView->SeriesId);
 
 		$this->page->SetIsRecurring($this->reservationView->IsRecurring());
 		$this->page->SetRepeatType($this->reservationView->RepeatType);
@@ -230,15 +280,11 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 		}
 		$this->page->SetRepeatWeekdays($this->reservationView->RepeatWeekdays);
 
-
 		$participants = $this->reservationView->Participants;
 		$invitees = $this->reservationView->Invitees;
 
 		$this->page->SetParticipants($participants);
 		$this->page->SetInvitees($invitees);
-
-		$this->page->SetParticipatingGuests($this->reservationView->ParticipatingGuests);
-		$this->page->SetInvitedGuests($this->reservationView->InvitedGuests);
 
 		$this->page->SetAllowParticipantsToJoin($this->reservationView->AllowParticipation);
 
@@ -248,7 +294,6 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 
 		$this->page->SetCurrentUserParticipating($this->IsCurrentUserParticipating($currentUser->UserId));
 		$this->page->SetCurrentUserInvited($this->IsCurrentUserInvited($currentUser->UserId));
-		$this->page->SetCanAlterParticipation($this->reservationView->EndDate->GreaterThan(Date::Now()));
 
 		$canBeEdited = $this->reservationAuthorization->CanEdit($this->reservationView, $currentUser);
 		$this->page->SetIsEditable($canBeEdited);
@@ -258,6 +303,7 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 
 		$showUser = $this->privacyFilter->CanViewUser($initializer->CurrentUser(), $this->reservationView);
 		$showDetails = $this->privacyFilter->CanViewDetails($initializer->CurrentUser(), $this->reservationView);
+
 
 		$initializer->ShowUserDetails($showUser);
 		$initializer->ShowReservationDetails($showDetails);
@@ -272,13 +318,6 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 			$this->page->SetEndReminder($this->reservationView->EndReminder->GetValue(),
 										$this->reservationView->EndReminder->GetInterval());
 		}
-
-		$this->page->SetCheckInRequired(false);
-		$this->page->SetCheckOutRequired(false);
-		$this->page->SetAutoReleaseMinutes(null);
-		$this->SetCheckinRequired();
-		$this->SetCheckoutRequired();
-		$this->SetAutoReleaseMinutes();
 	}
 
 	private function IsCurrentUserParticipating($currentUserId)
@@ -306,58 +345,6 @@ class ReservationDetailsBinder implements IReservationComponentBinder
 		}
 		return false;
 	}
-
-	private function SetCheckinRequired()
-	{
-		if ($this->reservationView->CheckinDate->ToString() == '' &&
-			Date::Now()->AddMinutes(5)->GreaterThanOrEqual($this->reservationView->StartDate))
-		{
-			// within 5 minutes
-			foreach ($this->reservationView->Resources as $resource)
-			{
-				if ($resource->IsCheckInEnabled())
-				{
-					$this->page->SetCheckInRequired(true);
-					break;
-				}
-			}
-		}
-	}
-
-	private function SetCheckoutRequired()
-	{
-		if ($this->reservationView->StartDate->LessThan(Date::Now()) &&
-				$this->reservationView->CheckoutDate->ToString() == '' &&
-				$this->reservationView->CheckinDate->ToString() != '')
-		{
-			foreach ($this->reservationView->Resources as $resource)
-			{
-				if ($resource->IsCheckInEnabled())
-				{
-					$this->page->SetCheckOutRequired(true);
-					break;
-				}
-			}
-		}
-	}
-
-	private function SetAutoReleaseMinutes()
-	{
-		$minAutoReleaseMinutes = null;
-		if ($this->reservationView->CheckinDate->ToString() == '')
-		{
-			foreach ($this->reservationView->Resources as $resource)
-			{
-				$autoReleaseMinutes = $resource->GetAutoReleaseMinutes();
-				if ($autoReleaseMinutes != null)
-				{
-					if ($minAutoReleaseMinutes == null || ($autoReleaseMinutes < $minAutoReleaseMinutes))
-					{
-						$minAutoReleaseMinutes = $autoReleaseMinutes;
-					}
-				}
-			}
-		}
-		$this->page->SetAutoReleaseMinutes($minAutoReleaseMinutes);
-	}
 }
+
+?>

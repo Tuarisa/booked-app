@@ -237,5 +237,4 @@ class PluginManager
 	{
 		return $this->cache[$cacheKey];
 	}
-
 }

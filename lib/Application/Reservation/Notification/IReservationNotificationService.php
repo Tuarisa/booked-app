@@ -61,3 +61,4 @@ abstract class ReservationNotificationService implements IReservationNotificatio
 		}
 	}
 }
+?>

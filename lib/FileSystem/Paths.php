@@ -28,12 +28,12 @@ class Paths
 
 		if (empty($uploadDir))
 		{
-			$uploadDir = dirname(__FILE__) . '/' . ROOT_DIR . 'uploads/reservation';
+			$uploadDir = ROOT_DIR . 'uploads/reservation';
 		}
 
 		if (!is_dir($uploadDir))
 		{
-			$uploadDir =  dirname(__FILE__) . '/' . ROOT_DIR . $uploadDir;
+			$uploadDir =  ROOT_DIR . $uploadDir;
 		}
 
 		if (!BookedStringHelper::EndsWith($uploadDir, '/'))
@@ -58,3 +58,4 @@ class Paths
 		return $uploadDir;
 	}
 }
+?>

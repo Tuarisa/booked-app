@@ -47,7 +47,7 @@ function Calendar(opts, reservations)
 			value.attachReservationPopup(refNum);
 		});
 
-		$('#calendarFilter').on('change', function() {
+		$('#calendarFilter').change(function() {
 			var day = getQueryStringValue('d');
 			var month = getQueryStringValue('m');
 			var year = getQueryStringValue('y');
@@ -57,15 +57,16 @@ function Calendar(opts, reservations)
 
 			if ($(this).find(':selected').hasClass('schedule'))
 			{
-				scheduleId = '&sid=' + $(this).val().replace('s', '');
+				scheduleId = '&sid=' + $(this).val();
 			}
 			else
 			{
-				scheduleId = '&sid=' + $(this).find(':selected').prevAll('.schedule').val().replace('s', '');;
-				resourceId = '&rid=' + $(this).val().replace('r', '');;
+				scheduleId = '&sid=' + $(this).find(':selected').prevAll('.schedule').val();
+				resourceId = '&rid=' + $(this).val();
 			}
 
-			var url = 'calendar.php?ct=' + type + '&d=' + day + '&m=' + month + '&y=' + year + scheduleId + resourceId;
+			var url = [location.protocol, '//', location.host, location.pathname].join('');
+			url = url + '?ct=' + type + '&d=' + day + '&m=' + month + '&y=' + year + scheduleId + resourceId;
 			
 			window.location = url;
 		});
@@ -85,7 +86,7 @@ function Calendar(opts, reservations)
 		});
 
 		$('#dayDialogCancel').click(function(e){
-			dayDialog.hide();
+			dayDialog.dialog('close');
 		});
 
 		$('#dayDialogView').click(function(e){
@@ -119,12 +120,11 @@ function Calendar(opts, reservations)
 
 	Calendar.prototype.bindResourceGroups = function(resourceGroups, selectedNode)
 	{
-		if (resourceGroups.length == 0)
+		if (!resourceGroups || resourceGroups.length == 0)
 		{
 			$('#showResourceGroups').hide();
 			return;
 		}
-
 		// this is copied out of schedule.js, so this needs to be fixed
 
 		function ChangeGroup(groupId)
@@ -236,15 +236,12 @@ function Calendar(opts, reservations)
 		}
 		else
 		{
-			//dayDialog.dialog({modal: false, height: 70, width: 'auto'});
-			dayDialog.show();
-			dayDialog.position({
-						       my: 'left bottom',
-						       at: 'left top',
+			dayDialog.dialog({modal: false, height: 70, width: 'auto'});
+			dayDialog.dialog("widget").position({
+						       my: 'left top',
+						       at: 'left bottom',
 						       of: jsEvent
 						    });
-
-
 		}
 	};
 

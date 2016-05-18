@@ -24,47 +24,38 @@ require_once(ROOT_DIR . 'Presenters/Admin/ManageAnnouncementsPresenter.php');
 interface IManageAnnouncementsPage extends IActionPage
 {
 	/**
+	 * @abstract
 	 * @return int
 	 */
 	public function GetAnnouncementId();
 
     /**
+     * @abstract
      * @return string
      */
     public function GetText();
 
     /**
+     * @abstract
      * @return string
      */
     public function GetStart();
 
     /**
+     * @abstract
      * @return string
      */
     public function GetEnd();
 
     /**
+     * @abstract
      * @return string
      */
     public function GetPriority();
 
 	/**
-	 * @return int[]
-	 */
-	public function GetGroups();
-
-	/**
-	 * @return int[]
-	 */
-	public function GetResources();
-
-	/**
-	 * @return bool
-	 */
-	public function GetSendAsEmail();
-
-	/**
-	 * @param $announcements Announcement[]
+	 * @abstract
+	 * @param $announcements AnnouncementDto[]
 	 * @return void
 	 */
 	public function BindAnnouncements($announcements);
@@ -75,14 +66,9 @@ interface IManageAnnouncementsPage extends IActionPage
 	public function BindGroups($groups);
 
 	/**
-	 * @param BookableResource[] $resources
+	 * @return int
 	 */
-	public function BindResources($resources);
-
-	/**
-	 * @param int $number
-	 */
-	public function BindNumberOfUsersToBeSent($number);
+	public function GetEmailGroupId();
 }
 
 class ManageAnnouncementsPage extends ActionPage implements IManageAnnouncementsPage
@@ -95,15 +81,7 @@ class ManageAnnouncementsPage extends ActionPage implements IManageAnnouncements
 	public function __construct()
 	{
 		parent::__construct('ManageAnnouncements', 1);
-		$resourceRepository = new ResourceRepository();
-		$this->presenter = new ManageAnnouncementsPresenter(
-			$this,
-			new AnnouncementRepository(),
-			new GroupRepository(),
-			$resourceRepository,
-			PluginManager::Instance()->LoadPermission(),
-			new UserRepository()
-			);
+		$this->presenter = new ManageAnnouncementsPresenter($this, new AnnouncementRepository(), new GroupRepository(), new UserRepository());
 	}
 
 	public function ProcessPageLoad()
@@ -126,26 +104,41 @@ class ManageAnnouncementsPage extends ActionPage implements IManageAnnouncements
 		$this->presenter->ProcessAction();
 	}
 
+	/**
+	 * @return int
+	 */
 	public function GetAnnouncementId()
 	{
 		return $this->GetQuerystring(QueryStringKeys::ANNOUNCEMENT_ID);
 	}
 
+    /**
+     * @return string
+     */
     public function GetText()
     {
         return $this->GetForm(FormKeys::ANNOUNCEMENT_TEXT);
     }
 
+    /**
+     * @return string
+     */
     public function GetStart()
     {
         return $this->GetForm(FormKeys::ANNOUNCEMENT_START);
     }
 
+    /**
+     * @return string
+     */
     public function GetEnd()
     {
         return $this->GetForm(FormKeys::ANNOUNCEMENT_END);
     }
 
+    /**
+     * @return string
+     */
     public function GetPriority()
     {
         return $this->GetForm(FormKeys::ANNOUNCEMENT_PRIORITY);
@@ -153,51 +146,22 @@ class ManageAnnouncementsPage extends ActionPage implements IManageAnnouncements
 
 	public function ProcessDataRequest($dataRequest)
 	{
-		$this->presenter->ProcessDataRequest($dataRequest);
+		// no-op
 	}
 
+	/**
+	 * @param GroupItemView[] $groups
+	 */
 	public function BindGroups($groups)
 	{
 		$this->Set('Groups', $groups);
 	}
 
-	public function BindResources($resources)
+	/**
+	 * @return int
+	 */
+	public function GetEmailGroupId()
 	{
-		$this->Set('Resources', $resources);
-	}
-
-	public function BindNumberOfUsersToBeSent($number)
-	{
-		$this->SetJson(array('users' => $number));
-	}
-	public function GetGroups()
-	{
-		$groupIds = $this->GetForm(FormKeys::GROUP_ID);
-
-		if (!is_array($groupIds))
-		{
-			return array();
-		}
-
-		return $groupIds;
-	}
-
-	public function GetResources()
-	{
-		$resourceIds = $this->GetForm(FormKeys::RESOURCE_ID);
-
-		if (!is_array($resourceIds))
-		{
-			return array();
-		}
-
-		return $resourceIds;
-	}
-
-	public function GetSendAsEmail()
-	{
-		$send = $this->GetForm(FormKeys::SEND_AS_EMAIL);
-
-		return isset($send);
+		return $this->GetForm(FormKeys::GROUP_ID);
 	}
 }

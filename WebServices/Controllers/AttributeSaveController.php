@@ -108,8 +108,7 @@ class AttributeSaveController implements IAttributeSaveController
 		}
 
 		$attribute = CustomAttribute::Create($request->label, $request->type, $request->categoryId, $request->regex . '', (int)$request->required,
-											 $this->GetPossibleValues($request), $request->sortOrder, $request->appliesToIds, $request->adminOnly);
-		$attribute->WithIsPrivate($request->isPrivate);
+											 $this->GetPossibleValues($request), $request->sortOrder, $request->appliesToId);
 
 		$attributeId = $this->repository->Add($attribute);
 
@@ -135,8 +134,7 @@ class AttributeSaveController implements IAttributeSaveController
 		}
 
 		$attribute = new CustomAttribute($attributeId, $request->label, $request->type, $request->categoryId, $request->regex, $request->required,
-										 $request->possibleValues, $request->sortOrder, $request->appliesToIds, $request->adminOnly);
-		$attribute->WithIsPrivate($request->isPrivate);
+										 $request->possibleValues, $request->sortOrder, $request->appliesToId);
 
 		$this->repository->Update($attribute);
 
@@ -210,7 +208,7 @@ class AttributeSaveController implements IAttributeSaveController
 			$errors[] = 'possibleValues is only valid when the type is a select list';
 		}
 
-		if ($request->categoryId == CustomAttributeCategory::RESERVATION && !empty($request->appliesToIds))
+		if ($request->categoryId == CustomAttributeCategory::RESERVATION && !empty($request->appliesToId))
 		{
 			$errors[] = 'appliesToId is not valid when the type is reservation';
 		}

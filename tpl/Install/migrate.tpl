@@ -72,6 +72,7 @@ Done!
 					$.ajax({
 						url: "migrate.php?start=" + elementType,
 						type: "GET",
+						cache: false,
 						success: function (data)
 						{
 							migrated.find('.migratedCount').text(data.MigratedCount);

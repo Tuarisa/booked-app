@@ -50,3 +50,4 @@ class PostRegistration implements IPostRegistration
 		}
 	}
 }
+?>

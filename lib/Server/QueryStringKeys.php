@@ -35,7 +35,6 @@ class QueryStringKeys
 	const CONFIG_FILE = 'cf';
 	const DATA_REQUEST = 'dr';
 	const DAY = 'd';
-	const EMAIL = 'e';
 	const END_DATE = 'ed';
 	const FORMAT = 'format';
 	const GROUP_ID = 'gid';
@@ -50,7 +49,6 @@ class QueryStringKeys
 	const PERIOD_ID = 'pid';
 	const PREVIOUS_ID = 'pid';
 	const QUOTA_ID = 'qid';
-	const READ_ONLY = 'ro';
 	const REDIRECT = 'redirect';
 	const REFERENCE_NUMBER = 'rn';
 	const REMINDER_ID = 'aid';
@@ -75,3 +73,4 @@ class QueryStringKeys
     const WEB_SERVICE_ACTION = 'action';
 	const YEAR = 'y';
 }
+?>

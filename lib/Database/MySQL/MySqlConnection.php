@@ -71,10 +71,15 @@ class MySqlConnection implements IDbConnection
 
 	public function Query(ISqlCommand $sqlCommand)
 	{
-		mysqli_set_charset($this->_db, Resources::GetInstance()->Charset);
+		mysqli_set_charset($this->_db, 'utf8');
 		$mysqlCommand = new MySqlCommandAdapter($sqlCommand, $this->_db);
 
 		Log::Sql('MySql Query: ' . str_replace('%', '%%', $mysqlCommand->GetQuery()));
+
+		if ($sqlCommand->ContainsGroupConcat())
+		{
+			mysqli_query($this->_db,'SET SESSION group_concat_max_len = 1000000;');
+		}
 
 		$result = mysqli_query($this->_db, $mysqlCommand->GetQuery());
 
@@ -90,7 +95,7 @@ class MySqlConnection implements IDbConnection
 
 	public function Execute(ISqlCommand $sqlCommand)
 	{
-		mysqli_set_charset($this->_db, Resources::GetInstance()->Charset);
+		mysqli_set_charset($this->_db, 'utf8');
 		$mysqlCommand = new MySqlCommandAdapter($sqlCommand, $this->_db);
 
 		Log::Sql('MySql Execute: ' . str_replace('%', '%%', $mysqlCommand->GetQuery()));
@@ -146,6 +151,4 @@ class MySqlLimitCommand extends SqlCommand
 	{
 		return $this->baseCommand->GetQuery() . sprintf(" LIMIT %s OFFSET %s",  $this->limit, $this->offset);
 	}
-
 }
-?>

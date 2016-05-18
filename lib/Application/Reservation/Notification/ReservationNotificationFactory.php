@@ -27,8 +27,6 @@ class ReservationNotificationFactory implements IReservationNotificationFactory
         $this->creationStrategies[ReservationAction::Create] = 'CreateAddService';
         $this->creationStrategies[ReservationAction::Delete] = 'CreateDeleteService';
         $this->creationStrategies[ReservationAction::Update] = 'CreateUpdateService';
-        $this->creationStrategies[ReservationAction::Checkin] = 'CreateCheckinService';
-        $this->creationStrategies[ReservationAction::Checkout] = 'CreateCheckoutService';
     }
 
     public function Create($reservationAction, $userSession)
@@ -65,18 +63,6 @@ class ReservationNotificationFactory implements IReservationNotificationFactory
         $factory = PluginManager::Instance()->LoadPostReservation();
         return $factory->CreatePostUpdateService($userSession);
     }
-
-    private function CreateCheckinService($userSession)
-    {
-        $factory = PluginManager::Instance()->LoadPostReservation();
-        return $factory->CreatePostCheckinService($userSession);
-    }
-
-    private function CreateCheckoutService($userSession)
-    {
-        $factory = PluginManager::Instance()->LoadPostReservation();
-        return $factory->CreatePostCheckoutService($userSession);
-    }
 }
 
 class NullReservationNotificationService implements IReservationNotificationService
@@ -89,3 +75,5 @@ class NullReservationNotificationService implements IReservationNotificationServ
         // no-op
     }
 }
+
+?>

@@ -2,29 +2,27 @@ function ResourceTypeManagement(opts) {
 	var options = opts;
 
 	var elements = {
-		activeId: $('#activeId'),
+		activeId:$('#activeId'),
 
 		resourceTypes: $('#resourceTypes'),
 
-		editDialog: $('#editDialog'),
-		deleteDialog: $('#deleteDialog'),
+		editDialog:$('#editDialog'),
+		deleteDialog:$('#deleteDialog'),
 
-		editForm: $('#editForm'),
-		addForm: $('#addForm'),
-		deleteForm: $('#deleteForm'),
-		attributeForm: $('.attributesForm')
+		editForm:$('#editForm'),
+		addForm:$('#addForm'),
+		deleteForm:$('#deleteForm'),
+		attributeForm:$('.attributesForm')
 	};
 
 	var types = {};
 
 	ResourceTypeManagement.prototype.init = function () {
+		ConfigureAdminDialog(elements.editDialog, 'auto', 'auto');
+		ConfigureAdminDialog(elements.deleteDialog, 'auto', 'auto');
 
-		$('.changeAttribute').click(function (e) {
-			e.stopPropagation();
-			$(e.target).closest('.updateCustomAttribute').find('.inlineAttribute').editable('toggle');
-		});
-
-		elements.resourceTypes.delegate('a.update', 'click', function (e) {
+		elements.resourceTypes.delegate('a.update', 'click', function (e)
+		{
 			var id = $(this).siblings(':hidden.id').val();
 			setActiveId(id);
 
@@ -32,15 +30,17 @@ function ResourceTypeManagement(opts) {
 			e.stopPropagation();
 		});
 
-		elements.resourceTypes.delegate('a.edit', 'click', function (e) {
+		elements.resourceTypes.delegate('a.edit', 'click', function (e)
+		{
 			showEdit(e);
 		});
 
-		elements.resourceTypes.delegate('a.delete', 'click', function (e) {
+		elements.resourceTypes.delegate('a.delete', 'click', function (e)
+		{
 			showDeletePrompt(e);
 		});
 
-		elements.resourceTypes.delegate('.changeAttributes', 'click', function (e) {
+		elements.resourceTypes.delegate('.changeAttributes', 'click', function(e) {
 			var id = $(this).attr('resourceTypeId');
 			setActiveId(id);
 		});
@@ -64,10 +64,11 @@ function ResourceTypeManagement(opts) {
 			$(this).closest('.dialog').dialog("close");
 		});
 
-		var attributesHandler = function (responseText, form) {
+		var attributesHandler = function(responseText, form)
+		{
 			if (responseText.ErrorIds && responseText.Messages.attributeValidator)
 			{
-				var messages = responseText.Messages.attributeValidator.join('</li><li>');
+				var messages =  responseText.Messages.attributeValidator.join('</li><li>');
 				messages = '<li>' + messages + '</li>';
 				var validationSummary = $(form).find('.validationSummary');
 				validationSummary.find('ul').empty().append(messages);
@@ -79,12 +80,12 @@ function ResourceTypeManagement(opts) {
 			$("#globalError").html(result).show();
 		};
 
-		ConfigureAsyncForm(elements.editForm, getSubmitCallback, null, errorHandler);
-		ConfigureAsyncForm(elements.deleteForm, getSubmitCallback, null, errorHandler);
-		ConfigureAsyncForm(elements.addForm, getSubmitCallback, null, errorHandler);
+		ConfigureAdminForm(elements.editForm, getSubmitCallback, null, errorHandler);
+		ConfigureAdminForm(elements.deleteForm, getSubmitCallback, null, errorHandler);
+		ConfigureAdminForm(elements.addForm, getSubmitCallback, null, errorHandler);
 
-		$.each(elements.attributeForm, function (i, form) {
-			ConfigureAsyncForm($(form), getSubmitCallback, null, attributesHandler, {validationSummary: null});
+		$.each(elements.attributeForm, function(i,form){
+			ConfigureAdminForm($(form), getSubmitCallback, null, attributesHandler, {validationSummary:null});
 		});
 	};
 
@@ -110,10 +111,10 @@ function ResourceTypeManagement(opts) {
 		$('#editName').val(type.name);
 		$('#editDescription').val(type.description);
 
-		elements.editDialog.modal("show");
+		elements.editDialog.dialog("open");
 	};
 
 	var showDeletePrompt = function (e) {
-		elements.deleteDialog.modal("show");
+		elements.deleteDialog.dialog("open");
 	};
 }

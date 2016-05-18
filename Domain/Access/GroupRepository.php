@@ -69,7 +69,7 @@ interface IGroupViewRepository
 	 * @param int $pageSize
 	 * @param ISqlFilter $filter
 	 * @param AccountStatus|int $accountStatus
-	 * @return PageableData|UserItemView[]
+	 * @return PageableData|GroupUserView[]
 	 */
 	public function GetUsersInGroup($groupIds, $pageNumber = null, $pageSize = null, $filter = null,
 									$accountStatus = AccountStatus::ALL);
@@ -189,47 +189,42 @@ class GroupRepository implements IGroupRepository, IGroupViewRepository
 	{
 		$db = ServiceLocator::GetDatabase();
 
-		$groupId = $group->Id();
 		foreach ($group->RemovedUsers() as $userId)
 		{
-			$db->Execute(new DeleteUserGroupCommand($userId, $groupId));
+			$db->Execute(new DeleteUserGroupCommand($userId, $group->Id()));
 		}
 
 		foreach ($group->AddedUsers() as $userId)
 		{
-			$db->Execute(new AddUserGroupCommand($userId, $groupId));
+			$db->Execute(new AddUserGroupCommand($userId, $group->Id()));
 		}
 
 		foreach ($group->RemovedPermissions() as $resourceId)
 		{
-			$db->Execute(new DeleteGroupResourcePermission($groupId, $resourceId));
+			$db->Execute(new DeleteGroupResourcePermission($group->Id(), $resourceId));
 		}
 
 		foreach ($group->AddedPermissions() as $resourceId)
 		{
-			$db->Execute(new AddGroupResourcePermission($groupId, $resourceId));
+			$db->Execute(new AddGroupResourcePermission($group->Id(), $resourceId));
 		}
 
 		foreach ($group->RemovedRoles() as $roleId)
 		{
-			$db->Execute(new DeleteGroupRoleCommand($groupId, $roleId));
+			$db->Execute(new DeleteGroupRoleCommand($group->Id(), $roleId));
 		}
 
 		foreach ($group->AddedRoles() as $roleId)
 		{
-			$db->Execute(new AddGroupRoleCommand($groupId, $roleId));
+			$db->Execute(new AddGroupRoleCommand($group->Id(), $roleId));
 		}
 
-		$db->Execute(new UpdateGroupCommand($groupId, $group->Name(), $group->AdminGroupId()));
-
-		$this->_cache->Add($groupId, $group);
+		$db->Execute(new UpdateGroupCommand($group->Id(), $group->Name(), $group->AdminGroupId()));
 	}
 
 	public function Remove(Group $group)
 	{
 		ServiceLocator::GetDatabase()->Execute(new DeleteGroupCommand($group->Id()));
-
-		$this->_cache->Remove($group->Id());
 	}
 
 	public function Add(Group $group)
@@ -265,19 +260,22 @@ class GroupUserView
 		return new GroupUserView(
 			$row[ColumnNames::USER_ID],
 			$row[ColumnNames::FIRST_NAME],
-			$row[ColumnNames::LAST_NAME]);
+			$row[ColumnNames::LAST_NAME],
+			$row[ColumnNames::EMAIL]);
 	}
 
 	public $UserId;
 	public $FirstName;
 	public $LastName;
+	public $EmailAddress;
 	public $GroupId;
 
-	public function __construct($userId, $firstName, $lastName)
+	public function __construct($userId, $firstName, $lastName, $email)
 	{
 		$this->UserId = $userId;
 		$this->FirstName = $firstName;
 		$this->LastName = $lastName;
+		$this->EmailAddress = $email;
 	}
 }
 

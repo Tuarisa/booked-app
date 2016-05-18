@@ -26,7 +26,7 @@ class ResourceCrossDayRule implements IReservationValidationRule
 		$this->scheduleRepository = $scheduleRepository;
 	}
 
-	public function Validate($reservationSeries, $retryParameters)
+	public function Validate($reservationSeries)
 	{
 		foreach ($reservationSeries->AllResources() as $resource)
 		{

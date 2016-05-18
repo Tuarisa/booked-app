@@ -37,7 +37,7 @@ class EmailAddress
 
     public function __toString()
     {
-        return "{$this->address}<{$this->name}>";
+        return "{$this->address} <{$this->name}>";
     }
 }
 ?>

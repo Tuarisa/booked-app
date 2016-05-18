@@ -69,7 +69,7 @@ class ReservationApprovalPage extends SecurePage implements IReservationApproval
 	{
 		if ($succeeded)
 		{
-			$this->SetJson(array('approved' => "$succeeded"));
+			$this->SetJson(array('approved' => (string)$succeeded));
 		}
 	}
 
@@ -77,44 +77,12 @@ class ReservationApprovalPage extends SecurePage implements IReservationApproval
 	{
 		if (!empty($errors))
 		{
-			$this->SetJson(array('approved' => "false"), $errors);
+			$this->SetJson(array('approved' => (string)false), $errors);
 		}
 	}
 
 	public function SetWarnings($warnings)
 	{
-		// no-op
-	}
-
-	/**
-	 * @param array|string[] $messages
-	 */
-	public function SetRetryMessages($messages)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param bool $canBeRetried
-	 */
-	public function SetCanBeRetried($canBeRetried)
-	{
-		// no-op
-	}
-
-	/**
-	 * @param ReservationRetryParameter[] $retryParameters
-	 */
-	public function SetRetryParameters($retryParameters)
-	{
-		// no-op
-	}
-
-	/**
-	 * @return ReservationRetryParameter[]
-	 */
-	public function GetRetryParameters()
-	{
-		// no-op
+		// nothing to do
 	}
 }

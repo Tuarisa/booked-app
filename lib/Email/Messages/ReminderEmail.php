@@ -90,3 +90,5 @@ class ReminderEndEmail extends ReminderEmail
 		return 'EndReminderEmail.tpl';
 	}
 }
+
+?>

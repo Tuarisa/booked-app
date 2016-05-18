@@ -40,10 +40,10 @@ $(function(){
 	  		altField: "#{$AltId}",
 	  	 	altFormat: '{$AltFormat}'
 		  {/if}
-		  {if $DefaultDate}
-			,
+	  	{if $DefaultDate}
+	  		,
 	  		defaultDate: new Date('{$DefaultDate->Format('Y-m-d')}')
-		{/if}
+	  	{/if}
   {rdelim});
 
   {if $AltId neq ''}

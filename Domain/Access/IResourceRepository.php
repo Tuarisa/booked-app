@@ -1,23 +1,23 @@
 <?php
+
 /**
-Copyright 2011-2015 Nick Korbel
-
-This file is part of Booked Scheduler.
-
-Booked Scheduler is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Booked Scheduler is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2011-2015 Nick Korbel
+ *
+ * This file is part of Booked Scheduler.
+ *
+ * Booked Scheduler is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Booked Scheduler is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 interface IResourceRepository
 {
 	/**
@@ -39,6 +39,12 @@ interface IResourceRepository
 	 * @return BookableResource
 	 */
 	public function LoadByPublicId($publicId);
+
+	/**
+	 * @param string $resourceName
+	 * @return BookableResource
+	 */
+	public function LoadByName($resourceName);
 
 	/**
 	 * @param BookableResource $resource
@@ -109,12 +115,6 @@ interface IResourceRepository
 	public function LoadResourceGroup($groupId);
 
 	/**
-	 * @param string $publicResourceGroupId
-	 * @return ResourceGroup
-	 */
-	public function LoadResourceGroupByPublicId($publicResourceGroupId);
-
-	/**
 	 * @param ResourceGroup $group
 	 */
 	public function UpdateResourceGroup(ResourceGroup $group);
@@ -183,16 +183,6 @@ interface IResourceRepository
 	 * @return PageableData|UserItemView[]
 	 */
 	public function GetUsersWithPermission($resourceId, $pageNumber = null, $pageSize = null, $filter = null, $accountStatus = AccountStatus::ACTIVE);
-
-	/**
-	 * @param int $resourceId
-	 * @param int|null $pageNumber
-	 * @param int|null $pageSize
-	 * @param ISqlFilter|null $filter
-	 * @param int $accountStatus
-	 * @return PageableData|UserItemView[]
-	 */
-	public function GetUsersWithPermissionsIncludingGroups($resourceId, $pageNumber = null, $pageSize = null, $filter = null, $accountStatus = AccountStatus::ACTIVE);
 
 	/**
 	 * @param int $resourceId

@@ -165,12 +165,12 @@ class ReservationResponse extends RestResponse
 			$this->endReminder = new ReminderRequestResponse($reservation->EndReminder->GetValue(), $reservation->EndReminder->GetInterval());
 		}
 
+		$this->allowParticipation = $reservation->AllowParticipation;
+
 		if ($reservation->RequiresApproval())
 		{
 			$this->AddService($server, WebServices::ApproveReservation, array(WebServiceParams::ReferenceNumber => $reservation->ReferenceNumber));
 		}
-
-		$this->allowParticipation = $reservation->AllowParticipation;
 	}
 
 
@@ -206,5 +206,6 @@ class ExampleReservationResponse extends ReservationResponse
 		$this->title = 'reservation title';
 		$this->startReminder = ReminderRequestResponse::Example();
 		$this->endReminder = ReminderRequestResponse::Example();
+		$this->allowParticipation = true;
 	}
 }

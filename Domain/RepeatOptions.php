@@ -223,7 +223,7 @@ class RepeatDaily extends RepeatOptionsAbstract
 
 		while ($startDate->DateCompare($this->_terminationDate) <= 0)
 		{
-			$dates[] = new DateRange($startDate, $endDate);
+			$dates[] = new DateRange($startDate->ToUtc(), $endDate->ToUtc());
 			$startDate = $startDate->AddDays($this->_interval);
 			$endDate = $endDate->AddDays($this->_interval);
 		}
@@ -284,7 +284,7 @@ class RepeatWeekly extends RepeatOptionsAbstract
 				$start = $startDate->AddDays($weekday - $startWeekday);
 				$end = $endDate->AddDays($weekday - $startWeekday);
 
-				$dates[] = new DateRange($start, $end);
+				$dates[] = new DateRange($start->ToUtc(), $end->ToUtc());
 			}
 		}
 
@@ -305,7 +305,7 @@ class RepeatWeekly extends RepeatOptionsAbstract
 
 				if ($startDate->DateCompare($this->_terminationDate) <= 0)
 				{
-					$dates[] = new DateRange($startDate, $endDate);
+					$dates[] = new DateRange($startDate->ToUtc(), $endDate->ToUtc());
 				}
 			}
 
@@ -363,7 +363,7 @@ class RepeatDayOfMonth extends RepeatOptionsAbstract
 				$endDate = $this->GetNextMonth($rawEnd, $monthAdjustment);
 				if ($startDate->DateCompare($this->_terminationDate) <= 0)
 				{
-					$dates[] = new DateRange($startDate, $endDate);
+					$dates[] = new DateRange($startDate->ToUtc(), $endDate->ToUtc());
 				}
 			}
 			$monthsFromStart++;
@@ -464,7 +464,7 @@ class RepeatWeekDayOfMonth extends RepeatOptionsAbstract
 					$endDateString = $calculatedDate . " {$endDate->Hour()}:{$endDate->Minute()}:{$endDate->Second()}";
 					$endDate = Date::Parse($endDateString, $endDate->Timezone());
 
-					$dates[] = new DateRange($startDate, $endDate);
+					$dates[] = new DateRange($startDate->ToUtc(), $endDate->ToUtc());
 				}
 			}
 
@@ -527,7 +527,7 @@ class RepeatYearly extends RepeatOptionsAbstract
 
 			if ($startDate->DateCompare($this->_terminationDate) <= 0)
 			{
-				$dates[] = new DateRange($startDate, $endDate);
+				$dates[] = new DateRange($startDate->ToUtc(), $endDate->ToUtc());
 			}
 		}
 
@@ -678,3 +678,5 @@ class RepeatConfiguration
 		}
 	}
 }
+
+?>

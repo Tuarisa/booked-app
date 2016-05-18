@@ -22,17 +22,16 @@ interface IValidator
 	public function IsValid();
 
 	/**
+	 * @abstract invoke the validation method
 	 * @return void
 	 */
 	public function Validate();
 
 	/**
+	 * @abstract
 	 * @return string[]|null
 	 */
 	public function Messages();
-
-	/**
-	 * @return bool
-	 */
-	public function ReturnsErrorResponse();
 }
+
+?>

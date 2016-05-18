@@ -23,17 +23,15 @@ require_once(ROOT_DIR . 'Presenters/Dashboard/AnnouncementPresenter.php');
 
 class AnnouncementsControl extends DashboardItem implements IAnnouncementsControl
 {
-	private $presenter;
-
 	public function __construct(SmartyPage $smarty)
 	{
 		parent::__construct($smarty);
-		$this->presenter = new AnnouncementPresenter($this, new AnnouncementRepository(), PluginManager::Instance()->LoadPermission());
+		$this->_presenter = new AnnouncementPresenter($this);
 	}
 
 	public function PageLoad()
 	{
-		$this->presenter->PageLoad();
+		$this->_presenter->PageLoad();
 		$this->Display('announcements.tpl');
 	}
 

@@ -1,20 +1,20 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- * Copyright 2012-2014 Trustees of Columbia University in the City of New York
- *
- * This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE . See {the
- * }
- * GNU General Public License for more details .
- *
- * You should {have
- * } received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+Copyright 2012-2014 Trustees of Columbia University in the City of New York
+
+This file is part of Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE . See {the
+}
+GNU General Public License for more details .
+
+You should {have
+} received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 //$serverTimezone = ini_get('date.timezone');
@@ -95,7 +95,14 @@ class Date
 		{
 			return NullDate::Instance();
 		}
-		return new Date($dateString, $timezone);
+		try
+		{
+			return new Date($dateString, $timezone);
+		}
+		catch(Exception $ex)
+		{
+			return new NullDate();
+		}
 	}
 
 	/**
@@ -128,8 +135,35 @@ class Date
 
 		$parsed = date_parse($dateString);
 
-		$d = Date::Create($parsed['year'], $parsed['month'], $parsed['day'], $parsed['hour'] + $hourAdjustment, $parsed['minute'] + $minuteAdjustment,
-						  $parsed['second'], 'UTC');
+		$adjustedHour =  $parsed['hour'] + $hourAdjustment;
+		$adjustedMinute = $parsed['minute'] + $minuteAdjustment;
+
+		$dateOverflow = 0;
+		$hourOverflow = 0;
+
+		if ($adjustedHour >= 24)
+		{
+			$dateOverflow = 1;
+			$adjustedHour = $adjustedHour - 24;
+		}
+		if ($adjustedHour < 0)
+		{
+			$dateOverflow = -1;
+			$adjustedHour = $adjustedHour + 24;
+		}
+
+		if ($adjustedMinute >= 60)
+		{
+			$hourOverflow = 1;
+			$adjustedMinute = $adjustedMinute - 60;
+		}
+		if ($adjustedMinute < 0)
+		{
+			$hourOverflow = -1;
+			$adjustedMinute = $adjustedMinute + 60;
+		}
+
+		$d = Date::Create($parsed['year'], $parsed['month'], $parsed['day'] + $dateOverflow, $adjustedHour + $hourOverflow, $adjustedMinute, $parsed['second'], 'UTC');
 		return $d;
 	}
 
@@ -333,20 +367,6 @@ class Date
 	}
 
 	/**
-	 * Compares the time component of this date to the one passed in
-	 * Returns:
-	 * -1 if this time is less than the passed in time
-	 * 0 if the times are equal
-	 * 1 if this times is greater than the passed in times
-	 * @param Time $time
-	 * @return int comparison result
-	 */
-	public function CompareTimes(Time $time)
-	{
-		return $this->GetTime()->Compare($time);
-	}
-
-	/**
 	 * Compares this date to the one passed in
 	 * @param Date $end
 	 * @return bool if the current object is greater than the one passed in
@@ -443,23 +463,6 @@ class Date
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function IsWeekday()
-	{
-		$weekday = $this->Weekday();
-		return $weekday != 0 && $weekday != 6;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function IsWeekend()
-	{
-		return !$this->IsWeekday();
-	}
-
-	/**
 	 * @param int $days
 	 * @return Date
 	 */
@@ -476,15 +479,6 @@ class Date
 	public function AddMonths($months)
 	{
 		return new Date($this->Format(self::SHORT_FORMAT) . " +" . $months . " months", $this->timezone);
-	}
-
-	/**
-	 * @param int $years
-	 * @return Date
-	 */
-	public function AddYears($years)
-	{
-		return new Date($this->Format(self::SHORT_FORMAT) . " +" . $years . " years", $this->timezone);
 	}
 
 	/**
@@ -594,7 +588,7 @@ class Date
 
 		$this->parts['hours'] = $parts[0];
 		$this->parts['minutes'] = $parts[1];
-		$this->parts['seconds'] = $parts[2];
+		$this->parts['seconds'] =$parts[2];
 		$this->parts['mon'] = $parts[3];
 		$this->parts['mday'] = $parts[4];
 		$this->parts['year'] = $parts[5];
@@ -783,11 +777,6 @@ class NullDate extends Date
 	{
 		return $this;
 	}
-
-	public function Compare(Date $date)
-	{
-		return -1;
-	}
 }
 
 class DateDiff
@@ -860,70 +849,49 @@ class DateDiff
 	 */
 	public static function FromTimeString($timeString)
 	{
-		$hasDayHourMinute = strpos($timeString, 'd') !== false || strpos($timeString, 'h') !== false || strpos($timeString, 'm') !== false;
-		$hasTime = (strpos($timeString, ':') !== false);
-		if (!$hasDayHourMinute && !$hasTime)
+		if (strpos($timeString, 'd') === false && strpos($timeString, 'h') === false && strpos($timeString,
+																							   'm') === false
+		)
 		{
-			throw new Exception('Time format must contain at least a day, hour or minute. For example: 12d1h22m or be a valid time HH:mm');
+			throw new Exception('Time format must contain at least a day, hour or minute. For example: 12d1h22m');
 		}
 
-		if ($hasTime)
+		$matches = array();
+
+		preg_match('/(\d*d)?(\d*h)?(\d*m)?/i', $timeString, $matches);
+
+		$day = 0;
+		$hour = 0;
+		$minute = 0;
+		$num_set = 0;
+
+		if (isset($matches[1]))
 		{
-			$parts = explode(':', $timeString);
-
-			if (count($parts) == 3)
-			{
-				$day = $parts[0];
-				$hour = $parts[1];
-				$minute = $parts[2];
-			}
-			else
-			{
-				$day = 0;
-				$hour = $parts[0];
-				$minute = $parts[1];
-			}
-			return self::Create($day, $hour, $minute);
+			$num_set++;
+			$day = intval(substr($matches[1], 0, -1));
 		}
-		else
+		if (isset($matches[2]))
 		{
-			$matches = array();
-
-			preg_match('/(\d*d)?(\d*h)?(\d*m)?/i', $timeString, $matches);
-
-			$day = 0;
-			$hour = 0;
-			$minute = 0;
-			$num_set = 0;
-
-			if (isset($matches[1]))
-			{
-				$num_set++;
-				$day = intval(substr($matches[1], 0, -1));
-			}
-			if (isset($matches[2]))
-			{
-				$num_set++;
-				$hour = intval(substr($matches[2], 0, -1));
-			}
-			if (isset($matches[3]))
-			{
-				$num_set++;
-				$minute = intval(substr($matches[3], 0, -1));
-			}
-
-			if ($num_set == 0)
-			{
-				/**
-				 * We didn't actually match anything, throw an exception
-				 * instead of silently returning 0
-				 */
-
-				throw new Exception('Time format must be in day, hour, minute order');
-			}
-
-			return self::Create($day, $hour, $minute);
+			$num_set++;
+			$hour = intval(substr($matches[2], 0, -1));
 		}
+		if (isset($matches[3]))
+		{
+			$num_set++;
+			$minute = intval(substr($matches[3], 0, -1));
+		}
+
+		if ($num_set == 0)
+		{
+			/**
+			 * We didn't actually match anything, throw an exception
+			 * instead of silently returning 0
+			 */
+
+			throw new Exception('Time format must be in day, hour, minute order');
+		}
+
+		return self::Create($day, $hour, $minute);
 	}
 
 	/**
@@ -978,7 +946,7 @@ class DateDiff
 	 */
 	public function Invert()
 	{
-		return new DateDiff($this->seconds * -1);
+		return new DateDiff($this->seconds*-1);
 	}
 
 	/**

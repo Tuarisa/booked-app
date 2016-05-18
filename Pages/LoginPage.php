@@ -1,31 +1,28 @@
 <?php
 /**
- * Copyright 2011-2015 Nick Korbel
- * Copyright 2012-2014 Alois Schloegl
- *
- * This file is part of Booked Scheduler.
- *
- * Booked Scheduler is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Booked Scheduler is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2011-2015 Nick Korbel
+Copyright 2012-2014 Alois Schloegl
+
+This file is part of Booked Scheduler.
+
+Booked Scheduler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Booked Scheduler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 require_once(ROOT_DIR . 'Pages/Page.php');
-require_once(ROOT_DIR . 'Pages/Authentication/ILoginBasePage.php');
 require_once(ROOT_DIR . 'lib/Application/Authentication/namespace.php');
-require_once(ROOT_DIR . 'lib/Application/Authentication/GoogleAuthentication.php');
-//require_once(ROOT_DIR . 'lib/Application/Authentication/FacebookAuthentication.php');
 
-interface ILoginPage extends IPage, ILoginBasePage
+interface ILoginPage extends IPage
 {
 	/**
 	 * @return string
@@ -61,6 +58,11 @@ interface ILoginPage extends IPage, ILoginBasePage
 	public function SetUseLogonName($value);
 
 	public function SetResumeUrl($value);
+
+	/**
+	 * @return string
+	 */
+	public function GetResumeUrl();
 
 	public function SetShowLoginError();
 
@@ -114,8 +116,6 @@ class LoginPage extends Page implements ILoginPage
 		$this->Set('ResumeUrl', $resumeUrl);
 		$this->Set('ShowLoginError', false);
 		$this->Set('Languages', Resources::GetInstance()->AvailableLanguages);
-		$this->Set('GoogleClientId', GoogleAuthentication::CLIENT_ID);
-		$this->Set('AllowSocialLogin', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_SOCIAL, new BooleanConverter()));
 	}
 
 	public function PageLoad()
@@ -136,7 +136,7 @@ class LoginPage extends Page implements ILoginPage
 
 	public function GetPersistLogin()
 	{
-		return $this->GetForm(FormKeys::PERSIST_LOGIN) == 'true';
+		return $this->GetForm(FormKeys::PERSIST_LOGIN);
 	}
 
 	public function GetShowRegisterLink()

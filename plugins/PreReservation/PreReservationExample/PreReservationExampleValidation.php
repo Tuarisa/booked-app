@@ -30,9 +30,13 @@ class PreReservationExampleValidation implements IReservationValidationService
 		$this->serviceToDecorate = $serviceToDecorate;
 	}
 
-	public function Validate($series, $retryParameters = null)
+	/**
+	 * @param ReservationSeries|ExistingReservationSeries $series
+	 * @return IReservationValidationResult
+	 */
+	public function Validate($series)
 	{
-		$result = $this->serviceToDecorate->Validate($series, $retryParameters);
+		$result = $this->serviceToDecorate->Validate($series);
 
 		// don't bother validating this rule if others have failed
 		if (!$result->CanBeSaved())

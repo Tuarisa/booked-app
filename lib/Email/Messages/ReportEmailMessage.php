@@ -83,3 +83,5 @@ class ReportEmailMessage extends EmailMessage
 		return $this->FetchTemplate('ReportEmail.tpl');
 	}
 }
+
+?>
