@@ -103,7 +103,12 @@ $conf['settings']['uploads']['reservation.attachment.extensions'] = 'txt,jpg,gif
 /**
  * Database configuration
  */
+$dockerurl
 $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+if (!$url["host"]){
+	$dockerurl = "mysql://".getenv("DB_ENV_MYSQL_USER").":".getenv("DB_ENV_MYSQL_PASSWORD")."@".getenv("DB_PORT_3306_TCP_ADDR").':'.getenv("DB_PORT_3306_TCP_PORT")."/".getenv("DB_ENV_MYSQL_DATABASE")
+	$url = parse_url($dockerurl);
+}
 
 $conf['settings']['database']['type'] = 'mysql';
 $conf['settings']['database']['user'] = $url["user"];      // database user with permission to the booked database
