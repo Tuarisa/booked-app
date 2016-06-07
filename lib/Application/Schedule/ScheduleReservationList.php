@@ -130,6 +130,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$indexindays = count($this->_layoutItems);
 					$comparedates = $item->EndDate()->Compare($this->_layoutDateEnd);
 					$spandelta = $indexindays * $comparedates;
+					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 					//$endTime = $this->_layoutDateEnd;
 				}
 				else
