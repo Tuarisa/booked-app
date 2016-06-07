@@ -123,7 +123,7 @@ class EmptyReservationSlot implements IReservationSlot
 	 */
 	public function PeriodSpan()
 	{
-		return 2;
+		return 1;
 	}
 
 	public function Label()
