@@ -132,6 +132,7 @@ class ScheduleReservationList implements IScheduleReservationList
 						$comparedates = $layoutItem->BeginDate()->GetDifference($item->EndDate())->Days();
 						$spandelta = $indexindays * $comparedates;
 						$endTime = $item->EndDate()->AddDays(-1*$comparedates)->ToTimezone($this->_destinationTimezone);
+						$currentIndex = count($this->_layoutItems);
 						//$endTime = $this->_layoutDateEnd;
 					}
 					else
@@ -163,7 +164,7 @@ class ScheduleReservationList implements IScheduleReservationList
 		}
 		if ($emptynow > 0){
 
-			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), 11);
+			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
 			$emptynow = 0;
 		}
 
