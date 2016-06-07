@@ -128,7 +128,7 @@ class ScheduleReservationList implements IScheduleReservationList
 				if ($this->ItemEndsOnFutureDate($item))
 				{
 					$indexindays = count($this->_layoutItems);
-					$comparedates = $this->_layoutDateStart->GetDifference($this->_layoutDateEnd)->Days();
+					$comparedates = $layoutItem->BeginDate()->GetDifference($layoutItem->EndDate())->Days();
 					$spandelta = $indexindays * $comparedates;
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 					//$endTime = $this->_layoutDateEnd;
