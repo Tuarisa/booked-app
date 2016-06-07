@@ -118,6 +118,13 @@ class ScheduleReservationList implements IScheduleReservationList
 
 			if ($item != null)
 			{
+
+				if ($emptynow > 0){
+
+					$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
+					$emptynow = 0;
+				}
+				
 				if ($this->ItemEndsOnFutureDate($item))
 				{
 					$endTime = $this->_layoutDateEnd;
@@ -135,11 +142,7 @@ class ScheduleReservationList implements IScheduleReservationList
 
 				$currentIndex = $endingPeriodIndex;
 
-				if ($emptynow > 0){
-
-					$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
-					$emptynow = 0;
-				}
+				
 			}
 			else
 			{	
