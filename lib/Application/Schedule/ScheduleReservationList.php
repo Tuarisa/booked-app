@@ -149,7 +149,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$currentIndex = $endingPeriodIndex+$spandelta;
 				}
 				else{
-					$emptynow=111;
+					$emptynow=10;
 				}
 
 				
