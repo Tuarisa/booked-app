@@ -148,6 +148,9 @@ class ScheduleReservationList implements IScheduleReservationList
 
 					$currentIndex = $endingPeriodIndex+$spandelta;
 				}
+				else{
+					$emptynow=111;
+				}
 
 				
 			}
@@ -163,7 +166,7 @@ class ScheduleReservationList implements IScheduleReservationList
 		}
 		if ($emptynow > 0){
 
-			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $spandelta);
+			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
 		}
 
 		$sw->Stop();
