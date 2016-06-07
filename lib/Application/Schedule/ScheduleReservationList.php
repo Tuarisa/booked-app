@@ -142,7 +142,7 @@ class ScheduleReservationList implements IScheduleReservationList
 
 				$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 				$span = ($endingPeriodIndex - $currentIndex) + $spandelta;
-				if ($endingPeriodIndex!=$currentIndex){
+				if ($endingPeriodIndex-$currentIndex <=1){
 					$span++;
 				}
 
