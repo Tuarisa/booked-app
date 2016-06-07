@@ -163,7 +163,7 @@ class ScheduleReservationList implements IScheduleReservationList
 		}
 		if ($emptynow > 0){
 
-			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $currentIndex);
+			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $spandelta);
 		}
 
 		$sw->Stop();
