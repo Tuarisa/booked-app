@@ -30,7 +30,7 @@ td.resourcename {
     left: 168px;
     top: auto;
     width: 100px;
-    height: 47px;
+    height: 47px !important;
 }
 
 td.resourcename a {
