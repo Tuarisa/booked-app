@@ -265,6 +265,7 @@ div.legend {
 	width:auto;
 	margin-left:160px;
 	overflow: scroll;
+	padding-bottom: 50px;
 }
 
 #reservations-left {
