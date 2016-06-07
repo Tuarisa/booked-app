@@ -5,5 +5,8 @@
                 "chmod 777 /tpl_c"
             ]
         }
+    },
+    "require": {
+        "ext-gd": "*"
     }
 }
