@@ -209,12 +209,12 @@ class ru_ru extends Language
 		$strings['ReservationDescription'] = 'Описание заказа';
 		$strings['ResourceList'] = 'Автомобиль будет заказан';
 		$strings['Accessories'] = 'Допы';
-		$strings['ParticipantList'] = 'Участники';
-		$strings['InvitationList'] = 'Приглашенные';
+		$strings['ParticipantList'] = 'Клиент';
+		$strings['InvitationList'] = 'Агент';
 		$strings['AccessoryName'] = 'Наименование допа';
 		$strings['QuantityAvailable'] = 'Количество допов';
 		$strings['Resources'] = 'Автомобили';
-		$strings['Participants'] = 'Участники';
+		$strings['Participants'] = 'Клиенты';
 		$strings['User'] = 'Пользователь';
 		$strings['Resource'] = 'Автомобиль';
 		$strings['Status'] = 'Статус';
@@ -268,7 +268,7 @@ class ru_ru extends Language
 		$strings['ChangeUser'] = 'Сменить пользователя';
 		$strings['MoreResources'] = 'Другие автомобили';
 		$strings['ReservationLength'] = 'Сроки заказа';
-		$strings['ParticipantList'] = 'Лист участника';
+		$strings['ParticipantList'] = 'Клиент(ы)';
 		$strings['AddParticipants'] = 'Добавить участников';
 		$strings['InviteOthers'] = 'Добавить других';
 		$strings['AddResources'] = 'Добавить автомобили';
@@ -355,7 +355,7 @@ class ru_ru extends Language
 		$strings['CustomAttributes'] = 'Custom Attributes';
 		$strings['AddAttribute'] = 'Добавить атрибут';
 		$strings['EditAttribute'] = 'Обновить атрибут';
-		$strings['DisplayLabel'] = 'Показать уровень';
+		$strings['DisplayLabel'] = 'Отображаемое имя';
 		$strings['Type'] = 'Type';
 		$strings['Required'] = 'Required';
 		$strings['ValidationExpression'] = 'Validation Expression';
