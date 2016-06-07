@@ -52,12 +52,13 @@ class EmptyReservationSlot implements IReservationSlot
 	protected $_beginPeriod;
 	protected $_endPeriod;
 
-	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, Date $displayDate, $isReservable)
+	public function __construct(SchedulePeriod $begin, SchedulePeriod $end, Date $displayDate, $isReservable, $periodSpan)
 	{
 		$this->_begin = $begin->BeginDate();
 		$this->_end = $end->EndDate();
 		$this->_date = $displayDate;
 		$this->_isReservable = $isReservable;
+		$this->_periodSpan = $periodSpan;
 
 		$this->_beginDisplayTime = $this->_begin->GetTime();
 		if (!$this->_begin->DateEquals($displayDate))
@@ -123,7 +124,7 @@ class EmptyReservationSlot implements IReservationSlot
 	 */
 	public function PeriodSpan()
 	{
-		return 1;
+		return $this->_periodSpan;
 	}
 
 	public function Label()
