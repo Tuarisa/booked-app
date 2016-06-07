@@ -107,6 +107,10 @@ class ScheduleReservationList implements IScheduleReservationList
 
 		$slots = array();
 
+		$emptynow = 0;
+		$datestartempty;
+		$layoutitemempty;
+
 		for ($currentIndex = 0; $currentIndex < count($this->_layoutItems); $currentIndex++)
 		{
 			$layoutItem = $this->_layoutItems[$currentIndex];
@@ -130,10 +134,21 @@ class ScheduleReservationList implements IScheduleReservationList
 											$this->_layoutDateStart, $span);
 
 				$currentIndex = $endingPeriodIndex;
+
+				if ($emptynow > 0){
+
+					$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
+					$emptynow = 0;
+				}
 			}
 			else
-			{
-				$slots[] = new EmptyReservationSlot($layoutItem, $layoutItem, $this->_layoutDateStart, $layoutItem->IsReservable(), 1);
+			{	
+				if ($emptynow == 0){
+					$datestartempty = $this->_layoutDateStart;
+					$layoutitemempty = $layoutItem;
+				}
+				$emptynow++;
+				//$slots[] = new EmptyReservationSlot($layoutItem, $layoutItem, $this->_layoutDateStart, $layoutItem->IsReservable(), 1);
 			}
 		}
 
