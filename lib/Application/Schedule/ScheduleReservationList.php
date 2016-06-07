@@ -133,17 +133,15 @@ class ScheduleReservationList implements IScheduleReservationList
 				{
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 				}*/
-				if (!$this->ItemStartsOnPastDate($item)){
-					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
+				$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 
-					$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
-					$span = ($endingPeriodIndex - $currentIndex) + 1;
+				$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+				$span = ($endingPeriodIndex - $currentIndex) + 1;
 
-					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
-												$this->_layoutDateStart, $span);
+				$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
+											$this->_layoutDateStart, $span);
 
-					$currentIndex = $endingPeriodIndex;
-				}
+				$currentIndex = $endingPeriodIndex;
 
 				
 			}
