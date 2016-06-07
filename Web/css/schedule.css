@@ -13,9 +13,7 @@ table.reservations td {
 	display:table-cell;
 }
 
-table.reservations td.hidden {
-	display: none;
-}
+
 table.reservations td.resdate {
 	height: 30px;
 }
@@ -27,10 +25,10 @@ td.resourcename {
 	background-color: #EDEDED;
 	color: #999999;
 	position: absolute;
-    left: 168px;
+    left: 169px;
     top: auto;
     width: 100px;
-    height: 47px !important;
+    height: 48px !important;
 }
 
 td.resourcename a {

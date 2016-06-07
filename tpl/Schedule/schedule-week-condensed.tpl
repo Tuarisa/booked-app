@@ -26,7 +26,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<div id="reservations">
 		<table class="reservations" border="1" cellpadding="0" style="width:auto;">
 			<tr>
-				<td class="hidden">&nbsp;</td>
+				<td class="hidden"></td>
 				{foreach from=$BoundDates item=date}
 					{assign var=class value=""}
 					{assign var=ts value=$date->Timestamp()}
