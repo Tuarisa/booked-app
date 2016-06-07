@@ -151,6 +151,11 @@ class ScheduleReservationList implements IScheduleReservationList
 				//$slots[] = new EmptyReservationSlot($layoutItem, $layoutItem, $this->_layoutDateStart, $layoutItem->IsReservable(), 1);
 			}
 		}
+		if ($emptynow > 0){
+
+			$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
+			$emptynow = 0;
+		}
 
 		$sw->Stop();
 //		Log::Debug('BuildSlots() took %s seconds', $sw->GetTotalSeconds());
