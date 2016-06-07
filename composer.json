@@ -3,7 +3,7 @@
         "heroku": {
             "compile": [
                 "chmod 777 /tpl_c",
-                "chmod 777 /Web/uploads"
+                "chmod 777 /Web/uploads/images"
             ]
         }
     },
