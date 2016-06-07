@@ -16,6 +16,10 @@ table.reservations td {
 table.reservations td.hidden {
 	display: none;
 }
+table.reservations td.resdate {
+	height: 30px;
+}
+
 
 
 td.resourcename {
