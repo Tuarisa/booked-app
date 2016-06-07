@@ -13,6 +13,11 @@ table.reservations td {
 	display:table-cell;
 }
 
+table.reservations td.hidden {
+	display: none;
+}
+
+
 td.resourcename {
 	padding: 1px 3px;
 	background-color: #EDEDED;
@@ -21,6 +26,7 @@ td.resourcename {
     left: 168px;
     top: auto;
     width: 100px;
+    height: 47px;
 }
 
 td.resourcename a {
