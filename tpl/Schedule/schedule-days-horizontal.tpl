@@ -42,15 +42,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 						colspan="{$periods[$ts]|count}">{formatdate date=$date key="schedule_daily"}</td>
 				{/foreach}
 			</tr>
-			<tr>
-				{foreach from=$BoundDates item=date}
-					{assign var=ts value=$date->Timestamp()}
-					{assign var=datePeriods value=$periods[$ts]}
-					{foreach from=$datePeriods item=period}
-						<td class="reslabel" colspan="{$period->Span()}">{$period->Label($date)}</td>
-					{/foreach}
-				{/foreach}
-			</tr>
 
 			{foreach from=$Resources item=resource name=resource_loop}
 				{assign var=resourceId value=$resource->Id}
