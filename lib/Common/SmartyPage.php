@@ -290,7 +290,7 @@ class SmartyPage extends Smarty
 		{
 			// correct english day name to translated day name
 			$english_days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-			$days = $this->Resources->GetDays('abbr');
+			$days = $this->Resources->GetDays('two');
 			$formatted = str_replace($english_days[$date->Weekday()], $days[$date->Weekday()], $formatted);
 		}
 		return $formatted;
