@@ -125,7 +125,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$emptynow = 0;
 				}
 
-				if (!$this->ItemStartsOnPastDate($item)){
+				if ($item->StartDate()->Compare($this->_layoutDateStart) >= 0){
 					if ($this->ItemEndsOnFutureDate($item))
 					{
 						$indexindays = count($this->_layoutItems);
