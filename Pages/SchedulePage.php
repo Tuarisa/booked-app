@@ -226,7 +226,7 @@ class ScheduleStyle
 
 class SchedulePage extends ActionPage implements ISchedulePage
 {
-	protected $ScheduleStyle = ScheduleStyle::Standard;
+	protected $ScheduleStyle = ScheduleStyle::CondensedWeek;
 
 	private $resourceCount = 0;
 
@@ -236,9 +236,10 @@ class SchedulePage extends ActionPage implements ISchedulePage
 	protected $_presenter;
 
 	private $_styles = array(
+		ScheduleStyle::CondensedWeek => 'Schedule/schedule-week-condensed.tpl',
 		ScheduleStyle::Wide => 'Schedule/schedule-days-horizontal.tpl',
 		ScheduleStyle::Tall => 'Schedule/schedule-flipped.tpl',
-		ScheduleStyle::CondensedWeek => 'Schedule/schedule-week-condensed.tpl',
+		
 	);
 
 	/**

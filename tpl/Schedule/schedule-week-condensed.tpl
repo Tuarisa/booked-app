@@ -19,7 +19,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 {extends file="Schedule/schedule.tpl"}
 
-{block name="legend"}{/block}
+
 
 {block name="reservations"}
 	{assign var=TodaysDate value=Date::Now()}
