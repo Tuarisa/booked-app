@@ -430,7 +430,7 @@ class SchedulePage extends ActionPage implements ISchedulePage
 			return $cookie;
 		}
 
-		return ScheduleStyle::Standard;
+		return ScheduleStyle::CondensedWeek;
 	}
 
 	public function SetScheduleStyle($direction)
