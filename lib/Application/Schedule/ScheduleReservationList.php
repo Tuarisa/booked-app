@@ -124,23 +124,26 @@ class ScheduleReservationList implements IScheduleReservationList
 					$slots[] = new EmptyReservationSlot($layoutitemempty, $layoutitemempty, $datestartempty, $layoutitemempty->IsReservable(), $emptynow);
 					$emptynow = 0;
 				}
-				
-				if ($this->ItemEndsOnFutureDate($item))
+
+				/*if ($this->ItemEndsOnFutureDate($item))
 				{
 					$endTime = $this->_layoutDateEnd;
 				}
 				else
 				{
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
+				}*/
+				if (!$this->ItemStartsOnPastDate($item)){
+					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
+
+					$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+					$span = ($endingPeriodIndex - $currentIndex) + 1;
+
+					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
+												$this->_layoutDateStart, $span);
+
+					$currentIndex = $endingPeriodIndex;
 				}
-
-				$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
-				$span = ($endingPeriodIndex - $currentIndex) + 1;
-
-				$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
-											$this->_layoutDateStart, $span);
-
-				$currentIndex = $endingPeriodIndex;
 
 				
 			}
