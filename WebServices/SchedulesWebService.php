@@ -310,7 +310,7 @@ class ScheduleWebServiceView implements ISchedulePage
 
 	public function GetScheduleStyle($scheduleId)
 	{
-		return ScheduleStyle::Standard;
+		return ScheduleStyle::Wide;
 	}
 
 	public function SetScheduleStyle($direction)
