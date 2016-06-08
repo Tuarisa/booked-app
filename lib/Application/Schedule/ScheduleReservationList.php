@@ -136,7 +136,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					if ($comparedates->Days()>=1 && $comparedates->Hours()>0){
 						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 						$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
-						$span = 1;
+						//$span = 1;
 					}
 					else if ($comparedates->Days()>=1 && $comparedates->Hours()==0){
 						$endingPeriodIndex = $this->GetLayoutIndexEndingAt($endTime);
