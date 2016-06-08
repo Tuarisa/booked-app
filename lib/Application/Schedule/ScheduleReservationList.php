@@ -133,7 +133,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$spandelta = $indexindays * $comparedates->Days();
 					$endTime = $item->EndDate()->AddDays(-1*$comparedates->Days())->ToTimezone($this->_destinationTimezone);
 					//$endTime = $this->_layoutDateEnd;
-					if ($comparedates->Hours()>24){
+					if ($comparedates->Days()>=1){
 						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 						$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
 						$span = 1;
