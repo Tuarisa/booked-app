@@ -129,24 +129,34 @@ class ScheduleReservationList implements IScheduleReservationList
 				if ($this->ItemEndsOnFutureDate($item))
 				{
 					$indexindays = count($this->_layoutItems);
-					$comparedates = $layoutItem->BeginDate()->GetDifference($item->EndDate())->Days();
+					$comparedates = $layoutItem->BeginDate()->GetDifference($item->EndDate());
 					$spandelta = $indexindays * $comparedates;
-					$endTime = $item->EndDate()->AddDays(-1*$comparedates)->ToTimezone($this->_destinationTimezone);
+					$endTime = $item->EndDate()->AddDays(-1*$comparedates->Days())->ToTimezone($this->_destinationTimezone);
 					//$endTime = $this->_layoutDateEnd;
+					if ($comparedates->Hours()>24){
+						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+					}
+					else if ($comparedates->Hours()==24){
+						$endingPeriodIndex = $this->GetLayoutIndexEndingAt($endTime);
+					}
+					else{
+						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+					}
 				}
 				else
 				{
 					$spandelta=0;
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
+					$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 				}
 
-				$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+				
 				$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
 
 
 				if ($item->StartDate()->Compare($this->_layoutDateStart) >= 0){
 					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
-												$this->_layoutDateStart, $this->GetLayoutIndexEndingAt($endTime));
+												$this->_layoutDateStart, $endingPeriodIndex);
 				}
 
 				$currentIndex = $endingPeriodIndex+$spandelta;
