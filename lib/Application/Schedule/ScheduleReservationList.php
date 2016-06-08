@@ -136,7 +136,7 @@ class ScheduleReservationList implements IScheduleReservationList
 				}
 				else
 				{
-					$spandelta=0;
+					$spandelta=-1;
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 				}
 
@@ -145,7 +145,7 @@ class ScheduleReservationList implements IScheduleReservationList
 
 				if ($item->StartDate()->Compare($this->_layoutDateStart) >= 0){
 					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
-												$this->_layoutDateStart, $endingPeriodIndex);
+												$this->_layoutDateStart, $spandelta);
 				}
 
 				$currentIndex = $endingPeriodIndex+$spandelta;
