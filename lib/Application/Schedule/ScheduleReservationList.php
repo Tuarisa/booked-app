@@ -136,18 +136,16 @@ class ScheduleReservationList implements IScheduleReservationList
 					if ($comparedates->Days()>=1 && $comparedates->Hours()>0){
 						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 						$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
-						//$span = 1;
 					}
 					else if ($comparedates->Days()>=1 && $comparedates->Hours()==0){
 						$endingPeriodIndex = $this->GetLayoutIndexEndingAt($endTime);
 						$span = $spandelta;
-						//$span =2;
 					}
 					else {
 						$endTime = $item->EndDate()->AddDays(-1)->ToTimezone($this->_destinationTimezone);
 						$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 						$span = ($endingPeriodIndex - $currentIndex) +1;
-						$span = 3;
+						$span = $endingPeriodIndex;
 					}
 				}
 				else
@@ -156,7 +154,6 @@ class ScheduleReservationList implements IScheduleReservationList
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 					$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 					$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
-					//$span = 4;
 				}
 
 				
