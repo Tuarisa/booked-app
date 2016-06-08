@@ -141,7 +141,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					else if ($comparedates->Days()>=1 && $comparedates->Hours()==0){
 						$endingPeriodIndex = $this->GetLayoutIndexEndingAt($endTime);
 						$span = $spandelta;
-						$span =2;
+						//$span =2;
 					}
 					else {
 						$endTime = $item->EndDate()->AddDays(-1)->ToTimezone($this->_destinationTimezone);
@@ -156,7 +156,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 					$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 					$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
-					$span = 4;
+					//$span = 4;
 				}
 
 				
