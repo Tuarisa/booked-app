@@ -131,7 +131,7 @@ class ScheduleReservationList implements IScheduleReservationList
 					$indexindays = count($this->_layoutItems);
 					$comparedates = $layoutItem->BeginDate()->GetDifference($item->EndDate())->Days();
 					$spandelta = $indexindays * $comparedates;
-					$endTime = $item->EndDate()->AddDays($comparedates)->ToTimezone($this->_destinationTimezone);
+					$endTime = $item->EndDate()->AddDays(-1*$comparedates)->ToTimezone($this->_destinationTimezone);
 					//$endTime = $this->_layoutDateEnd;
 				}
 				else
@@ -140,12 +140,12 @@ class ScheduleReservationList implements IScheduleReservationList
 					$endTime = $item->EndDate()->ToTimezone($this->_destinationTimezone);
 				}
 
-				$endingPeriodIndex = max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
+				$endingPeriodIndex = $this->GetLayoutIndexEndingAt($endTime);//max($this->GetLayoutIndexEndingAt($endTime), $currentIndex);
 				$span = ($endingPeriodIndex - $currentIndex) + $spandelta +1;
 
 				if ($item->StartDate()->Compare($this->_layoutDateStart) >= 0){
 					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
-												$this->_layoutDateStart, $this->GetLayoutIndexEndingAt($endTime));
+												$this->_layoutDateStart, $span);
 				}
 
 				$currentIndex = $endingPeriodIndex+$spandelta;
