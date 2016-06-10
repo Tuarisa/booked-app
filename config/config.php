@@ -194,4 +194,4 @@ $conf['settings']['authentication']['allow.social.login'] = 'false';
 /**
  * Credits functionality
  */
-$conf['settings']['credits']['enabled'] = 'false';
+$conf['settings']['credits']['enabled'] = 'true';
