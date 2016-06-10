@@ -140,8 +140,12 @@ td.hilite {
 	background-color: #1979CF;
 }
 
-#reservations td.pasttime, #reservations div.pasttime {
+td.pasttime, div.pasttime {
 	background-color: #BDBDBD;
+}
+
+td.reserved.pasttime {
+    background-color: #446A90;
 }
 
 .restricted {
