@@ -575,7 +575,7 @@ class DisplaySlotFactory
 			}
 			else
 			{
-				if ($slot->IsPastDate(Date::Now()) /*&& !$this->UserHasAdminRights()*/)
+				if ($slot->IsPastDate(Date::Now()) && $slot->IsReservable()/*&& !$this->UserHasAdminRights()*/)
 				{
 					return 'displayPastTime';
 				}
