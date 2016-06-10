@@ -581,8 +581,6 @@ class DisplaySlotFactory
 				}
 				else
 				{
-					return 'displayUnreservable';
-					
 					if ($slot->IsReservable())
 					{
 						return 'displayReservable';
