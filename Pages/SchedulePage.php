@@ -556,11 +556,11 @@ class DisplaySlotFactory
 		{
 			if ($this->IsMyReservation($slot))
 			{
-				return 'displayMyReserved';
+				return 'displayReserved';//'displayMyReserved';
 			}
 			elseif ($this->AmIParticipating($slot))
 			{
-				return 'displayMyParticipating';
+				return 'displayReserved';//'displayMyParticipating';
 			}
 			else
 			{
@@ -575,7 +575,7 @@ class DisplaySlotFactory
 			}
 			else
 			{
-				if ($slot->IsPastDate(Date::Now()) && !$this->UserHasAdminRights())
+				if ($slot->IsPastDate(Date::Now()) /*&& !$this->UserHasAdminRights()*/)
 				{
 					return 'displayPastTime';
 				}
