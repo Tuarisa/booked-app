@@ -48,11 +48,11 @@ $conf['settings']['css.extension.file'] = '';                   // full or relat
 $conf['settings']['disable.password.reset'] = 'false';          // if the password reset functionality should be disabled
 $conf['settings']['home.url'] = '';                             // the url to open when the logo is clicked
 $conf['settings']['logout.url'] = '';                           // the url to be directed to after logging out
-$conf['settings']['default.homepage'] = '1';                    // the default homepage to use when new users register (1 = Dashboard, 2 = Schedule, 3 = My Calendar, 4 = Resource Calendar)
+$conf['settings']['default.homepage'] = '2';                    // the default homepage to use when new users register (1 = Dashboard, 2 = Schedule, 3 = My Calendar, 4 = Resource Calendar)
 
-$conf['settings']['schedule']['use.per.user.colors'] = 'false';         // color reservations by user
+$conf['settings']['schedule']['use.per.user.colors'] = 'true';         // color reservations by user
 $conf['settings']['schedule']['show.inaccessible.resources'] = 'true';  // whether or not resources that are inaccessible to the user are visible
-$conf['settings']['schedule']['reservation.label'] = '{name}';          // format for what to display on the reservation slot label.  Available properties are: {name}, {title}, {description}, {email}, {phone}, {organization}, {position}, {startdate}, {enddate} {resourcename} {participants} {invitees} {reservationAttributes}. Custom attributes can be added using att with the attribute id. For example {att1}
+$conf['settings']['schedule']['reservation.label'] = '{name} {phone}';          // format for what to display on the reservation slot label.  Available properties are: {name}, {title}, {description}, {email}, {phone}, {organization}, {position}, {startdate}, {enddate} {resourcename} {participants} {invitees} {reservationAttributes}. Custom attributes can be added using att with the attribute id. For example {att1}
 $conf['settings']['schedule']['hide.blocked.periods'] = 'false';        // if blocked periods should be hidden or shown
 
 /**
@@ -65,7 +65,7 @@ $conf['settings']['ics']['import.key'] = '';                    // it's recommen
 /**
  * Privacy configuration
  */
-$conf['settings']['privacy']['view.schedules'] = 'true';                // if unauthenticated users can view schedules
+$conf['settings']['privacy']['view.schedules'] = 'false';                // if unauthenticated users can view schedules
 $conf['settings']['privacy']['view.reservations'] = 'false';                // if unauthenticated users can view reservations
 $conf['settings']['privacy']['hide.user.details'] = 'false';                // if personal user details should be displayed to non-administrators
 $conf['settings']['privacy']['hide.reservation.details'] = 'false';         // if reservation details should be displayed to non-administrators
@@ -73,7 +73,7 @@ $conf['settings']['privacy']['allow.guest.reservations'] = 'false';         // i
 /**
  * Reservation specific configuration
  */
-$conf['settings']['reservation']['start.time.constraint'] = 'future';       // when reservations can be created or edited. options are future, current, none
+$conf['settings']['reservation']['start.time.constraint'] = 'none';       // when reservations can be created or edited. options are future, current, none
 $conf['settings']['reservation']['updates.require.approval'] = 'false';     // if updates to previously approved reservations require approval again
 $conf['settings']['reservation']['prevent.participation'] = 'false';        // if participation and invitation options should be removed
 $conf['settings']['reservation']['prevent.recurrence'] = 'false';           // if recurring reservations are disabled for non-administrators
@@ -97,7 +97,7 @@ $conf['settings']['reservation.notify']['group.admin.approval'] = 'false';
 /**
  * File upload configuration
  */
-$conf['settings']['uploads']['enable.reservation.attachments'] = 'false';   // if reservation attachments can be uploaded
+$conf['settings']['uploads']['enable.reservation.attachments'] = 'true';   // if reservation attachments can be uploaded
 $conf['settings']['uploads']['reservation.attachment.path'] = 'uploads/reservation';    // full or relative (to the root of your installation) filesystem path to store reservation attachments
 $conf['settings']['uploads']['reservation.attachment.extensions'] = 'txt,jpg,gif,png,doc,docx,pdf,xls,xlsx,ppt,pptx,csv';   // comma separated list of file extensions that users are allowed to attach. leave empty to allow all extensions
 /**
