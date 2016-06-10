@@ -23,6 +23,9 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{if $Slot->IsPending()}
 		{assign var=class value='pending'}
 	{/if}
+	{if $Slot->IsPastDate(Date::Now())}
+		{assign var=class value='pasttime'}
+	{/if}
 	{if $Slot->HasCustomColor()}
 		{assign var=color value='style="background-color:'|cat:$Slot->Color()|cat:';color:'|cat:$Slot->TextColor()|cat:';"'}
 	{/if}
