@@ -49,7 +49,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {/function}
 
 {function name=displayPastTime}
-	<td {$spantype|default:'col'}span="{$Slot->PeriodSpan()}" ref="{$SlotRef}" class="pasttime clickres slot" data-href="{$Href}" data-start="{$Slot->BeginDate()->Format('Y-m-d H:i:s')|escape:url}" data-end="{$Slot->EndDate()->Format('Y-m-d H:i:s')|escape:url}">&nbsp;</td>
+	<td {$spantype|default:'col'}span="{$Slot->PeriodSpan()}" ref="{$SlotRef}" class="reservable pasttime clickres slot" data-href="{$Href}" data-start="{$Slot->BeginDate()->Format('Y-m-d H:i:s')|escape:url}" data-end="{$Slot->EndDate()->Format('Y-m-d H:i:s')|escape:url}">&nbsp;</td>
 {/function}
 
 {function name=displayReservable}
