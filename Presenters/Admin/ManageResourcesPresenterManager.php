@@ -108,25 +108,25 @@ class ManageResourcesPresenter extends ActionPresenter
         //$this->AddAction(ManageResourcesActions::ActionAdd, 'Add');
         //$this->AddAction(ManageResourcesActions::ActionChangeAdmin, 'ChangeAdmin');
         //$this->AddAction(ManageResourcesActions::ActionChangeConfiguration, 'ChangeConfiguration');
-        //$this->AddAction(ManageResourcesActions::ActionChangeDescription, 'ChangeDescription');
-        //$this->AddAction(ManageResourcesActions::ActionChangeImage, 'ChangeImage');
-        $this->AddAction(ManageResourcesActions::ActionChangeLocation, 'ChangeLocation');
+        $this->AddAction(ManageResourcesActions::ActionChangeDescription, 'ChangeDescription');
+        $this->AddAction(ManageResourcesActions::ActionChangeImage, 'ChangeImage');
+        //$this->AddAction(ManageResourcesActions::ActionChangeLocation, 'ChangeLocation');
         $this->AddAction(ManageResourcesActions::ActionChangeNotes, 'ChangeNotes');
-        $this->AddAction(ManageResourcesActions::ActionChangeSchedule, 'ChangeSchedule');
+        //$this->AddAction(ManageResourcesActions::ActionChangeSchedule, 'ChangeSchedule');
         $this->AddAction(ManageResourcesActions::ActionRemoveImage, 'RemoveImage');
-        $this->AddAction(ManageResourcesActions::ActionRename, 'Rename');
-        $this->AddAction(ManageResourcesActions::ActionDelete, 'Delete');
-        $this->AddAction(ManageResourcesActions::ActionChangeStatus, 'ChangeStatus');
-        $this->AddAction(ManageResourcesActions::ActionEnableSubscription, 'EnableSubscription');
-        $this->AddAction(ManageResourcesActions::ActionDisableSubscription, 'DisableSubscription');
+        //$this->AddAction(ManageResourcesActions::ActionRename, 'Rename');
+        //$this->AddAction(ManageResourcesActions::ActionDelete, 'Delete');
+        //$this->AddAction(ManageResourcesActions::ActionChangeStatus, 'ChangeStatus');
+        //$this->AddAction(ManageResourcesActions::ActionEnableSubscription, 'EnableSubscription');
+        //$this->AddAction(ManageResourcesActions::ActionDisableSubscription, 'DisableSubscription');
         $this->AddAction(ManageResourcesActions::ActionChangeAttributes, 'ChangeAttributes');
-        $this->AddAction(ManageResourcesActions::ActionChangeSort, 'ChangeSortOrder');
-        $this->AddAction(ManageResourcesActions::ActionChangeResourceType, 'ChangeResourceType');
-        $this->AddAction(ManageResourcesActions::ActionBulkUpdate, 'BulkUpdate');
-        $this->AddAction(ManageResourcesActions::ActionAddUserPermission, 'AddUserPermission');
-        $this->AddAction(ManageResourcesActions::ActionRemoveUserPermission, 'RemoveUserPermission');
-        $this->AddAction(ManageResourcesActions::ActionAddGroupPermission, 'AddGroupPermission');
-        $this->AddAction(ManageResourcesActions::ActionRemoveGroupPermission, 'RemoveGroupPermission');
+        //$this->AddAction(ManageResourcesActions::ActionChangeSort, 'ChangeSortOrder');
+        //$this->AddAction(ManageResourcesActions::ActionChangeResourceType, 'ChangeResourceType');
+        //$this->AddAction(ManageResourcesActions::ActionBulkUpdate, 'BulkUpdate');
+        //$this->AddAction(ManageResourcesActions::ActionAddUserPermission, 'AddUserPermission');
+        //$this->AddAction(ManageResourcesActions::ActionRemoveUserPermission, 'RemoveUserPermission');
+        //$this->AddAction(ManageResourcesActions::ActionAddGroupPermission, 'AddGroupPermission');
+        //$this->AddAction(ManageResourcesActions::ActionRemoveGroupPermission, 'RemoveGroupPermission');
     }
 
     public function PageLoad()
@@ -188,7 +188,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
     public function Add()
     {
-        /*$name = $this->page->GetResourceName();
+        $name = $this->page->GetResourceName();
         $scheduleId = $this->page->GetScheduleId();
         $autoAssign = $this->page->GetAutoAssign();
         $resourceAdminGroupId = $this->page->GetAdminGroupId();
@@ -197,7 +197,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
         $resource = BookableResource::CreateNew($name, $scheduleId, $autoAssign);
         $resource->SetAdminGroupId($resourceAdminGroupId);
-        $this->resourceRepository->Add($resource);*/
+        $this->resourceRepository->Add($resource);
     }
 
     public function ChangeConfiguration()
