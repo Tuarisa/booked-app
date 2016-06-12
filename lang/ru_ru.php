@@ -211,8 +211,8 @@ class ru_ru extends Language
 		$strings['Accessories'] = 'Допы';
 		$strings['ParticipantList'] = 'Клиент';
 		$strings['InvitationList'] = 'Агент';
-		$strings['AccessoryName'] = 'Наименование допа';
-		$strings['QuantityAvailable'] = 'Количество допов';
+		$strings['AccessoryName'] = 'Наименование аксессуара';
+		$strings['QuantityAvailable'] = 'Количество аксессуаров';
 		$strings['Resources'] = 'Автомобили';
 		$strings['Participants'] = 'Клиенты';
 		$strings['User'] = 'Пользователь';
@@ -272,14 +272,14 @@ class ru_ru extends Language
 		$strings['AddParticipants'] = 'Добавить участников';
 		$strings['InviteOthers'] = 'Добавить других';
 		$strings['AddResources'] = 'Добавить автомобили';
-		$strings['AddAccessories'] = 'Добавить допы';
+		$strings['AddAccessories'] = 'Добавить аксессуары';
 		$strings['Accessory'] = 'Тип';
 		$strings['QuantityRequested'] = 'Количество';
 		$strings['CreatingReservation'] = 'Создание заказа';
 		$strings['UpdatingReservation'] = 'Обновление заказа';
 		$strings['DeleteWarning'] = 'Это действие будет невозможно отменить!';
-		$strings['DeleteAccessoryWarning'] = 'Удаление этого допа удалит его из всех заказов.';
-		$strings['AddAccessory'] = 'Добавить доп';
+		$strings['DeleteAccessoryWarning'] = 'Удаление этого аксессуара удалит его из всех заказов.';
+		$strings['AddAccessory'] = 'Добавить аксессуар';
 		$strings['AddBlackout'] = 'Add Blackout';
 		$strings['AllResourcesOn'] = 'All Resources On';
 		$strings['Reason'] = 'Reason';
@@ -383,7 +383,7 @@ class ru_ru extends Language
 		$strings['ScheduleAdministrator'] = 'Администратор календаря';
 		$strings['Total'] = 'Total';
 		$strings['QuantityReserved'] = 'Quantity Reserved';
-		$strings['AllAccessories'] = 'Все допы';
+		$strings['AllAccessories'] = 'Все аксессуары';
 		$strings['GetReport'] = 'Получить запрос';
 		$strings['NoResultsFound'] = 'По вашему запросу ничего не найдено';
 		$strings['SaveThisReport'] = 'Сохранить отчет';
@@ -407,7 +407,7 @@ class ru_ru extends Language
 		$strings['All'] = 'Все';
 		$strings['ViewAsChart'] = 'Отобразить как диаграмму';
 		$strings['ReservedResources'] = 'Заказанные автомобили';
-		$strings['ReservedAccessories'] = 'Заказанные допы';
+		$strings['ReservedAccessories'] = 'Заказанные аксессуары';
 		$strings['ResourceUsageTimeBooked'] = 'Resource Usage - Time Booked';
 		$strings['ResourceUsageReservationCount'] = 'Resource Usage - Reservation Count';
 		$strings['Top20UsersTimeBooked'] = 'Top 20 Users - Time Booked';
