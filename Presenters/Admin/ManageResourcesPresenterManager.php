@@ -188,7 +188,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
     public function Add()
     {
-        $name = $this->page->GetResourceName();
+        /*$name = $this->page->GetResourceName();
         $scheduleId = $this->page->GetScheduleId();
         $autoAssign = $this->page->GetAutoAssign();
         $resourceAdminGroupId = $this->page->GetAdminGroupId();
@@ -197,7 +197,7 @@ class ManageResourcesPresenter extends ActionPresenter
 
         $resource = BookableResource::CreateNew($name, $scheduleId, $autoAssign);
         $resource->SetAdminGroupId($resourceAdminGroupId);
-        $this->resourceRepository->Add($resource);
+        $this->resourceRepository->Add($resource);*/
     }
 
     public function ChangeConfiguration()
