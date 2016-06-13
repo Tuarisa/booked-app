@@ -306,8 +306,6 @@ function Schedule(opts, resourceGroups) {
 						{
 							ConfigureAdminForm($('#editBlackoutForm'), getUpdateUrlBlackout, onAddSuccessBlackout, null, {onBeforeSubmit: onBeforeAddSubmitBlackout, target: '#result'});
 
-							wireUpUpdateButtons();
-
 							$(".save").click(function() {
 								$(this).closest('form').submit();
 							});
