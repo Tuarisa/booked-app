@@ -145,7 +145,7 @@ class BlackoutSlot implements IReservationSlot
 
 	public function Id()
 	{
-		return $this->blackout->ReferenceNumber;
+		return $this->blackout->InstanceId;
 	}
 
 	public function IsReserved()

@@ -75,7 +75,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {* End slot display formatting *}
 
 {block name="header"}
-	{include file='globalheader.tpl' cssFiles='css/jquery.qtip.min.css,scripts/css/jqtree.css,css/schedule.css' printCssFiles='css/schedule-print.css'}
+	{include file='globalheader.tpl' cssFiles='scripts/css/colorbox.css,css/jquery.qtip.min.css,scripts/css/jqtree.css,css/schedule.css' printCssFiles='css/schedule-print.css'}
 {/block}
 
 {if $ShowResourceWarning}
@@ -279,6 +279,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {block name="scripts-common"}
 	{jsfile src="js/jquery.qtip.min.js"}
 	{jsfile src="js/moment.min.js"}
+	{jsfile src="js/jquery.colorbox-min.js"}
 	{jsfile src="schedule.js"}
 	{jsfile src="resourcePopup.js"}
 	{jsfile src="js/tree.jquery.js"}
