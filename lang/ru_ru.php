@@ -332,11 +332,11 @@ class ru_ru extends Language
 		$strings['AddAnnouncement'] = 'Добавить объявление';
 		$strings['Announcement'] = 'Объявление';
 		$strings['Priority'] = 'Приоритет';
-		$strings['Reservable'] = 'Заказываемые';
-		$strings['Unreservable'] = 'Незаказываемые';
-		$strings['Reserved'] = 'Заказано';
+		$strings['Reservable'] = 'Свободные';
+		$strings['Unreservable'] = 'В ремонте';
+		$strings['Reserved'] = 'Сдано';
 		$strings['MyReservation'] = 'Мои заказы';
-		$strings['Pending'] = 'В ожидании';
+		$strings['Pending'] = 'Забронировано';
 		$strings['Past'] = 'Предыдущие';
 		$strings['Restricted'] = 'Для служ-го польз-я';
 		$strings['ViewAll'] = 'Посмотреть все';
