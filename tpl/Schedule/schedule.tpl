@@ -282,6 +282,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{jsfile src="js/jquery.colorbox-min.js"}
 	{jsfile src="recurrence.js"}
 	{jsfile src="admin/edit.js"}
+	{jsfile src="js/jquery.form-3.09.min.js"}
 	{jsfile src="schedule.js"}
 	{jsfile src="resourcePopup.js"}
 	{jsfile src="js/tree.jquery.js"}
