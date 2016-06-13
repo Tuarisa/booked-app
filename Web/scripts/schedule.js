@@ -259,6 +259,15 @@ function Schedule(opts, resourceGroups) {
 	this.initBlackouts = function () {
 		var reservations = $('#reservations');
 
+		$(this).hover(
+					function () {
+						$(pattern, reservations).addClass('hilite');
+					},
+					function () {
+						$(pattern, reservations).removeClass('hilite');
+					}
+			);
+
 		$('td.unreservable', reservations).each(function () {
 			var bid = $(this).attr('bid');
 			var pattern = 'td[bid="' + bid + '"]';
