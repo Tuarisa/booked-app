@@ -53,7 +53,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 							   class="resourceNameSelector">{$resource->Name}</a>
 						{else}
 							<span resourceId="{$resource->Id}" resourceId="{$resource->Id}"
-								  class="resourceNameSelector">{$resource->Name}</span>
+								  class="resourceNameSelector">{$resource->Name} {$resource->Description}</span>
 						{/if}
 					</td>
 					{foreach from=$BoundDates item=date}
