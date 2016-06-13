@@ -576,13 +576,14 @@ class ResourceDto
 	 * @param null|int $scheduleId
 	 * @param null|TimeInterval $minLength
 	 */
-	public function __construct($id, $name, $canAccess = true, $scheduleId = null, $minLength = null)
+	public function __construct($id, $name, $canAccess = true, $scheduleId = null, $minLength = null, $Description=null)
 	{
 		$this->Id = $id;
 		$this->Name = $name;
 		$this->CanAccess = $canAccess;
 		$this->ScheduleId = $scheduleId;
 		$this->MinimumLength = $minLength;
+		$this->Description = $Description;
 	}
 
 	/**
@@ -609,6 +610,8 @@ class ResourceDto
 	 * @var null|TimeInterval
 	 */
 	public $MinimumLength;
+
+	public $Description;
 
 	/**
 	 * alias of GetId()

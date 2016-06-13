@@ -50,7 +50,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 					<td class="resourcename">
 						{if $resource->CanAccess}
 							<a href="{$href}" resourceId="{$resource->Id}"
-							   class="resourceNameSelector">{$resource->Name}</a>
+							   class="resourceNameSelector">{$resource->Name} {$resource->Description}</a>
 						{else}
 							<span resourceId="{$resource->Id}" resourceId="{$resource->Id}"
 								  class="resourceNameSelector">{$resource->Name}</span>
