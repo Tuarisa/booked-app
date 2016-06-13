@@ -148,7 +148,7 @@ class ScheduleReservationList implements IScheduleReservationList
 						$spandelta = $spandelta+$indexindays;
 						//$span = $this->GetLayoutIndexEndingAt($endTime);
 					}
-					$endLayoutItem = $this->_layoutItems[$endingPeriodIndex];
+					$endLayoutItem = new SchedulePeriod($item->EndDate(), $item->EndDate());
 				}
 				else
 				{
