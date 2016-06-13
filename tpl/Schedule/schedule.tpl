@@ -280,6 +280,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{jsfile src="js/jquery.qtip.min.js"}
 	{jsfile src="js/moment.min.js"}
 	{jsfile src="js/jquery.colorbox-min.js"}
+	{jsfile src="recurrence.js"}
 	{jsfile src="schedule.js"}
 	{jsfile src="resourcePopup.js"}
 	{jsfile src="js/tree.jquery.js"}
