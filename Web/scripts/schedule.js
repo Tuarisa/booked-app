@@ -308,6 +308,8 @@ function Schedule(opts, resourceGroups) {
 
 							$(".save").click(function() {
 								$(this).closest('form').submit();
+								$.colorbox.close();
+								window.location.reload();
 							});
 
 							$('#cancelUpdate').click(function (e)
