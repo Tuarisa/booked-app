@@ -156,7 +156,7 @@ class ResourceService implements IResourceService
 				}
 			}
 
-			$resourceDtos[] = new ResourceDto($resource->GetResourceId(), $resource->GetName(), $canAccess, $resource->GetScheduleId(), $resource->GetMinLength(), $resource->GetDescription());
+			$resourceDtos[] = new ResourceDto($resource->GetResourceId(), $resource->GetName().'salt', $canAccess, $resource->GetScheduleId(), $resource->GetMinLength(), $resource->GetDescription());
 		}
 
 		return $resourceDtos;
