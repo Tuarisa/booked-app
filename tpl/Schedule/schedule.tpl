@@ -152,11 +152,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<div class="legend reservable">{translate key=Reservable}</div>
 	<div class="legend unreservable">{translate key=Unreservable}</div>
 	<div class="legend reserved">{translate key=Reserved}</div>
-	<div class="legend reserved mine">{translate key=MyReservation}</div>
-	<div class="legend reserved participating">{translate key=Participant}</div>
 	<div class="legend reserved pending">{translate key=Pending}</div>
 	<div class="legend pasttime">{translate key=Past}</div>
-	<div class="legend restricted">{translate key=Restricted}</div>
 </div>
 
 <div style="height:10px">&nbsp;</div>
