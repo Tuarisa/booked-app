@@ -297,7 +297,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				scriptUrl: '{$ScriptUrl}',
 				selectedResources: [{','|implode:$ResourceIds}],
 				specificDates:  [{foreach from=$SpecificDates item=d}'{$d->Format('Y-m-d')}',{/foreach}],
-				BlackoutEditUrl: '{$Path}{Pages::PROFILE}?action={ManageBlackoutsActions::LOAD}&{QueryStringKeys::BLACKOUT_ID}='
+				BlackoutEditUrl: '{$Path}manage_blackouts.php?action=load&bid='
 			};
 
 			var schedule = new Schedule(scheduleOpts, {$ResourceGroupsAsJson});
