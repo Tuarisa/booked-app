@@ -65,7 +65,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 {function name=displayUnreservable}
 	<td {$spantype|default:'col'}span="{$Slot->PeriodSpan()}"
-		class="unreservable slot">{$Slot->Label($SlotLabelFactory)|escape}</td>
+		class="unreservable slot" bid="{$Slot->Id()}" >{$Slot->Label($SlotLabelFactory)|escape}</td>
 {/function}
 
 {function name=displaySlot}
@@ -302,8 +302,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 			var schedule = new Schedule(scheduleOpts, {$ResourceGroupsAsJson});
 			schedule.init();
-			var blackoutManagement = new BlackoutManagement(scheduleOpts);
-			blackoutManagement.init();
 		});
 
 	</script>

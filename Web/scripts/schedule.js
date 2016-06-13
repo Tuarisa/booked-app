@@ -10,6 +10,7 @@ function Schedule(opts, resourceGroups) {
 		this.initUserDefaultSchedule();
 		this.initRotateSchedule();
 		this.initReservations();
+		this.initBlackouts();
 		this.initResourceFilter();
 
 		var reservations = $('#reservations');
@@ -251,6 +252,57 @@ function Schedule(opts, resourceGroups) {
 					fixed: true
 				},
 				overwrite: false
+			});
+		});
+	};
+
+	this.initBlackouts = function () {
+		var reservations = $('#reservations');
+
+		$('td.unreservable', reservations).each(function () {
+			var bid = $(this).attr('bid');
+			var pattern = 'td[bid="' + bid + '"]';
+
+			$(this).click(function () {
+				$.colorbox(
+					{   inline: false,
+						href: options.BlackoutEditUrl + bid,
+						transition: "none",
+						width: "75%",
+						height: "75%",
+						overlayClose: false,
+						onComplete: function ()
+						{
+							ConfigureAdminForm($('#editBlackoutForm'), getUpdateUrl, onAddSuccess, null, {onBeforeSubmit: onBeforeAddSubmit, target: '#result'});
+
+							wireUpUpdateButtons();
+
+							$(".save").click(function() {
+								$(this).closest('form').submit();
+							});
+
+							$('#cancelUpdate').click(function (e)
+							{
+								$.colorbox.close();
+							});
+
+							$('.blackoutResources').click(function (e)
+							{
+								if ($(".blackoutResources input:checked").length == 0)
+								{
+									e.preventDefault();
+								}
+							});
+
+							$('#updateStartTime').timepicker({
+								show24Hours: false
+							});
+
+							$('#updateEndTime').timepicker({
+								show24Hours: false
+							});
+
+						}});
 			});
 		});
 	};
