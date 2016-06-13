@@ -42,7 +42,7 @@
 }
 
 .dashboardContents table, .dashboardContents table td, .dashboardContents table th {
-	border: solid 1px #CCCC99;
+	border: solid 1px #99CC99;
 	text-align: left;
 	padding: 4px;
 	background-color: #F5F5F5;
