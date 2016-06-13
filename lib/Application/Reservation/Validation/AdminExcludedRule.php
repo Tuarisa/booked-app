@@ -47,7 +47,7 @@ class AdminExcludedRule implements IReservationValidationRule
 			return new ReservationRuleResult(true);
 		}
 
-		if ($this->userSession->IsGroupAdmin || $this->userSession->IsResourceAdmin || $this->userSession->IsScheduleAdmin)
+		/*if ($this->userSession->IsGroupAdmin || $this->userSession->IsResourceAdmin || $this->userSession->IsScheduleAdmin)
 		{
 			if ($this->userSession->IsGroupAdmin)
 			{
@@ -81,7 +81,7 @@ class AdminExcludedRule implements IReservationValidationRule
 				}
 			}
 		}
-
+		*/
 		return $this->rule->Validate($reservationSeries);
 	}
 }
