@@ -576,7 +576,7 @@ class ResourceDto
 	 * @param null|int $scheduleId
 	 * @param null|TimeInterval $minLength
 	 */
-	public function __construct($id, $name, $canAccess = true, $scheduleId = null, $minLength = null, $description=null)
+	public function __construct($id, $name, $canAccess = true, $scheduleId = null, $minLength = null, $Description=null)
 	{
 		$this->Id = $id;
 		$this->Name = $name;
