@@ -611,7 +611,7 @@ class ResourceDto
 	 */
 	public $MinimumLength;
 
-	public $Description
+	public $Description;
 
 	/**
 	 * alias of GetId()
