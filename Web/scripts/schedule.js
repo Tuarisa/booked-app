@@ -259,7 +259,33 @@ function Schedule(opts, resourceGroups) {
 	this.initBlackouts = function () {
 		var reservations = $('#reservations');
 
-		$(this).hover(
+		function getUpdateUrlBlackout()
+			{
+				return options.updateUrlBlackout;
+			}
+		function onAddSuccessBlackout()
+			{
+				$('#creating').hide();
+				$('#result').show();
+			}
+		function onBeforeAddSubmitBlackout(formData, jqForm, opts)
+			{
+				var isValid = BeforeFormSubmit(formData, jqForm, opts);
+
+				if (isValid)
+				{
+					$.colorbox({inline:true, href:"#createDiv", transition:"none", width:"75%", height:"75%", overlayClose: false});
+					$('#result').hide();
+					$('#creating, #createDiv').show();
+				}
+				return isValid;
+			}
+
+		$('td.unreservable', reservations).each(function () {
+			var bid = $(this).attr('bid');
+			var pattern = 'td[bid="' + bid + '"]';
+
+			$(this).hover(
 					function () {
 						$(pattern, reservations).addClass('hilite');
 					},
@@ -267,10 +293,6 @@ function Schedule(opts, resourceGroups) {
 						$(pattern, reservations).removeClass('hilite');
 					}
 			);
-
-		$('td.unreservable', reservations).each(function () {
-			var bid = $(this).attr('bid');
-			var pattern = 'td[bid="' + bid + '"]';
 
 			$(this).click(function () {
 				$.colorbox(
@@ -282,7 +304,7 @@ function Schedule(opts, resourceGroups) {
 						overlayClose: false,
 						onComplete: function ()
 						{
-							ConfigureAdminForm($('#editBlackoutForm'), getUpdateUrl, onAddSuccess, null, {onBeforeSubmit: onBeforeAddSubmit, target: '#result'});
+							ConfigureAdminForm($('#editBlackoutForm'), getUpdateUrlBlackout, onAddSuccessBlackout, null, {onBeforeSubmit: onBeforeAddSubmitBlackout, target: '#result'});
 
 							wireUpUpdateButtons();
 

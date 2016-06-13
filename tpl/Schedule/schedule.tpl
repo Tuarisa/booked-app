@@ -281,6 +281,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{jsfile src="js/moment.min.js"}
 	{jsfile src="js/jquery.colorbox-min.js"}
 	{jsfile src="recurrence.js"}
+	{jsfile src="admin/edit.js"}
 	{jsfile src="schedule.js"}
 	{jsfile src="resourcePopup.js"}
 	{jsfile src="js/tree.jquery.js"}
@@ -299,7 +300,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				scriptUrl: '{$ScriptUrl}',
 				selectedResources: [{','|implode:$ResourceIds}],
 				specificDates:  [{foreach from=$SpecificDates item=d}'{$d->Format('Y-m-d')}',{/foreach}],
-				BlackoutEditUrl: '{$Path}admin/manage_blackouts.php?action=load&bid='
+				BlackoutEditUrl: '{$Path}admin/manage_blackouts.php?action=load&bid=',
+				updateUrlBlackout: '{$Path}admin/manage_blackouts.php?action=update'
 			};
 
 			var schedule = new Schedule(scheduleOpts, {$ResourceGroupsAsJson});
