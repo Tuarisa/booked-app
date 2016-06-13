@@ -164,7 +164,7 @@ class ReservationSlot implements IReservationSlot
 
 	public function IsPastDate(Date $date)
 	{
-		return $this->_displayDate->SetTime($this->Begin())->LessThan($date) && $this->_end->LessThan($date) && false;
+		return $this->_displayDate->SetTime($this->Begin())->LessThan($date) && $this->_end->LessThan($date);
 	}
 
 	public function IsFutureDate(Date $date)
