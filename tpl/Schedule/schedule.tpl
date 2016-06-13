@@ -24,7 +24,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 		{assign var=class value='pending'}
 	{/if}
 	{if $Slot->IsPastDate(Date::Now())}
-		{assign var=class value=$Slot->BeginDate()}
+		{assign var=class value=$Slot->EndDate()}
 	{/if}
 	{if $Slot->IsFutureDate(Date::Now())}
 		{assign var=class value='pending'}
@@ -32,7 +32,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	{if $Slot->HasCustomColor()}
 		{assign var=color value='style="background-color:'|cat:$Slot->Color()|cat:';color:'|cat:$Slot->TextColor()|cat:';"'}
 	{/if}
-	<td {$spantype|default:'col'}span="{$Slot->PeriodSpan()}" class="reserved {$class} {$OwnershipClass} clickres slot"
+	<td {$spantype|default:'col'}span="{$Slot->PeriodSpan()}" class="$Slot->EndDate() reserved {$class} {$OwnershipClass} clickres slot"
 		resid="{$Slot->Id()}" {$color}
 		id="{$Slot->Id()}|{$Slot->Date()->Format('Ymd')}">{$Slot->Label($SlotLabelFactory)|escapequotes}</td>
 {/function}
