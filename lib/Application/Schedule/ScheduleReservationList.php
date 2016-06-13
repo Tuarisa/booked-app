@@ -162,7 +162,7 @@ class ScheduleReservationList implements IScheduleReservationList
 
 
 				if ($item->StartDate()->Compare($this->_layoutDateStart) >= 0){
-					$slots[] = $item->BuildSlot($layoutItem, $this->_layoutItems[$endingPeriodIndex],
+					$slots[] = $item->BuildSlot($layoutItem, $item,
 												$this->_layoutDateStart, $span);
 				}
 
