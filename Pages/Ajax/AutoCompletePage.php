@@ -178,8 +178,8 @@ class AutocompleteUser
 		$this->Name = $full->__toString();
 		$this->Email = $email;
 		$this->UserName = $userName;
-		$this->Phone = $phone
-		$this->DisplayName = "{$full} $email $phone";
+		$this->Phone = $phone;
+		$this->DisplayName = "{$full} {$email} {$phone}";
 	}
 }
 
