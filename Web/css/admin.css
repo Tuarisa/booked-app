@@ -93,6 +93,10 @@ span.error {
 	height: 300px;
 }
 
+.resourceDetails li {
+	margin-bottom: 10px;
+}
+
 .admin table {
 	border-collapse: collapse;
 }
