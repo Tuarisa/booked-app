@@ -125,7 +125,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 					<li class="section">
 						<label>{translate key='ParticipantList'}</label>
 						{foreach from=$Participants item=participant}
-							<br/><a href="#" class="bindableUser a" data-userid="{$participant->UserId}">{$participant->FullName}</a>
+							<br/><a href="#" class="bindableUser" data-userid="{$participant->UserId}">{$participant->FullName}</a>
 						{foreachelse}
 							<span class="no-data">{translate key='None'}</span>
 						{/foreach}
