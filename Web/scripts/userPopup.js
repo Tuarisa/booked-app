@@ -89,6 +89,16 @@ $.fn.bindUserDetails = function (userId, options) {
 									, getupdateurl(idToLoad)
 									, hideDialog($('#userDialog')));
 								$('#userDialog').dialog('open');
+
+								divUserForm.find(".save").click(function ()
+								{
+									$(this).closest('form').submit();
+								});
+
+								divUserForm.find(".cancel").click(function ()
+								{
+									$(this).closest('.dialog').dialog("close");
+								});
 							}
 						});
 					});
