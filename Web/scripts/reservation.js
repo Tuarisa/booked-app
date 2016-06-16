@@ -594,6 +594,7 @@ function Reservation(opts)
 
 		elements.participantDialog.delegate('.add', 'click', function ()
 		{
+			console.log('3');
 			participation.addParticipant($(this).closest('li').text(), $(this).find('.id').val());
 		});
 
