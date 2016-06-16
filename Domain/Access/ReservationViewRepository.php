@@ -277,7 +277,8 @@ class ReservationViewRepository implements IReservationViewRepository
 					$row[ColumnNames::FIRST_NAME],
 					$row[ColumnNames::LAST_NAME],
 					$row[ColumnNames::EMAIL],
-					$levelId);
+					$levelId,
+					$row[ColumnNames::PHONE_NUMBER]);
 
 			if ($levelId == ReservationUserLevel::PARTICIPANT)
 			{
@@ -507,8 +508,9 @@ class ReservationUserView
 	public $Email;
 	public $LevelId;
 	public $FullName;
+	public $Phone;
 
-	public function __construct($userId, $firstName, $lastName, $email, $levelId)
+	public function __construct($userId, $firstName, $lastName, $email, $levelId, $phone)
 	{
 		$this->UserId = $userId;
 		$this->FirstName = $firstName . ' salt';
@@ -516,6 +518,7 @@ class ReservationUserView
 		$this->FullName = $firstName . ' ' . $lastName;
 		$this->Email = $email;
 		$this->LevelId = $levelId;
+		$this->Phone = $phone;
 	}
 
 	public function IsOwner()
