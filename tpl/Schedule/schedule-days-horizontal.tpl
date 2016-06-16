@@ -45,7 +45,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 			{foreach from=$Resources item=resource name=resource_loop}
 				{assign var=resourceId value=$resource->Id}
-				{assign var=href value="/Web/admin/manage_resources.php?resourceName={$resource->Name}"}
+				{assign var=href value="/Web/admin/manage_admin_resources.php?resourceName={$resource->Name}"}
 				<tr class="slots">
 					<td class="resourcename">
 						{if $resource->CanAccess}
