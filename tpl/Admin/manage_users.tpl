@@ -79,7 +79,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			<td align="center"><a href="#" class="update changePermissions">{translate key='Edit'}</a></td>
 			<td align="center"><a href="#" class="update changeGroups">{translate key='Edit'}</a></td>
 			<td align="center"><a href="#" class="update viewReservations">{translate key='Search'}</a></td>
-			<td align="center"><a href="#" class="update resetPassword">{translate key='Reset'} {$user->Phone}</a></td>
+			<td align="center"><a href="#" class="update resetPassword">{translate key='Reset'}</a></td>
 			{if $PerUserColors}
 				<td align="center">
 					<a href="#" class="update changeColor">{translate key='Edit'}</a>
@@ -98,7 +98,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 					<form method="post" class="attributesForm" ajaxAction="{ManageUsersActions::ChangeAttributes}">
 						<h3>{translate key=AdditionalAttributes}
 							<a href="#" class="update changeAttributes">{translate key=Edit}</a>
-							{$user->Phone}
 						</h3>
 
 						<div class="validationSummary">
@@ -107,12 +106,11 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 							<div class="clear">&nbsp;</div>
 						</div>
 
-						<div> {$user->Phone}
+						<div>
 							<ul>
-								{$user->Phone}
 								{foreach from=$attributes item=attribute}
-									{assign var="attributeValue" value=123}
-									<li class="customAttribute" attributeId="{$attribute->Id()}">
+									{assign var="attributeValue" value=$user->GetAttributeValue($attribute->Id())}
+									<li class="customAttribute" attributeId="{$attribute->Id()}"> {$user->Phone}
 										<div class="attribute-readonly">{control type="AttributeControl" attribute=$attribute value=$attributeValue readonly=true}</div>
 										<div class="attribute-readwrite hidden">{control type="AttributeControl" attribute=$attribute value=$attributeValue}
 									</li>
