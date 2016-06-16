@@ -327,8 +327,9 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			<div id="profileAttributeFields">
 				<div class="registrationHeader"><h3>{translate key=AdditionalAttributes}</h3></div>
 				{foreach from=$Attributes item=attribute}
+				{assign var="attributeValue" value=$user->GetAttributeValue($attribute->Id())}
 					<p class="customAttribute">
-						{control type="AttributeControl" attribute=$attribute}
+						{control type="AttributeControl" attribute=$attribute value=$attributeValue}
 					</p>
 				{/foreach}
 			</div>
