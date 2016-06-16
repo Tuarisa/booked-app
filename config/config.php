@@ -31,7 +31,7 @@ $conf['settings']['allow.self.registration'] = 'true';          // if users can 
 $conf['settings']['admin.email'] = 'tuarisa@gmail.com';         // email address of admin user
 $conf['settings']['admin.email.name'] = 'Booked Administrator'; // name to be used in From: field when sending automatic emails
 $conf['settings']['default.page.size'] = '50';                  // number of records per page
-$conf['settings']['enable.email'] = 'true';                     // global configuration to enable if any emails will be sent
+$conf['settings']['enable.email'] = 'false';                     // global configuration to enable if any emails will be sent
 $conf['settings']['default.language'] = 'ru_ru';                // find your language in the lang directory
 $conf['settings']['script.url'] = getenv("APP_URL").'Web';       // public URL to the Web directory of this instance. this is the URL that appears when you are logging in. leave http: or https: off to auto-detect
 $conf['settings']['image.upload.directory'] = 'Web/uploads/images'; // full or relative path to where images will be stored
@@ -161,11 +161,11 @@ $conf['settings']['email']['default.from.name'] = '';
 /**
  * Reports
  */
-$conf['settings']['reports']['allow.all.users'] = 'false';
+$conf['settings']['reports']['allow.all.users'] = 'true';
 /**
  * Account Password Rules
  */
-$conf['settings']['password']['minimum.letters'] = '6';
+$conf['settings']['password']['minimum.letters'] = '0';
 $conf['settings']['password']['minimum.numbers'] = '0';
 $conf['settings']['password']['upper.and.lower'] = 'false';
 /**

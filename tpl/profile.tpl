@@ -24,11 +24,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<ul>
 		{async_validator id="fname" key="FirstNameRequired"}
 		{async_validator id="lname" key="LastNameRequired"}
-		{async_validator id="username" key="UserNameRequired"}
-		{async_validator id="emailformat" key="ValidEmailRequired"}
-		{async_validator id="uniqueemail" key="UniqueEmailRequired"}
-		{async_validator id="uniqueusername" key="UniqueUsernameRequired"}
-		{async_validator id="additionalattributes" key=""}
 	</ul>
 </div>
 
