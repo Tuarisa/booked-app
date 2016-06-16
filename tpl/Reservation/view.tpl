@@ -245,7 +245,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 </div>
 
 <div id="userDialog" class="dialog" title="{translate key=Update}">
-	<form id="userForm" method="post" ajaxAction="{ManageUsersActions::UpdateUser}">
+	<form id="userForm" method="post" ajaxAction="updateUser">
 
 		<div class="validationSummary">
 			<ul>
