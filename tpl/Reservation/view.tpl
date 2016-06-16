@@ -313,6 +313,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {jsfile src="reservation.js"}
 {jsfile src="autocomplete.js"}
 {jsfile src="userPopup.js"}
+{jsfile src="admin/edit.js"}
 
 	<script type="text/javascript">
 
