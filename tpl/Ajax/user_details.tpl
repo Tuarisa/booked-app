@@ -21,12 +21,12 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 <div id="userDetailsPopup">
 	<div id="userDetailsName">{fullname first=$User->FirstName() last=$User->LastName() ignorePrivacy=true}</div>
 	<div id="userDetailsEmail"><span class="label">{translate key=Email}</span> <a href="mailto:{$User->EmailAddress()}">{$User->EmailAddress()}</a></div>
-	<div id="userDetailsPhone" data-id="phone" data-val ="{$User->GetAttribute(UserAttribute::Phone)}"><span class="label">{translate key=Phone}</span> <a href="tel:{$User->GetAttribute(UserAttribute::Phone)}">{$User->GetAttribute(UserAttribute::Phone)}</a></div>
-	<div id="userDetailsOrganization" data-id="organization"><span class="label">{translate key=Organization}</span> {$User->GetAttribute(UserAttribute::Organization)}</div>
-	<div id="userDetailsPosition" data-id="position" data-val="{$User->GetAttribute(UserAttribute::Position)}"><span class="label">{translate key=Position}</span> {$User->GetAttribute(UserAttribute::Position)}</div>
+	<div id="userDetailsPhone"><span class="label">{translate key=Phone}</span> <a href="tel:{$User->GetAttribute(UserAttribute::Phone)}" data-id=>{$User->GetAttribute(UserAttribute::Phone)}</a></div>
+	<div id="userDetailsOrganization"><span class="label" data-id="organization">{translate key=Organization}</span> {$User->GetAttribute(UserAttribute::Organization)}</div>
+	<div id="userDetailsPosition"><span class="label" data-id="position">{translate key=Position}</span> {$User->GetAttribute(UserAttribute::Position)}</div>
 	<div id="userDetailsAttributes">
 	{foreach from=$Attributes item=attribute}
-		<div class="customAttribute" data-id = "{psiattribute.$attribute->Id()}" data-val="{$User->GetAttributeValue($attribute->Id())}"><span class="label">{$attribute->Label()}</span> {$User->GetAttributeValue($attribute->Id())}</div>
+		<div class="customAttribute" data-id = "{$attribute->Id()}" data-val="{$User->GetAttributeValue($attribute->Id())}"><span class="label">{$attribute->Label()}</span> {$User->GetAttributeValue($attribute->Id())}</div>
 	{/foreach}
 	</div>
 </div>
