@@ -37,6 +37,18 @@ $.fn.bindUserDetails = function (userId, options) {
 				}
 			}
 
+			function getUserForm() {
+				if ($('#userFormDiv').length <= 0)
+				{
+					return $('<div id="userFormDiv"/>').appendTo('body');
+				}
+				else
+				{
+					return $('#userFormDiv');
+				}
+			}
+
+
 			function hideDiv() {
 				var tag = getDiv();
 				var timeoutId = setTimeout(function () {
@@ -55,6 +67,15 @@ $.fn.bindUserDetails = function (userId, options) {
 				{
 					userElement.click(function (e) {
 						e.preventDefault();
+						var idToLoad = userElement.attr('data-userid');
+						var divUserForm = getUserForm();
+						$.ajax({
+							url: 'ajax/user_details.php?action=getForm&uid=' + idToLoad,
+							type: 'GET',
+							success: function (data, textStatus, jqXHR) {
+								divUserForm.data('userPopup' + idToLoad, data);
+							}
+						});
 					});
 				}
 
