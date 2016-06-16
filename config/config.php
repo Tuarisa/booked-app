@@ -52,7 +52,7 @@ $conf['settings']['default.homepage'] = '2';                    // the default h
 
 $conf['settings']['schedule']['use.per.user.colors'] = 'true';         // color reservations by user
 $conf['settings']['schedule']['show.inaccessible.resources'] = 'true';  // whether or not resources that are inaccessible to the user are visible
-$conf['settings']['schedule']['reservation.label'] = '{name} {participants} {startdate} {enddate} ';          // format for what to display on the reservation slot label.  Available properties are: {name}, {title}, {description}, {email}, {phone}, {organization}, {position}, {startdate}, {enddate} {resourcename} {participants} {invitees} {reservationAttributes}. Custom attributes can be added using att with the attribute id. For example {att1}
+$conf['settings']['schedule']['reservation.label'] = 'Клиент: {participants} </br> Сдал: {name}';          // format for what to display on the reservation slot label.  Available properties are: {name}, {title}, {description}, {email}, {phone}, {organization}, {position}, {startdate}, {enddate} {resourcename} {participants} {invitees} {reservationAttributes}. Custom attributes can be added using att with the attribute id. For example {att1}
 $conf['settings']['schedule']['hide.blocked.periods'] = 'false';        // if blocked periods should be hidden or shown
 
 /**
@@ -78,7 +78,7 @@ $conf['settings']['reservation']['updates.require.approval'] = 'false';     // i
 $conf['settings']['reservation']['prevent.participation'] = 'false';        // if participation and invitation options should be removed
 $conf['settings']['reservation']['prevent.recurrence'] = 'false';           // if recurring reservations are disabled for non-administrators
 $conf['settings']['reservation']['enable.reminders'] = 'false';             // if reminders are enabled. this requires email to be enabled and the reminder job to be configured
-$conf['settings']['reservation']['allow.guest.participation'] = 'false';
+$conf['settings']['reservation']['allow.guest.participation'] = 'true';
 /**
  * Email notification configuration
  */
