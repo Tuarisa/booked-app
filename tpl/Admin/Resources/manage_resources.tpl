@@ -128,7 +128,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				<a class="update imageButton" href="javascript: void(0);">{translate key='AddImage'}</a>
 			{/if}
 		</div>
-		<div style="float:left;margin-left:50px;">
+		<div style="float:left;margin-left:20px;">
 			<ul>
 				<li>
 					<h2>{$resource->GetName()}</h2>
@@ -232,7 +232,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			</ul>
 		</div>
 	</div>
-	<div style="float:right;">
+	<div style="float:left;">
 		<div>
 			<h5>{translate key='UsageConfiguration'}</h5> <a class="update changeConfigurationButton"
 															 href="javascript: void(0);">{translate key='ChangeConfiguration'}</a>
