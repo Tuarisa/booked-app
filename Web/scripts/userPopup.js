@@ -85,7 +85,7 @@ $.fn.bindUserDetails = function (userId, options) {
 							success: function (data, textStatus, jqXHR) {
 								divUserForm.html(data);
 								ConfigureAdminDialog($('#userDialog'));
-								ConfigureAdminForm($('#userDialog')
+								ConfigureAdminForm($('#userForm')
 									, getupdateurl(idToLoad)
 									, hideDialog($('#userDialog')));
 								$('#userDialog').dialog('open');
