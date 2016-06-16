@@ -63,7 +63,7 @@ $.fn.bindUserDetails = function (userId, options) {
 
 			var getupdateurl = function (id) {
 				return function () {
-					return "/Web/admin/manage_users.php?uid=" + "?action=" + "userUpdate" + '&uid=' + id;
+					return "/Web/admin/manage_users.php" + "?action=" + "userUpdate" + '&uid=' + id;
 				};
 			};
 
