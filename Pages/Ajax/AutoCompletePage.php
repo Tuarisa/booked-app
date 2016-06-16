@@ -88,7 +88,7 @@ class AutoCompletePage extends SecurePage
 		/** @var $result UserItemView */
 		foreach($results as $result)
 		{
-			$users[] = new AutocompleteUser($result->Id	, $result->First, $result->Last, $result->Email, $result->Username);
+			$users[] = new AutocompleteUser($result->Id	, $result->First, $result->Last, $result->Email, $result->Username, $result->Phone);
 		}
 
 		return $users;
@@ -167,8 +167,9 @@ class AutocompleteUser
 	public $Name;
 	public $Email;
 	public $UserName;
+	public $Phone;
 
-	public function __construct($userId, $firstName, $lastName, $email, $userName)
+	public function __construct($userId, $firstName, $lastName, $email, $userName, $phone)
 	{
 		$full = new FullName($firstName, $lastName);
 		$this->Id = $userId;
@@ -177,6 +178,7 @@ class AutocompleteUser
 		$this->Name = $full->__toString();
 		$this->Email = $email;
 		$this->UserName = $userName;
+		$this->Phone = $phone
 		$this->DisplayName = "{$full} $email $phone";
 	}
 }
