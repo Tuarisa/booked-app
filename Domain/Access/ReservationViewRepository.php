@@ -1083,7 +1083,7 @@ class ReservationItemView implements IReservedItemView
 				$name = $pair[1];
 				$name_parts = explode(' ', $name);
 				$this->ParticipantIds[] = $id;
-				$this->ParticipantNames[$id] = new FullName($name_parts[0], $name_parts[1]);
+				$this->ParticipantNames[$id] = $pair;//new FullName($name_parts[0], $name_parts[1]);
 			}
 		}
 
