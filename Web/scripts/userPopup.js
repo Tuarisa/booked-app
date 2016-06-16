@@ -79,7 +79,7 @@ $.fn.bindUserDetails = function (userId, options) {
 										autoOpen: false,
 										height: 'auto',
 										width: 'auto'
-									);
+									});
 							}
 						});
 					});
