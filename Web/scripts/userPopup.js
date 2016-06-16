@@ -64,7 +64,7 @@ $.fn.bindUserDetails = function (userId, options) {
 
 			var getupdateurl = function (id) {
 				return function () {
-					return "/Web/admin/manage_users.php" + "?action=" + "userUpdate" + '&uid=' + id;
+					return "/Web/admin/manage_users.php?action=userUpdate&uid=" + id;
 				};
 			};
 
@@ -91,12 +91,12 @@ $.fn.bindUserDetails = function (userId, options) {
 									, hideDialog($('#userDialog')));
 								$('#userDialog').dialog('open');
 
-								divUserForm.find(".save").click(function ()
+								$(".save").click(function ()
 								{
 									$(this).closest('form').submit();
 								});
 
-								divUserForm.find(".cancel").click(function ()
+								$(".cancel").click(function ()
 								{
 									$(this).closest('.dialog').dialog("close");
 								});
