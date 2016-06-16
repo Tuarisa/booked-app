@@ -322,6 +322,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			<li>{translate key="Position"}</li>
 			<li>{textbox name="POSITION" class="textbox" size="40" id="position"}</li>
 		</ul>
+		{assign var=Attributes value=$AttributeList}
 		{if $Attributes|count > 0}
 			<div id="profileAttributeFields">
 				<div class="registrationHeader"><h3>{translate key=AdditionalAttributes}</h3></div>
