@@ -26,10 +26,10 @@ class GroupAdminManageUsersPage extends ManageUsersPage
 	public function __construct()
 	{
 		parent::__construct();
-		$this->_presenter->SetUserRepository(new GroupAdminUserRepository(new GroupRepository(), ServiceLocator::GetServer()->GetUserSession()));
-		$groupRepository = new GroupAdminGroupRepository(new UserRepository(), ServiceLocator::GetServer()->GetUserSession());
-		$this->_presenter->SetGroupRepository($groupRepository);
-		$this->_presenter->SetGroupViewRepository($groupRepository);
+		//$this->_presenter->SetUserRepository(new GroupAdminUserRepository(new GroupRepository(), ServiceLocator::GetServer()->GetUserSession()));
+		//$groupRepository = new GroupAdminGroupRepository(new UserRepository(), ServiceLocator::GetServer()->GetUserSession());
+		//$this->_presenter->SetGroupRepository($groupRepository);
+		//$this->_presenter->SetGroupViewRepository($groupRepository);
 	}
 
     protected function RenderTemplate()
