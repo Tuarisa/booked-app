@@ -58,6 +58,7 @@ $.fn.bindUserDetails = function (userId, options) {
 			}
 
 			var hideDialog = function (dialogElement) {
+				console.log('111')
 				dialogElement.dialog('close');
 			};
 
