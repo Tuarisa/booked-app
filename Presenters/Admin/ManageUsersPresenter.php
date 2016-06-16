@@ -261,6 +261,7 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 											  $this->page->GetLastName(),
 											  $this->page->GetTimezone(),
 											  $extraAttributes);
+		$this->manageUsersService->ChangeAttributes($this->page->GetUserId(), $this->GetAttributeValues());
 	}
 
 	public function DeleteUser()
