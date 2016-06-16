@@ -79,7 +79,8 @@ function UserManagement(opts) {
 		elements.userList.delegate('.editable', 'click', function () {
 			var userId = $(this).find('input:hidden.id').val();
 			setActiveUserId(userId);
-			changeUserInfo();
+			var attributesContainer = $(this).closest('.customAttributes');
+			changeUserInfo(attributesContainer);
 		});
 
 		elements.userList.delegate('.delete', 'click', function (e) {
@@ -301,10 +302,12 @@ function UserManagement(opts) {
 		});
 	};
 
-	var changeUserInfo = function () {
+	var changeUserInfo = function (attr) {
 		var user = getActiveUser();
 
 		ClearAsyncErrors(elements.userDialog);
+
+		console.log(attr);
 
 		$('#username').val(user.username);
 		$('#fname').val(user.first);
