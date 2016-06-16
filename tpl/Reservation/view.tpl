@@ -120,7 +120,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 		{if $ShowParticipation && $ShowReservationDetails}
 		<div id="reservationParticipation">
-			<ul class="no-style a">
+			<ul class="no-style">
 				{if $ShowUserDetails}
 					<li class="section">
 						<label>{translate key='ParticipantList'}</label>
