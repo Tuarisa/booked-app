@@ -56,7 +56,25 @@ class UserDetailsPopupPage extends Page implements IUserDetailsPopupPage
 	public function PageLoad()
 	{
 		$this->presenter->PageLoad(ServiceLocator::GetServer()->GetUserSession());
+
+		if ($this->TakingAction())
+		{
+			$this->ProcessAction();
+		}
 		$this->Display('Ajax/user_details.tpl');
+	}
+
+	function ProcessAction()
+	{
+		if ($this->GetAction() == 'getForm')
+		{
+			$this->Display('Ajax/user_form.tpl');
+		}
+		else
+		{
+			$this->Display('Ajax/user_details.tpl');
+		}
+
 	}
 
 	public function SetCanViewUser($canView)
