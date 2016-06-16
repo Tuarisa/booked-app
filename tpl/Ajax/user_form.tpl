@@ -28,8 +28,9 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
         </div>
 
         <ul>
+            {assign var=username value=$User->GetAttribute(UserAttribute::Username)}
             <li>{translate key="Username"}</li>
-            <li>{textbox name="USERNAME" class="textbox" size="40" id="username"}</li>
+            <li>{textbox name="USERNAME" class="textbox" size="40" id="username" value = username}</li>
             <li>{translate key="Email"}</li>
             <li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
 
