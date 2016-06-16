@@ -140,9 +140,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<div>
 		<div class="validationSummary">
 			<ul>
-				{async_validator id="addUserEmailformat" key="ValidEmailRequired"}
-				{async_validator id="addUserUniqueemail" key="UniqueEmailRequired"}
-				{async_validator id="addUserUsername" key="UniqueUsernameRequired"}
 				{async_validator id="addAttributeValidator" key=""}
 			</ul>
 		</div>
