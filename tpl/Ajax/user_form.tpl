@@ -49,7 +49,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             {assign var=organization value=$User->GetAttribute(UserAttribute::Organization)}
             <li>{textbox name="ORGANIZATION" class="textbox" size="40" id="organization" value=organization}</li>
             <li>{translate key="Position"}</li>
-            <li>{textbox name="POSITION" class="textbox" size="40" id="position"}</li>
+            {assign var=position value=$User->GetAttribute(UserAttribute::Position)}
+            <li>{textbox name="POSITION" class="textbox" size="40" id="position" value = position}</li>
         </ul>
         {if $Attributes|count > 0}
             <div id="profileAttributeFields">
