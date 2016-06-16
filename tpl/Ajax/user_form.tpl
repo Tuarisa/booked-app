@@ -43,9 +43,11 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname" value=lastname}</li>
 
             <li>{translate key="Phone"}</li>
-            <li>{textbox name="PHONE" class="textbox" size="40" id="phone"}</li>
+            {assign var=phone value=$User->GetAttribute(UserAttribute::Phone)}
+            <li>{textbox name="PHONE" class="textbox" size="40" id="phone" value = phone}</li>
             <li>{translate key="Organization"}</li>
-            <li>{textbox name="ORGANIZATION" class="textbox" size="40" id="organization"}</li>
+            {assign var=organization value=$User->GetAttribute(UserAttribute::Organization)}
+            <li>{textbox name="ORGANIZATION" class="textbox" size="40" id="organization" value=organization}</li>
             <li>{translate key="Position"}</li>
             <li>{textbox name="POSITION" class="textbox" size="40" id="position"}</li>
         </ul>
