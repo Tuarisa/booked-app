@@ -222,32 +222,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				<h5>{translate key='UsageConfiguration'}</h5> <a class="update changeConfigurationButton"
 				href="javascript: void(0);">{translate key='ChangeConfiguration'}</a>
 			</div>
-			<div class="customAttributes">
-				<form method="post" class="attributesForm" ajaxAction="{ManageResourcesActions::ActionChangeAttributes}">
-					<h3>{translate key=AdditionalAttributes} <a href="#"
-					class="update changeAttributes">{translate key=Edit}</a>
-					</h3>
-					<div class="validationSummary">
-						<ul>
-						</ul>
-						<div class="clear">&nbsp;</div>
-					</div>
-					<ul>
-						{foreach from=$attributes item=attribute}
-						<li class="customAttribute" attributeId="{$attribute->Id()}">
-							<div class="attribute-readonly">{control type="AttributeControl" attribute=$attribute readonly=true idPrefix=$id}</div>
-							<div class="attribute-readwrite hidden">{control type="AttributeControl" attribute=$attribute idPrefix=$id}
-							</li>
-							{/foreach}
-						</ul>
-						<div class="attribute-readwrite hidden">
-							<button type="button"
-							class="button save">{html_image src="tick-circle.png"} {translate key='Update'}</button>
-							<button type="button"
-							class="button cancel">{html_image src="slash.png"} {translate key='Cancel'}</button>
-						</div>
-					</form>
-				</div>
 				<div style="float:left;width:400px;display:none;">
 					<ul>
 						<li>
@@ -323,6 +297,32 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			</div>
 			{assign var=attributes value=$AttributeList->GetAttributes($id)}
 			{if $attributes|count > 0}
+			<div class="customAttributes">
+				<form method="post" class="attributesForm" ajaxAction="{ManageResourcesActions::ActionChangeAttributes}">
+					<h3>{translate key=AdditionalAttributes} <a href="#"
+					class="update changeAttributes">{translate key=Edit}</a>
+					</h3>
+					<div class="validationSummary">
+						<ul>
+						</ul>
+						<div class="clear">&nbsp;</div>
+					</div>
+					<ul>
+						{foreach from=$attributes item=attribute}
+						<li class="customAttribute" attributeId="{$attribute->Id()}">
+							<div class="attribute-readonly">{control type="AttributeControl" attribute=$attribute readonly=true idPrefix=$id}</div>
+							<div class="attribute-readwrite hidden">{control type="AttributeControl" attribute=$attribute idPrefix=$id}
+							</li>
+							{/foreach}
+						</ul>
+						<div class="attribute-readwrite hidden">
+							<button type="button"
+							class="button save">{html_image src="tick-circle.png"} {translate key='Update'}</button>
+							<button type="button"
+							class="button cancel">{html_image src="slash.png"} {translate key='Cancel'}</button>
+						</div>
+					</form>
+				</div>
 			<div class="clear">&nbsp;</div>
 			{/if}
 			<div class="actions">&nbsp;</div>
