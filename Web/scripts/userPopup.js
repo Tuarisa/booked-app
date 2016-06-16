@@ -56,6 +56,10 @@ $.fn.bindUserDetails = function (userId, options) {
 				}, 500);
 				tag.data('timeoutId', timeoutId);
 			}
+			
+			var hideDialog = function (dialogElement) {
+				dialogElement.dialog('close');
+			};
 
 			function bind(userElement) {
 				if (userElement.attr('user-details-bound') === '1')
@@ -74,12 +78,7 @@ $.fn.bindUserDetails = function (userId, options) {
 							type: 'GET',
 							success: function (data, textStatus, jqXHR) {
 								divUserForm.html(data);
-								$('#userDialog').dialog({
-										modal: true,
-										autoOpen: false,
-										height: 'auto',
-										width: 'auto'
-									});
+								ConfigureAdminDialog($('#userDialog'));
 								ConfigureAdminForm($('#userDialog')
 									, function () {return "?uid=" + idToLoad + "&action=";}
 									, hideDialog($('#userDialog')));
