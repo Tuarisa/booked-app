@@ -110,7 +110,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 							<ul>
 								{foreach from=$attributes item=attribute}
 									{assign var="attributeValue" value=$user->GetAttributeValue($attribute->Id())}
-									<li class="customAttribute" attributeId="{$attribute->Id()}"> {$user->Phone}
+									<li class="customAttribute" attributeId="{$attribute->Id()}"> 
 										<div class="attribute-readonly">{control type="AttributeControl" attribute=$attribute value=$attributeValue readonly=true}</div>
 										<div class="attribute-readwrite hidden">{control type="AttributeControl" attribute=$attribute value=$attributeValue}
 									</li>
