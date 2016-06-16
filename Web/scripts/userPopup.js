@@ -56,7 +56,7 @@ $.fn.bindUserDetails = function (userId, options) {
 				}, 500);
 				tag.data('timeoutId', timeoutId);
 			}
-			
+
 			var hideDialog = function (dialogElement) {
 				dialogElement.dialog('close');
 			};
@@ -80,8 +80,9 @@ $.fn.bindUserDetails = function (userId, options) {
 								divUserForm.html(data);
 								ConfigureAdminDialog($('#userDialog'));
 								ConfigureAdminForm($('#userDialog')
-									, function () {return "?uid=" + idToLoad + "&action=";}
+									, function () {return "../admin/manage_users.php?uid=" + idToLoad + "&action=updateUser";}
 									, hideDialog($('#userDialog')));
+								$('#userDialog').dialog('open');
 							}
 						});
 					});
