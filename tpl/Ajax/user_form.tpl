@@ -32,13 +32,15 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             <li>{translate key="Username"}</li>
             <li>{textbox name="USERNAME" class="textbox" size="40" id="username" value=uname}</li>
             <li>{translate key="Email"}</li>
-            <li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
+            {assign var=email value=$User->EmailAddress()}
+            <li>{textbox name="EMAIL" class="textbox" size="40" id="email" value =email}</li>
 
             <li>{translate key="FirstName"}</li>
             {assign var=firstname value=$User->FirstName()}
             <li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname" value=firstname }</li>
             <li>{translate key="LastName"}</li>
-            <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
+            {assign var=lastname value=$User->LastName()}
+            <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname" value=lastname}</li>
 
             <li>{translate key="Phone"}</li>
             <li>{textbox name="PHONE" class="textbox" size="40" id="phone"}</li>
