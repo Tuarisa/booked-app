@@ -61,6 +61,12 @@ $.fn.bindUserDetails = function (userId, options) {
 				dialogElement.dialog('close');
 			};
 
+			var getupdateurl = function (id) {
+				return function () {
+					return "../admin/manage_users.php?uid=" + "?action=" + "userUpdate" + '&uid=' + id;
+				};
+			};
+
 			function bind(userElement) {
 				if (userElement.attr('user-details-bound') === '1')
 				{
@@ -80,7 +86,7 @@ $.fn.bindUserDetails = function (userId, options) {
 								divUserForm.html(data);
 								ConfigureAdminDialog($('#userDialog'));
 								ConfigureAdminForm($('#userDialog')
-									, function () {return "../admin/manage_users.php?uid=" + idToLoad + "&action=updateUser";}
+									, getupdateurl(idToLoad)
 									, hideDialog($('#userDialog')));
 								$('#userDialog').dialog('open');
 							}
