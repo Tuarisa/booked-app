@@ -80,6 +80,9 @@ $.fn.bindUserDetails = function (userId, options) {
 										height: 'auto',
 										width: 'auto'
 									});
+								ConfigureAdminForm($('#userDialog')
+									, function () {return "?uid=" + idToLoad + "&action=";}
+									, hideDialog($('#userDialog')));
 							}
 						});
 					});

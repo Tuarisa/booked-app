@@ -357,6 +357,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {jsfile src="force-numeric.js"}
 {jsfile src="reservation-reminder.js"}
 {jsfile src="js/tree.jquery.js"}
+{jsfile src="admin/edit.js"}
 
 <script type="text/javascript">
 
