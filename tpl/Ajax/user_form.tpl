@@ -38,13 +38,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             <li>{translate key="LastName"}</li>
             <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
 
-            <li>{translate key="Timezone"}</li>
-            <li>
-                <select {formname key='TIMEZONE'} id='timezone' class="textbox">
-                    {html_options values=$Timezones output=$Timezones}
-                </select>
-            </li>
-
             <li>{translate key="Phone"}</li>
             <li>{textbox name="PHONE" class="textbox" size="40" id="phone"}</li>
             <li>{translate key="Organization"}</li>
