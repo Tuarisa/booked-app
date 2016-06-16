@@ -34,7 +34,7 @@ class GroupAdminUserRepository extends UserRepository
         $this->userSession = $userSession;
         parent::__construct();
     }
-
+    /*
     public function GetList($pageNumber, $pageSize, $sortField = null, $sortDirection = null, $filter = null, $accountStatus = AccountStatus::ALL)
     {
 		if (empty($accountStatus))
@@ -53,6 +53,7 @@ class GroupAdminUserRepository extends UserRepository
 
         return $this->groupRepository->GetUsersInGroup($groupIds, $pageNumber, $pageSize, $filter, $accountStatus);
     }
+    */
 
 	/**
 	 * @param int $userId
