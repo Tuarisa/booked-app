@@ -601,6 +601,7 @@ const GET_RESERVATION_LIST_TEMPLATE =
 			u.fname,
 			u.lname,
 			u.email,
+			u.phone,
 			ru.*
 		FROM reservation_users ru
 		INNER JOIN users u ON ru.user_id = u.user_id
