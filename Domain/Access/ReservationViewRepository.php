@@ -515,7 +515,7 @@ class ReservationUserView
 		$this->UserId = $userId;
 		$this->FirstName = $firstName;
 		$this->LastName = $lastName;
-		$this->FullName = $firstName . ' ' . $lastName;
+		$this->FullName = $firstName . ' ' . $lastName. ' ' . $email. ' ' . $phone;
 		$this->Email = $email;
 		$this->LevelId = $levelId;
 		$this->Phone = $phone;
