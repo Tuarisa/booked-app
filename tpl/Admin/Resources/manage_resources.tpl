@@ -113,10 +113,10 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {foreach from=$Resources item=resource}
 	{assign var=id value=$resource->GetResourceId()}
 	<div class="resourceDetails" resourceId="{$id}">
-	<div style="float:left;max-width:50%;">
+	<div style="float:left">
 		<input type="hidden" class="id" value="{$id}"/>
 
-		<div style="float:left; text-align:center; width:110px;">
+		<div style="float:left; text-align:center; width:410px; height:310px">
 			{if $resource->HasImage()}
 				<img src="{resource_image image=$resource->GetImage()}" alt="Resource Image" class="image"/>
 				<br/>
@@ -128,10 +128,10 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				<a class="update imageButton" href="javascript: void(0);">{translate key='AddImage'}</a>
 			{/if}
 		</div>
-		<div style="float:right;">
+		<div style="float:left;margin-left:50px;">
 			<ul>
 				<li>
-					<h4>{$resource->GetName()}</h4>
+					<h2>{$resource->GetName()}</h2>
 					<a class="update renameButton" href="javascript:void(0);">{translate key='Rename'}</a> |
 					<a class="update deleteButton" href="javascript:void(0);">{translate key='Delete'}</a>
 				</li>
