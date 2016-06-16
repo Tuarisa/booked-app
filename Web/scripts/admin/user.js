@@ -310,6 +310,8 @@ function UserManagement(opts) {
 		console.log(attr);
 		attr.find('input').each( function( index, element) {
 		    console.log( "id:", $( element).attr( "id"));
+		    console.log( "value:", $( element).attr( "value"));
+		    $('#'+$( element).attr( "id")).val($( element).attr( "value"));
 		});
 
 		$('#username').val(user.username);
