@@ -406,8 +406,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
         reminders.init();
 
 	{foreach from=$Participants item=user}
-        reservation.addParticipant("{$user->FullName.$user->Phone|escape:'javascript'}", "{$user->UserId|escape:'javascript'}");
-        console.log('5');
+        reservation.addParticipant("{$user->Phone|escape:'javascript'}", "{$user->UserId|escape:'javascript'}");
 	{/foreach}
 
 	{foreach from=$Invitees item=user}

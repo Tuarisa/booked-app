@@ -594,7 +594,6 @@ function Reservation(opts)
 
 		elements.participantDialog.delegate('.add', 'click', function ()
 		{
-			console.log('3');
 			participation.addParticipant($(this).closest('li').text(), $(this).find('.id').val());
 		});
 
@@ -614,7 +613,6 @@ function Reservation(opts)
 		elements.participantAutocomplete.userAutoComplete(options.userAutocompleteUrl, function (ui)
 		{
 			participation.addParticipant(ui.item.label, ui.item.value);
-			console.log('1');
 		});
 
 		elements.inviteeDialogPrompt.click(function ()
@@ -798,7 +796,6 @@ function Reservation(opts)
 	Reservation.prototype.addParticipant = function (name, userId)
 	{
 		participation.addParticipant(name, userId);
-		console.log('2');
 	};
 
 	Reservation.prototype.addInvitee = function (name, userId)
