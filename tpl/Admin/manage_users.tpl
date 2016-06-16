@@ -148,13 +148,13 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				<div style="display: table-cell;">
 					<ul>
 						<li>{translate key="Username"}</li>
-						<li>{textbox name="USERNAME" class="required textbox" size="40" id="addUsername"}</li>
+						<li>{textbox name="USERNAME" class=" textbox" size="40" id="addUsername"}</li>
 					</ul>
 				</div>
 				<div style="display: table-cell;">
 					<ul>
 						<li>{translate key="Email"}</li>
-						<li>{textbox name="EMAIL" class="required textbox" size="40" id="addEmail"}</li>
+						<li>{textbox name="EMAIL" class=" textbox" size="40" id="addEmail"}</li>
 					</ul>
 				</div>
 				<div style="display: table-cell;">
@@ -184,7 +184,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				<div style="display: table-cell;">
 					<ul>
 						<li>{translate key="Password"}</li>
-						<li>{textbox name="PASSWORD" class="required textbox" size="40" id="addPassword"}</li>
+						<li>{textbox name="PASSWORD" class=" textbox" size="40" id="addPassword"}</li>
 					</ul>
 				</div>
 				<div style="display: table-cell;">
