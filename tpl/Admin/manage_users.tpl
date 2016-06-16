@@ -291,9 +291,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 		<div class="validationSummary">
 			<ul>
-				{async_validator id="emailformat" key="ValidEmailRequired"}
-				{async_validator id="uniqueemail" key="UniqueEmailRequired"}
-				{async_validator id="uniqueusername" key="UniqueUsernameRequired"}
+
 			</ul>
 		</div>
 
@@ -329,7 +327,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				{foreach from=$Attributes item=attribute}
 				{assign var="attributeValue" value=$user->GetAttributeValue($attribute->Id())}
 					<p class="customAttribute">
-						{control type="AttributeControl" attribute=$attribute value=$attributeValue}
+						{control type="AttributeControl" attribute=$attribute}
 					</p>
 				{/foreach}
 			</div>
