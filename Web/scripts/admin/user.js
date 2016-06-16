@@ -79,7 +79,7 @@ function UserManagement(opts) {
 		elements.userList.delegate('.editable', 'click', function () {
 			var userId = $(this).find('input:hidden.id').val();
 			setActiveUserId(userId);
-			var attributesContainer = $(".customAttributes[userId!='" + user.id + "']");
+			var attributesContainer = $(".customAttributes[userId!='" + userId + "']");
 			changeUserInfo(attributesContainer);
 		});
 
