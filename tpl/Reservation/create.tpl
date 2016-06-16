@@ -407,6 +407,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 	{foreach from=$Participants item=user}
         reservation.addParticipant("{$user->FullName.$user->Phone|escape:'javascript'}", "{$user->UserId|escape:'javascript'}");
+        console.log('5');
 	{/foreach}
 
 	{foreach from=$Invitees item=user}
