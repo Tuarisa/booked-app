@@ -140,6 +140,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<div>
 		<div class="validationSummary">
 			<ul>
+				{async_validator id="addAttributeValidator" key=""}
 			</ul>
 		</div>
 		<form id="addUserForm" method="post" ajaxAction="{ManageUsersActions::AddUser}">

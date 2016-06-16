@@ -371,11 +371,12 @@ class ManageUsersPresenter extends ActionPresenter implements IManageUsersPresen
 
 		if ($action == ManageUsersActions::AddUser)
 		{
-			$this->page->RegisterValidator('addUserEmailformat', new EmailValidator($this->page->GetEmail()));
+			/*$this->page->RegisterValidator('addUserEmailformat', new EmailValidator($this->page->GetEmail()));
 			$this->page->RegisterValidator('addUserUniqueemail',
 										   new UniqueEmailValidator($this->userRepository, $this->page->GetEmail()));
 			$this->page->RegisterValidator('addUserUsername',
 										   new UniqueUserNameValidator($this->userRepository, $this->page->GetUserName()));
+			*/
 			$this->page->RegisterValidator('addAttributeValidator',
 										   new AttributeValidator($this->attributeService, CustomAttributeCategory::USER, $this->GetAttributeValues()));
 		}
