@@ -89,7 +89,11 @@ span.error {
 }
 
 .resourceDetails img.image {
-	width: 100px;
+	width: 400px;
+}
+
+.resourceDetails li {
+	margin-bottom: 10px;
 }
 
 .admin table {
