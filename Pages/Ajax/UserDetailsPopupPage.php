@@ -76,6 +76,16 @@ class UserDetailsPopupPage extends Page implements IUserDetailsPopupPage
 		}
 
 	}
+	public function GetAction()
+	{
+		return $this->GetQuerystring(QueryStringKeys::ACTION);
+	}
+	public function TakingAction()
+	{
+		$action = $this->GetAction();
+		return !empty($action);
+	}
+
 
 	public function SetCanViewUser($canView)
 	{
