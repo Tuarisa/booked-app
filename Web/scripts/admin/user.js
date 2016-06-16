@@ -311,9 +311,10 @@ function UserManagement(opts) {
 		attr.find('input').each( function( index, element) {
 		    console.log( "id:", $( element).attr( "id"));
 		    console.log( "value:", $( element).attr( "value"));
-		    $('#'+$( element).attr( "id")).val($( element).attr( "value"));
+		    elements.userDialog.find(('#'+$( element).attr( "id"))).val($( element).attr( "value"));
 		});
 
+		console.log(elements.userDialog)
 		$('#username').val(user.username);
 		$('#fname').val(user.first);
 		$('#lname').val(user.last);
