@@ -34,7 +34,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             <li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
 
             <li>{translate key="FirstName"}</li>
-            <li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname" value = $User->FirstName()}</li>
+            <li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname" value = "User->FirstName()"}</li>
             <li>{translate key="LastName"}</li>
             <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
 
