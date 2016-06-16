@@ -116,6 +116,7 @@ class UserDetailsPopupPage extends Page implements IUserDetailsPopupPage
 	public function BindUser($user)
 	{
 		$this->Set('User', $user);
+		$this->Set('Username',$user->username);
 	}
 }
 
