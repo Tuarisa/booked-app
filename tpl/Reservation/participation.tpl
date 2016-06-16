@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 *}
 <div id="reservationParticipation">
-	<ul class="no-style">
+	<ul class="no-style b">
 		<li>
 			<label for="participantAutocomplete">{translate key="ParticipantList"}</label><br/>
 				{translate key=Add} <input type="text" id="participantAutocomplete" class="input" style="width:250px;"/>
