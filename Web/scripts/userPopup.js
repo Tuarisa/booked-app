@@ -73,7 +73,13 @@ $.fn.bindUserDetails = function (userId, options) {
 							url: 'ajax/user_details.php?action=getForm&uid=' + idToLoad,
 							type: 'GET',
 							success: function (data, textStatus, jqXHR) {
-								divUserForm.data('userPopup' + idToLoad, data);
+								divUserForm.html(data);
+								$('#userDialog').dialog({
+										modal: true,
+										autoOpen: false,
+										height: 'auto',
+										width: 'auto'
+									);
 							}
 						});
 					});

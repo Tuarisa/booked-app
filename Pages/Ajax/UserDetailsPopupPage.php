@@ -61,7 +61,9 @@ class UserDetailsPopupPage extends Page implements IUserDetailsPopupPage
 		{
 			$this->ProcessAction();
 		}
-		$this->Display('Ajax/user_details.tpl');
+		else{
+			$this->Display('Ajax/user_details.tpl');
+		}
 	}
 
 	function ProcessAction()
