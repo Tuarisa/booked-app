@@ -290,7 +290,7 @@ class UserRepository implements IUserRepository, IAccountActivationRepository
 		if ($row = $reader->GetRow())
 		{
 			return new UserDto($row[ColumnNames::USER_ID], $row[ColumnNames::FIRST_NAME], $row[ColumnNames::LAST_NAME], $row[ColumnNames::EMAIL],
-							   $row[ColumnNames::TIMEZONE_NAME], $row[ColumnNames::LANGUAGE_CODE]);
+							   $row[ColumnNames::TIMEZONE_NAME], $row[ColumnNames::LANGUAGE_CODE],$row[ColumnNames::USERNAME]);
 		}
 
 		return null;
@@ -771,8 +771,9 @@ class UserDto
 	public $Timezone;
 	public $LanguageCode;
 	public $Preferences;
+	public $Username;
 
-	public function __construct($userId, $firstName, $lastName, $emailAddress, $timezone = null, $languageCode = null, $preferences = null)
+	public function __construct($userId, $firstName, $lastName, $emailAddress, $timezone = null, $languageCode = null, $preferences = null, $username = null)
 	{
 		$this->UserId = $userId;
 		$this->FirstName = $firstName;
@@ -783,6 +784,7 @@ class UserDto
 		$name = new FullName($this->FirstName(), $this->LastName());
 		$this->FullName = $name->__toString() . " ({$this->EmailAddress})";
 		$this->Preferences = UserPreferences::Parse($preferences)->All();
+		$this->Username = $username;
 	}
 
 	public function Id()
