@@ -20,6 +20,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 {if $CanViewUser}
 <div id="userDetailsPopup">
 	<div id="userDetailsName">{fullname first=$User->FirstName() last=$User->LastName() ignorePrivacy=true}</div>
+	<div data-id="fname" data-val="{$User->FirstName()}"></div>
+	<div data-id="lname" data-val="{$User->LastName()}"></div>
 	<div id="userDetailsEmail" data-id="email" data-val ="{$User->EmailAddress()}"><span class="label">{translate key=Email}</span> <a href="mailto:{$User->EmailAddress()}">{$User->EmailAddress()}</a></div>
 	<div id="userDetailsPhone" data-id="phone" data-val ="{$User->GetAttribute(UserAttribute::Phone)}"><span class="label">{translate key=Phone}</span> <a href="tel:{$User->GetAttribute(UserAttribute::Phone)}">{$User->GetAttribute(UserAttribute::Phone)}</a></div>
 	<div id="userDetailsOrganization" data-id="organization" data-val="{$User->GetAttribute(UserAttribute::Organization)}"><span class="label">{translate key=Organization}</span> {$User->GetAttribute(UserAttribute::Organization)}</div>
