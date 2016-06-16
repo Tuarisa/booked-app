@@ -28,15 +28,15 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
         </div>
 
         <ul>
-            {assign var=username value=$User->Username()}
+            {assign var=username value=$User->FirstName()}
             <li>{translate key="Username"}</li>
-            <li>{textbox name="USERNAME" class="textbox" size="40" id="username" value = username}</li>
+            <li>{textbox name="USERNAME" class="textbox" size="40" id="username" value=username}</li>
             <li>{translate key="Email"}</li>
             <li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
 
             <li>{translate key="FirstName"}</li>
             {assign var=firstname value=$User->FirstName()}
-            <li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname" value = firstname }</li>
+            <li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname" value=firstname }</li>
             <li>{translate key="LastName"}</li>
             <li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
 
