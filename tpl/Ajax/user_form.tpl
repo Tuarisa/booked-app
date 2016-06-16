@@ -29,7 +29,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
         <ul>
             {assign var=uname value=$Username}
-            <li>{translate key="Username"}</li>{$User->username}{$User->Username()}
+            <li>{translate key="Username"}</li>{$User->Username()}
             <li>{textbox name="USERNAME" class="textbox" size="40" id="username" value=uname}</li>
             <li>{translate key="Email"}</li>
             <li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
