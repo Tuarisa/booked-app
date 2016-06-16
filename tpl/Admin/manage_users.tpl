@@ -299,14 +299,14 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 
 		<ul>
 			<li>{translate key="Username"}</li>
-			<li>{textbox name="USERNAME" class="required textbox" size="40" id="username"}</li>
+			<li>{textbox name="USERNAME" class="textbox" size="40" id="username"}</li>
 			<li>{translate key="Email"}</li>
-			<li>{textbox name="EMAIL" class="required textbox" size="40" id="email"}</li>
+			<li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
 
 			<li>{translate key="FirstName"}</li>
-			<li>{textbox name="FIRST_NAME" class="required textbox" size="40" id="fname"}</li>
+			<li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname"}</li>
 			<li>{translate key="LastName"}</li>
-			<li>{textbox name="LAST_NAME" class="required textbox" size="40" id="lname"}</li>
+			<li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
 
 			<li>{translate key="Timezone"}</li>
 			<li>
@@ -322,6 +322,16 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			<li>{translate key="Position"}</li>
 			<li>{textbox name="POSITION" class="textbox" size="40" id="position"}</li>
 		</ul>
+		{if $Attributes|count > 0}
+			<div id="profileAttributeFields">
+				<div class="registrationHeader"><h3>{translate key=AdditionalAttributes}</h3></div>
+				{foreach from=$Attributes item=attribute}
+					<p class="customAttribute">
+						{control type="AttributeControl" attribute=$attribute}
+					</p>
+				{/foreach}
+			</div>
+		{/if}
 		<div class="admin-update-buttons">
 			<button type="button" class="button save">{html_image src="disk-black.png"} {translate key='Update'}</button>
 			<button type="button" class="button cancel">{html_image src="slash.png"} {translate key='Cancel'}</button>
