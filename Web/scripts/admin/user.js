@@ -79,7 +79,7 @@ function UserManagement(opts) {
 		elements.userList.delegate('.editable', 'click', function () {
 			var userId = $(this).find('input:hidden.id').val();
 			setActiveUserId(userId);
-			var attributesContainer = $(".customAttributes[userId!='" + userId + "']");
+			var attributesContainer = $(".customAttributes[userId='" + userId + "']");
 			changeUserInfo(attributesContainer);
 		});
 
@@ -308,7 +308,7 @@ function UserManagement(opts) {
 		ClearAsyncErrors(elements.userDialog);
 
 		console.log(attr);
-		attr.each( function( index, element) {
+		attr.find('input').each( function( index, element) {
 		    console.log( "id:", $( element).attr( "id"));
 		});
 
