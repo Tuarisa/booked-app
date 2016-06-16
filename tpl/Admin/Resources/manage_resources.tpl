@@ -237,7 +237,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			<h5>{translate key='UsageConfiguration'}</h5> <a class="update changeConfigurationButton"
 															 href="javascript: void(0);">{translate key='ChangeConfiguration'}</a>
 		</div>
-		<div style="float:left;width:400px;">
+		<div style="float:left;width:400px;display:none;">
 			<ul>
 				<li>
 					{if $resource->HasMinLength()}
@@ -270,7 +270,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			</ul>
 		</div>
 
-		<div style="float:right;width:400px;">
+		<div style="float:right;width:400px;display:none;">
 			<ul>
 				<li>
 					{if $resource->HasMinNotice()}
