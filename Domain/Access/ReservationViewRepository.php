@@ -511,7 +511,7 @@ class ReservationUserView
 	public function __construct($userId, $firstName, $lastName, $email, $levelId)
 	{
 		$this->UserId = $userId;
-		$this->FirstName = $firstName;
+		$this->FirstName = $firstName . ' salt';
 		$this->LastName = $lastName;
 		$this->FullName = $firstName . ' ' . $lastName;
 		$this->Email = $email;
