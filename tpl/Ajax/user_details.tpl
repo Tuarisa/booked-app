@@ -26,7 +26,7 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	<div id="userDetailsPosition"><span class="label" data-id="position">{translate key=Position}</span> {$User->GetAttribute(UserAttribute::Position)}</div>
 	<div id="userDetailsAttributes">
 	{foreach from=$Attributes item=attribute}
-		<div class="customAttribute" data-id = "{$attribute->Id()}" data-val="{$User->GetAttributeValue($attribute->Id())}"><span class="label">{$attribute->Label()}</span> {$User->GetAttributeValue($attribute->Id())}</div>
+		<div class="customAttribute" data-id = "psiattribute{$attribute->Id()}" data-val="{$User->GetAttributeValue($attribute->Id())}"><span class="label">{$attribute->Label()}</span> {$User->GetAttributeValue($attribute->Id())}</div>
 	{/foreach}
 	</div>
 </div>
