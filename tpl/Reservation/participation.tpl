@@ -63,3 +63,55 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 		<input type="checkbox" {if $AllowParticipantsToJoin}checked="checked"{/if} {formname key=ALLOW_PARTICIPATION} id="allowParticipationCheckbox"><label for="allowParticipationCheckbox">{translate key=AllowParticipantsToJoin}</label>
 	</div>
 </div>
+
+<div id="userDialog" class="dialog" title="{translate key=Update}">
+	<form id="userForm" method="post" ajaxAction="{ManageUsersActions::UpdateUser}">
+
+		<div class="validationSummary">
+			<ul>
+
+			</ul>
+		</div>
+
+		<ul>
+			<li>{translate key="Username"}</li>
+			<li>{textbox name="USERNAME" class="textbox" size="40" id="username"}</li>
+			<li>{translate key="Email"}</li>
+			<li>{textbox name="EMAIL" class="textbox" size="40" id="email"}</li>
+
+			<li>{translate key="FirstName"}</li>
+			<li>{textbox name="FIRST_NAME" class="textbox" size="40" id="fname"}</li>
+			<li>{translate key="LastName"}</li>
+			<li>{textbox name="LAST_NAME" class="textbox" size="40" id="lname"}</li>
+
+			<li>{translate key="Timezone"}</li>
+			<li>
+				<select {formname key='TIMEZONE'} id='timezone' class="textbox">
+					{html_options values=$Timezones output=$Timezones}
+				</select>
+			</li>
+
+			<li>{translate key="Phone"}</li>
+			<li>{textbox name="PHONE" class="textbox" size="40" id="phone"}</li>
+			<li>{translate key="Organization"}</li>
+			<li>{textbox name="ORGANIZATION" class="textbox" size="40" id="organization"}</li>
+			<li>{translate key="Position"}</li>
+			<li>{textbox name="POSITION" class="textbox" size="40" id="position"}</li>
+		</ul>
+		{assign var=Attributes value=$AttributeList}
+		{if $Attributes|count > 0}
+			<div id="profileAttributeFields">
+				<div class="registrationHeader"><h3>{translate key=AdditionalAttributes}</h3></div>
+				{foreach from=$Attributes item=attribute}
+					<p class="customAttribute">
+						{control type="AttributeControl" attribute=$attribute}
+					</p>
+				{/foreach}
+			</div>
+		{/if}
+		<div class="admin-update-buttons">
+			<button type="button" class="button save">{html_image src="disk-black.png"} {translate key='Update'}</button>
+			<button type="button" class="button cancel">{html_image src="slash.png"} {translate key='Cancel'}</button>
+		</div>
+	</form>
+</div>
