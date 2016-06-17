@@ -59,6 +59,7 @@ $.fn.bindUserDetails = function (userId, options) {
 
 			var hideDialog = function (dialogElement) {
 				dialogElement.dialog('close');
+				dialogElement.dialog('destroy');
 			};
 
 			var getupdateurl = function (id) {
@@ -82,6 +83,10 @@ $.fn.bindUserDetails = function (userId, options) {
 						$.ajax({
 							url: 'ajax/user_details.php?action=getForm&uid=' + idToLoad,
 							type: 'GET',
+							beforeSend: function () {
+								divUserForm.html('Loading...');
+								console.log('loading');
+							},
 							success: function (data, textStatus, jqXHR) {
 								divUserForm.html(data);
 								ConfigureAdminDialog($('#userDialog'));
@@ -98,6 +103,7 @@ $.fn.bindUserDetails = function (userId, options) {
 								$(".cancel").click(function ()
 								{
 									$(this).closest('.dialog').dialog("close");
+									$(this).closest('.dialog').dialog("destroy");
 								});
 							}
 						});
