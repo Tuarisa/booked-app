@@ -589,9 +589,61 @@ function Reservation(opts)
 			participation.showAllUsersToAdd(elements.participantDialog);
 		});
 
+		function getUserForm() {
+				if ($('#userFormDiv').length <= 0)
+				{
+					return $('<div id="userFormDiv"/>').appendTo('body');
+				}
+				else
+				{
+					return $('#userFormDiv');
+				}
+			}
+
+		var hideDialog = function (dialogElement) {
+			return function(){
+				dialogElement.dialog('close');
+			}
+		};
+
+		var getaddurl = function () {
+			return function () {
+				return "/Web/admin/manage_users.php?action=addUser";
+			};
+		};
+
 		elements.addNewParticipant.click(function ()
 		{
 			console.log(elements.participantAutocomplete.val());
+			$.ajax({
+				url: 'ajax/user_details.php?action=getForm',
+				type: 'GET',
+				beforeSend: function () {
+					divUserForm.html('Loading...');
+					console.log('loading');
+					$('#userDialog').dialog('destroy');
+				},
+				success: function (data, textStatus, jqXHR) {
+					divUserForm.html(data);
+					ConfigureAdminDialog($('#userDialog'));
+					ConfigureAdminForm($('#userForm')
+						, getaddurl()
+						, hideDialog($('#userDialog')));
+					$('#userDialog').dialog('open');
+
+					$(".save").click(function ()
+					{
+						$(this).closest('form').submit();
+					});
+
+					$(".cancel").click(function ()
+					{
+						$(this).closest('.dialog').dialog("close");
+					});
+					$('#fname').val(elements.participantAutocomplete.val());
+					$('#lname').val(elements.participantAutocomplete.val());
+				}
+			});
 		});
 
 		elements.participantGroupDialogPrompt.click(function ()
