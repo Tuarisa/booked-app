@@ -21,6 +21,10 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 		<li>
 			<label for="participantAutocomplete">{translate key="ParticipantList"}</label><br/>
 				{translate key=Add} <input type="text" id="participantAutocomplete" class="input" style="width:250px;"/>
+				<button id="addNewParticipant" type="button" class="button" style="display:inline">
+					<img src="img/user-plus.png"/>
+				{translate key='AddUser'}
+				</button>
 				or
 				<button id="promptForParticipants" type="button" class="button" style="display:inline">
 					<img src="img/user-plus.png"/>

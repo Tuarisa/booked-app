@@ -12,6 +12,8 @@ function Reservation(opts)
 		durationDays: $('#durationDays'),
 		durationHours: $('#durationHours'),
 
+		addNewParticipant: $('#addNewParticipant'),
+
 		participantDialogPrompt: $('#promptForParticipants'),
 		participantDialog: $('#participantDialog'),
 		participantGroupDialogPrompt: $('#promptForGroupParticipants'),
@@ -585,6 +587,11 @@ function Reservation(opts)
 		elements.participantDialogPrompt.click(function ()
 		{
 			participation.showAllUsersToAdd(elements.participantDialog);
+		});
+
+		elements.addNewParticipant.click(function ()
+		{
+			console.log(elements.participantAutocomplete.val());
 		});
 
 		elements.participantGroupDialogPrompt.click(function ()
