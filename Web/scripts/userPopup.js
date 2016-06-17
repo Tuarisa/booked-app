@@ -58,8 +58,10 @@ $.fn.bindUserDetails = function (userId, options) {
 			}
 
 			var hideDialog = function (dialogElement) {
-				dialogElement.dialog('close');
-				dialogElement.dialog('destroy');
+				return function(){
+					dialogElement.dialog('close');
+					dialogElement.dialog('destroy');
+				}
 			};
 
 			var getupdateurl = function (id) {
