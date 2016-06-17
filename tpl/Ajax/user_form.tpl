@@ -51,6 +51,8 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
             <li>{translate key="Position"}</li>
             {assign var=position value=$User->GetAttribute(UserAttribute::Position)}
             <li>{textbox name="POSITION" class="textbox" size="40" id="position" value = position}</li>
+            {assign var=timezone value=$User->Timezone()}
+            <li>{textbox name="POSITION" class="textbox" size="40" id="position" value = timezone type = "hidden"}</li>
         </ul>
         {if $Attributes|count > 0}
             <div id="profileAttributeFields">
