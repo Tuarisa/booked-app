@@ -641,8 +641,8 @@ function Reservation(opts)
 					{
 						$(this).closest('.dialog').dialog("close");
 					});
-					$('#fname').val(elements.participantAutocomplete.val());
-					$('#lname').val(elements.participantAutocomplete.val());
+					$('#fname').val(elements.participantAutocomplete.val().split(' ')[0]);
+					$('#lname').val(elements.participantAutocomplete.val().split(' ')[1]);
 				}
 			});
 		});
