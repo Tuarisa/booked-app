@@ -615,6 +615,7 @@ function Reservation(opts)
 		elements.addNewParticipant.click(function ()
 		{
 			console.log(elements.participantAutocomplete.val());
+			var divUserForm = getUserForm();
 			$.ajax({
 				url: 'ajax/user_details.php?action=getForm',
 				type: 'GET',
