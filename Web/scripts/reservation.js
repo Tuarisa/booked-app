@@ -635,6 +635,7 @@ function Reservation(opts)
 					$(".save").click(function ()
 					{
 						$(this).closest('form').submit();
+						elements.participantAutocomplete.autocomplete("search",$('#lname').val());
 					});
 
 					$(".cancel").click(function ()
