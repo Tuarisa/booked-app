@@ -60,7 +60,6 @@ $.fn.bindUserDetails = function (userId, options) {
 			var hideDialog = function (dialogElement) {
 				return function(){
 					dialogElement.dialog('close');
-					dialogElement.dialog('destroy');
 				}
 			};
 
@@ -88,6 +87,7 @@ $.fn.bindUserDetails = function (userId, options) {
 							beforeSend: function () {
 								divUserForm.html('Loading...');
 								console.log('loading');
+								$('#userDialog').dialog('destroy');
 							},
 							success: function (data, textStatus, jqXHR) {
 								divUserForm.html(data);
@@ -105,7 +105,6 @@ $.fn.bindUserDetails = function (userId, options) {
 								$(".cancel").click(function ()
 								{
 									$(this).closest('.dialog').dialog("close");
-									$(this).closest('.dialog').dialog("destroy");
 								});
 							}
 						});
