@@ -21,7 +21,15 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 <br/>
 {/if}
 {if $readonly}
-<span class="attributeValue {$class}">{$attribute->Value()}</span>
+<span class="attributeValue {$class}"
+{foreach from=$attribute->PossibleValueList() item=value}
+{$value}
+{/foreach}
+>{$attribute->Value()}</span>
 {else}
-<input type="text" id="{$attributeId}" name="{$attributeName}" value="{$attribute->Value()}" class="customAttribute textbox {$class}" />
+<input type="text" id="{$attributeId}" name="{$attributeName}" value="{$attribute->Value()}" class="customAttribute textbox {$class}" 
+{foreach from=$attribute->PossibleValueList() item=value}
+{$value}
+{/foreach}
+/>
 {/if}
