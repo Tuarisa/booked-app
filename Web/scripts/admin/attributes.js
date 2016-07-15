@@ -142,6 +142,11 @@ function AttributeManagement(opts)
 	{
 		$('.textBoxOptions', optionsDiv).find('div').show();
 
+		if (selectedType == opts.selectList)
+		{
+			$('.attributePossibleValues').show();
+		}
+
 		if (selectedType != opts.selectList)
 		{
 			$('.attributePossibleValues').hide();
