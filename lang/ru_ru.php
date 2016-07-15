@@ -371,8 +371,8 @@ class ru_ru extends Language
 		$strings['SortOrder'] = 'Сортировка заказов';
 		$strings['Title'] = 'Заголовок';
 		$strings['AdditionalAttributes'] = 'Дополнительные параметры';
-		$strings['True'] = 'Правда';
-		$strings['False'] = 'Ложь';
+		$strings['True'] = 'Да';
+		$strings['False'] = 'Нет';
 		$strings['ForgotPasswordEmailSent'] = 'Сообщение было отправлено по адресу, указанному в инструкции по смене пароля.';
 		$strings['ActivationEmailSent'] = 'Скоро вы должны получить письмо с кодом активации.';
 		$strings['AccountActivationError'] = 'Не получилось активировать ваш аккаунт.';
