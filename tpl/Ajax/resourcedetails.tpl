@@ -61,5 +61,23 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 			{translate key=NoResourceTypeLabel}
 		{/if}
 	</div>
+	<div class="attributes">
+		<ul>
+			{if $Attributes|count > 0}
+				{foreach from=$Attributes item=attribute}
+					<li>
+						{control type="AttributeControl" attribute=$attribute readonly=true}
+					</li>
+				{/foreach}
+			{/if}
+			{if $ResourceTypeAttributes|count > 0}
+				{foreach from=$ResourceTypeAttributes item=attribute}
+					<li>
+						{control type="AttributeControl" attribute=$attribute readonly=true}
+					</li>
+				{/foreach}
+			{/if}
+
+		</ul>
+	</div>
 	<div style="clear"></div>
-</div>
