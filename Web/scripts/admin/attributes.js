@@ -142,7 +142,7 @@ function AttributeManagement(opts)
 	{
 		$('.textBoxOptions', optionsDiv).find('div').show();
 
-		if (selectedType == opts.selectList || selectedType == opts.singleLineTextbox || selectedType == opts.multipleLineTextbox)
+		if (selectedType == opts.selectList)
 		{
 			$('.attributePossibleValues').show();
 		}
