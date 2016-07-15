@@ -63,55 +63,6 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 	</div>
 	<div class="attributes">
 		<ul>
-			<li>
-				{if $minimumDuration neq ''}
-					{translate key='ResourceMinLength' args=$minimumDuration}
-				{else}
-					{translate key='ResourceMinLengthNone'}
-				{/if}
-			</li>
-			<li>
-				{if $maximumDuration neq ''}
-					{translate key='ResourceMaxLength' args=$maximumDuration}
-				{else}
-					{translate key='ResourceMaxLengthNone'}
-				{/if}
-			</li>
-			<li>
-				{if $requiresApproval}
-					{translate key='ResourceRequiresApproval'}
-				{else}
-					{translate key='ResourceRequiresApprovalNone'}
-				{/if}
-			</li>
-			<li>
-				{if $minimumNotice neq ''}
-					{translate key='ResourceMinNotice' args=$minimumNotice}
-				{else}
-					{translate key='ResourceMinNoticeNone'}
-				{/if}
-			</li>
-			<li>
-				{if $maximumNotice neq ''}
-					{translate key='ResourceMaxNotice' args=$maximumNotice}
-				{else}
-					{translate key='ResourceMaxNoticeNone'}
-				{/if}
-			</li>
-			<li>
-				{if $allowMultiday}
-					{translate key='ResourceAllowMultiDay'}
-				{else}
-					{translate key='ResourceNotAllowMultiDay'}
-				{/if}
-			</li>
-			<li>
-				{if $maxParticipants neq ''}
-					{translate key='ResourceCapacity' args=$maxParticipants}
-				{else}
-					{translate key='ResourceCapacityNone'}
-				{/if}
-			</li>
 			{if $Attributes|count > 0}
 				{foreach from=$Attributes item=attribute}
 					<li>
@@ -130,4 +81,3 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 		</ul>
 	</div>
 	<div style="clear"></div>
-</div>
