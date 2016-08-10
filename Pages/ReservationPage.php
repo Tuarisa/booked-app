@@ -140,6 +140,16 @@ interface IReservationPage extends IPage
 	function SetAllowParticipantsToJoin($allowParticipation);
 }
 
+class Formatter
+{
+	private $values = array();
+
+	public function Add($name, $value)
+	{
+		$this->values[$name] = $value;
+	}
+}
+
 abstract class ReservationPage extends Page implements IReservationPage
 {
 	protected $presenter;
@@ -294,6 +304,8 @@ abstract class ReservationPage extends Page implements IReservationPage
 		$attributeService = new AttributeService(new AttributeRepository());
 		$attributeList = $attributeService->GetAttributes(CustomAttributeCategory::RESOURCE, $resourceId);
 		$this->Set('ResourceAttributes', $attributeList->GetAttributes($resource->Id));
+		$formatter = new Formatter();
+		$this->Set('formatter', $formatter);
 	}
 
 	public function SetScheduleId($scheduleId)
