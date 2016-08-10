@@ -78,6 +78,17 @@ along with Booked Scheduler.  If not, see <http://www.gnu.org/licenses/>.
 				{if $ShowAdditionalResources}
                     <a id="btnAddResources" href="#" class="small-action">{translate key=MoreResources}{html_image src="plus-small-white.png"}</a>
 				{/if}
+                {if $ResourceAttributes|count > 0}
+                    <br/>
+                    {foreach from=$ResourceAttributes item=attribute}
+                        {assign var=attr value="att`$attribute->Id()`"}
+                        {capture name=""|cat:$attr}
+                        <div>{control type="AttributeControl" attribute=$attribute readonly=true}</div>
+                        {/capture}
+                        {$smarty.capture.$attr}
+                        {$formatter->Add($attr, $smarty.capture.$attr)}
+                    {/foreach}
+                {/if}
                     <div id="additionalResources">
 						{foreach from=$AvailableResources item=resource}
 							{if is_array($AdditionalResourceIds) && in_array($resource->Id, $AdditionalResourceIds)}

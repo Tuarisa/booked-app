@@ -155,7 +155,7 @@ $conf['settings']['email']['default.from.name'] = '';
 /**
  * Reports
  */
-$conf['settings']['reports']['allow.all.users'] = 'false';
+$conf['settings']['reports']['allow.all.users'] = 'true';
 /**
  * Account Password Rules
  */
