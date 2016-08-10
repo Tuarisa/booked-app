@@ -290,6 +290,7 @@ abstract class ReservationPage extends Page implements IReservationPage
 	{
 		$this->Set('ResourceName', $resource->Name);
 		$this->Set('ResourceId', $resource->Id);
+		$resourceId = $resource->Id;
 		$attributeList = $this->attributeService->GetAttributes(CustomAttributeCategory::RESOURCE, $resourceId);
 		$this->Set('ResourceAttributes', $attributeList->GetAttributes($resource->Id));
 	}
