@@ -1009,3 +1009,27 @@ var countCost = function(days){
 $('#durationDays').on('DOMSubtreeModified',function(){countCost(parseInt($('#durationDays').html()))});
 
 countCost(parseInt($('#durationDays').html()));
+
+var countTotal= function(){
+    var cost = $("[data-sum]").val();
+    console.log('cost='+cost);
+    var discount = $("[data-discount]").val();
+    if (discount===undefined)
+        discount = 0;
+    if (discount.toString().indexOf('%')>0){
+        discount = (cost/100)*parseInt(discount);
+    }
+    console.log('discount='+discount);
+    var prepaid = $("[data-prepaid]").val();
+    if (prepaid === undefined)
+        prepaid = 0;
+    var total = cost - discount;
+    var debt = total - prepaid;
+    $("[data-total]").val(total);
+    $("[data-debt]").val(debt);
+}
+countTotal();
+
+$('[data-sum]').on('keyup', function(){countTotal();});
+$('[data-discount]').on('keyup', function(){countTotal();});
+$('[data-prepaid]').on('keyup', function(){countTotal();});
