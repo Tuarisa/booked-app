@@ -984,3 +984,28 @@ function Reservation(opts)
 		participation.addGroupUsers(groupId, participation.addInvitee);
 	};
 }
+
+var countCost = function(days){
+    if (days<=0){
+        days=1;
+    }
+    var cost = 1;
+    var date = new Date($('#BeginDate').val().split('.')[2], $('#BeginDate').val().split('.')[1], $('#BeginDate').val().split('.')[0])
+    $("[data-season-start]").each(function(i, val){
+        var datestartraw = $(val).attr('data-season-start').split('.');
+        var datestart = new Date(datestartraw[2], datestartraw[1], datestartraw[0]);
+        var dateendraw = $(val).attr('data-season-end').split('.');
+        var dateend = new Date(dateendraw[2], dateendraw[1], dateendraw[0]);
+        var daysindatestart = $(val).attr('data-count-days-start');
+        var daysindateend = $(val).attr('data-count-days-end');
+        if (date >= datestart && date <= dateend &&
+            days >= daysindatestart && days<=daysindateend){
+            cost = $(val).html();
+        }
+    })
+    $("[data-sum]").val(cost*days);
+}
+
+$('#durationDays').on('DOMSubtreeModified',function(){countCost(parseInt($('#durationDays').html()))});
+
+countCost(parseInt($('#durationDays').html()));
