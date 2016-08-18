@@ -984,7 +984,22 @@ function Reservation(opts)
 		participation.addGroupUsers(groupId, participation.addInvitee);
 	};
 }
-
+var countTotal= function(){
+    var cost = $("[data-sum]").val();
+    var discount = $("[data-discount]").val();
+    if (discount===undefined)
+        discount = 0;
+    if (discount.toString().indexOf('%')>0){
+        discount = (cost/100)*parseInt(discount);
+    }
+    var prepaid = $("[data-prepaid]").val();
+    if (prepaid === undefined)
+        prepaid = 0;
+    var total = cost - discount;
+    var debt = total - prepaid;
+    $("[data-total]").val(total);
+    $("[data-debt]").val(debt);
+}
 var countCost = function(days){
     if (days<=0){
         days=1;
@@ -1004,28 +1019,13 @@ var countCost = function(days){
         }
     })
     $("[data-sum]").val(cost*days);
+    countTotal();
 }
 
 $('#durationDays').on('DOMSubtreeModified',function(){countCost(parseInt($('#durationDays').html()))});
 
 countCost(parseInt($('#durationDays').html()));
 
-var countTotal= function(){
-    var cost = $("[data-sum]").val();
-    var discount = $("[data-discount]").val();
-    if (discount===undefined)
-        discount = 0;
-    if (discount.toString().indexOf('%')>0){
-        discount = (cost/100)*parseInt(discount);
-    }
-    var prepaid = $("[data-prepaid]").val();
-    if (prepaid === undefined)
-        prepaid = 0;
-    var total = cost - discount;
-    var debt = total - prepaid;
-    $("[data-total]").val(total);
-    $("[data-debt]").val(debt);
-}
 countTotal();
 
 $('[data-sum]').on('keyup', function(){countTotal();});
