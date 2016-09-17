@@ -2,3 +2,8 @@
 composer
 composer-setup.php
 vendor/*
+puphpet/files/startup-always/env.sh
+puphpet/config-custom.yaml
+tpl_c/*
+/.vagrant
+.DS_Store
