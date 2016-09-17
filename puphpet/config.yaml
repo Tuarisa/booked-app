@@ -19,14 +19,14 @@ vagrantfile:
                         check_guest_tools: 0
                         update_guest_tools: 0
                 machines:
-                    vflm_na9qzww8a0c2:
+                    vflm_3494achvzxxk:
                         id: bookedapp1
                         hostname: bookedapp1.puphpet
                         network:
                             private_network: 192.168.48.101
                             forwarded_port:
-                                vflmnfp_knspg73hwwfz:
-                                    host: '8017'
+                                vflmnfp_zzfroukb3fqe:
+                                    host: '6287'
                                     guest: '22'
                         memory: '512'
                         cpus: '1'
@@ -38,9 +38,9 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_6rizb120rwpf:
+            vflsf_4eiglx83j6qw:
                 source: ./
-                target: /var/www
+                target: /var/www/booked
                 sync_type: default
                 smb:
                     smb_host: ''
@@ -116,16 +116,16 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_ryxeo41q1wrw:
+        nxv_my4s2uzkxh85:
             server_name: awesome.dev
             server_aliases:
                 - www.awesome.dev
             www_root: /var/www/awesome
             listen_port: '80'
             index_files:
-                - index.html
-                - index.htm
                 - index.php
+                - index.htm
+                - index.html
             client_max_body_size: 1m
             ssl: '0'
             ssl_cert: ''
@@ -136,7 +136,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_xwcqubkm9qim:
+                nxvl_zzh55spji04j:
                     location: /
                     try_files:
                         - $uri
@@ -147,7 +147,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_ndp3to8khysz:
+                nxvl_j0y95t1qar4d:
                     location: '~ \.php$'
                     try_files:
                         - $uri
@@ -177,7 +177,42 @@ apache:
     modules:
         - proxy_fcgi
         - rewrite
-    vhosts: {  }
+    vhosts:
+        av_yjbinbd6dwm3:
+            servername: booked.dev
+            docroot: /var/www/booked
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            setenvif:
+                - 'Authorization "(.*)" HTTP_AUTHORIZATION=$1'
+            custom_fragment: ''
+            ssl: '0'
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_chain: ''
+            ssl_certs_dir: ''
+            ssl_protocol: ''
+            ssl_cipher: ''
+            directories:
+                avd_nc0t2a4p5ogc:
+                    path: /var/www/booked
+                    options:
+                        - Indexes
+                        - FollowSymlinks
+                        - MultiViews
+                    allow_override:
+                        - All
+                    require:
+                        - 'all granted'
+                    custom_fragment: ''
+                    files_match:
+                        avdfm_b7yja9lk5oqh:
+                            path: \.php$
+                            sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                            custom_fragment: ''
+                            provider: filesmatch
+                    provider: directory
 letsencrypt:
     install: '1'
     settings:
@@ -191,6 +226,7 @@ php:
         php:
             - cli
             - intl
+            - mysql
         pear: {  }
         pecl: {  }
     ini:
@@ -201,7 +237,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_oelgc4droq65:
+        phpfp_ut5bcaxtgfbi:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -244,7 +280,7 @@ drush:
 ruby:
     install: '1'
     versions:
-        rv_y33tmeav655b:
+        rv_hgwg7y9coacn:
             default: '1'
             bundler: '1'
             version: 1.9.3
@@ -284,15 +320,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_bim576qbkx6g:
+        mariadbnu_xg4duzesvtd2:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_jqve02dkd96a:
+        mariadbnd_ehyujapp2q2f:
             name: dbname
             sql: ''
     grants:
-        mariadbng_gdyhy08gjhmv:
+        mariadbng_d29l4kovwpbv:
             user: dbuser
             table: '*.*'
             privileges:
@@ -305,15 +341,15 @@ mysql:
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_aqgw28877e9s:
+        mysqlnu_2jnh6uzajb5b:
             name: dbuser
             password: '123'
     databases:
-        mysqlnd_qrhaczkc0duv:
+        mysqlnd_6k7vzcqcelke:
             name: dbname
             sql: ''
     grants:
-        mysqlng_7p5z3me2qlag:
+        mysqlng_m69davvj24b1:
             user: dbuser
             table: '*.*'
             privileges:
@@ -378,7 +414,7 @@ elastic_search:
         version: 2.3.1
         java_install: true
     instances:
-        esi_5t0jzqtlcmzu:
+        esi_sg7u43h4qyt4:
             name: es-01
 solr:
     install: '0'

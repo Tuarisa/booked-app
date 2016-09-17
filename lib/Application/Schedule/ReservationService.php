@@ -41,6 +41,10 @@ class ReservationService implements IReservationService
 
 		foreach ($reservations as $reservation)
 		{
+			if ($reservation->GetStartDate()->Compare($dateRangeUtc->GetBegin()) < 0){
+				$reservation->StartDate = $dateRangeUtc->GetBegin();
+			}
+			
 			$reservationListing->Add($reservation);
 		}
 
